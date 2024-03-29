@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">SLFastener</string>
+    <string name="bottom_right">Mahindra &amp; Mahindra - Chakan</string>
+    <string name="bottom_left">Powered By Kemar Port Automation Pvt. Ltd.</string>
+    <string name="selected_item">Selected item:</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <!--HOME PAGE -->
+    <string name="tv_grn">Goods Received Note (GRN)</string>
+    <string name="re_print_barcode">Re-Print Barcode</string>
+    <string name="my_transaction">My Transaction</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="po_sap_line_item">PO SAP LINE ITEM</string>
+    <string name="item_code">Item Code</string>
+    <string name="item_name">Item Name</string>
+    <string name="item_description">Item Description</string>
+    <string name="po_quantity">PO Quantity</string>
+    <string name="pouom">POUOM</string>
+
+
+    <string-array name="leveler">
+        <item>Select Supplier</item>
+        <item>XYZ Supplier</item>
+        <item>FGH Supplier</item>
+        <item>ABC Supplier</item>
+        <item>DEF Supplier</item>
+
+    </string-array>
+</resources>

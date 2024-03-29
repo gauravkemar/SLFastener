@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@color/header_bg"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clTop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            >
+
+            <CheckBox
+                android:id="@+id/cbLineItem"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                app:layout_constraintHorizontal_weight="0.05"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tvColumnOne"
+                />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintEnd_toStartOf="@+id/tvColumnOne"
+                app:layout_constraintStart_toEndOf="@+id/cbLineItem"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/cbLineItem"/>
+
+
+            <TextView
+                android:id="@+id/tvColumnOne"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:padding="5dp"
+                android:text="@string/po_sap_line_item"
+                app:layout_constraintHorizontal_weight="0.20"
+                app:layout_constraintEnd_toStartOf="@+id/tvColumnTwo"
+                app:layout_constraintStart_toEndOf="@+id/cbLineItem"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintEnd_toStartOf="@+id/tvColumnTwo"
+                app:layout_constraintStart_toEndOf="@+id/tvColumnOne"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/tvColumnOne"/>
+
+
+            <TextView
+                android:id="@+id/tvColumnTwo"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:padding="5dp"
+                android:text="@string/item_code"
+
+                app:layout_constraintHorizontal_weight="0.10"
+                app:layout_constraintEnd_toStartOf="@+id/tvColumnThree"
+                app:layout_constraintStart_toEndOf="@+id/tvColumnOne"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintEnd_toStartOf="@+id/tvColumnThree"
+                app:layout_constraintStart_toEndOf="@+id/tvColumnTwo"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/tvColumnTwo"/>
+
+
+            <TextView
+                android:id="@+id/tvColumnThree"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:padding="5dp"
+                android:textColor="@color/black"
+                android:text="@string/item_name"
+
+                app:layout_constraintHorizontal_weight="0.10"
+                app:layout_constraintEnd_toStartOf="@id/tvColumnFour"
+                app:layout_constraintStart_toEndOf="@+id/tvColumnTwo"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintEnd_toStartOf="@+id/tvColumnFour"
+                app:layout_constraintStart_toEndOf="@+id/tvColumnThree"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/tvColumnThree"/>
+
+
+            <TextView
+                android:id="@+id/tvColumnFour"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:padding="5dp"
+                android:textColor="@color/black"
+                android:text="@string/item_description"
+
+                app:layout_constraintHorizontal_weight="0.20"
+                app:layout_constraintEnd_toStartOf="@id/tvColumnFive"
+                app:layout_constraintStart_toEndOf="@+id/tvColumnThree"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintEnd_toStartOf="@+id/tvColumnFive"
+                app:layout_constraintStart_toEndOf="@+id/tvColumnFour"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/tvColumnFour"/>
+
+
+            <TextView
+                android:id="@+id/tvColumnFive"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:padding="5dp"
+                android:textColor="@color/black"
+                android:text="@string/po_quantity"
+                app:layout_constraintHorizontal_weight="0.15"
+                app:layout_constraintEnd_toStartOf="@id/tvColumnSix"
+                app:layout_constraintStart_toEndOf="@+id/tvColumnFour"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintEnd_toStartOf="@+id/tvColumnSix"
+                app:layout_constraintStart_toEndOf="@+id/tvColumnFive"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/tvColumnFive"/>
+
+
+            <TextView
+                android:id="@+id/tvColumnSix"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="@string/pouom"
+                android:textColor="@color/black"
+
+                app:layout_constraintHorizontal_weight="0.10"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvColumnFive"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <View
+            android:id="@+id/row_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:visibility="gone"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintTop_toBottomOf="@+id/clTop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
