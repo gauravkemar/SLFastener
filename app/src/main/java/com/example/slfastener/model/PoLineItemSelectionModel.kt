@@ -15,6 +15,7 @@ data class PoLineItemSelectionModel(
     val GDPONumber: String,
     val ExpiryDate:String,
     val ReceivedQty:String,
+    var isSelected: Boolean?,
+    var materialType: String,
 
-
-)
+    )

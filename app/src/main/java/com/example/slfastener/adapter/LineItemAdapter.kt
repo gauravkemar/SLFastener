@@ -16,14 +16,14 @@ class LineItemAdapter  : RecyclerView.Adapter<LineItemAdapter.ViewHolder>() {
 
     private var poLineItemMainModel = mutableListOf<PoLineItemSelectionModel>()
     private var context: Context?=null
-    fun setGrnMainList(
+   /* fun setGrnMainList(
         poLineItemMainModel: ArrayList<PoLineItemSelectionModel>,
         context: Context,
     ) {
         this.poLineItemMainModel =poLineItemMainModel
         this.context=context
         notifyDataSetChanged()
-    }
+    }*/
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.line_item_selection, parent, false)
@@ -37,18 +37,37 @@ class LineItemAdapter  : RecyclerView.Adapter<LineItemAdapter.ViewHolder>() {
         holder.tvColumnTwo.setText(poLineItemModel.itemCode)
         holder.tvColumnThree.setText(poLineItemModel.itemName)
         holder.tvColumnFour.setText(poLineItemModel.itemDescription)
-        //holder.tvColumnFive.setText(poLineItemModel.poQuantity)
+
+
+        if(poLineItemModel.poQuantity.toString()!=null)
+        {
+            holder.tvColumnFive.setText(poLineItemModel.poQuantity.toString())
+        }
+
         holder.tvColumnSix.setText(poLineItemModel.pouom)
 
         holder.cbPcbLineItem.setOnCheckedChangeListener(null) // Reset listener to avoid unwanted calls
-        holder.cbPcbLineItem.isChecked = false// Set the initial state of the CheckBox
+
+
+
+        holder.cbPcbLineItem.isChecked = poLineItemModel.isSelected ?: false
 
         holder.cbPcbLineItem.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
-                onItemClickListener?.invoke(poLineItemMainModel[position])
+
+                onItemClickListener?.invoke(PoLineItemSelectionModel(
+                    poLineItemModel.itemCode,poLineItemModel.itemDescription,
+                    poLineItemModel.itemName,poLineItemModel.lineNumber,poLineItemModel.poId,poLineItemModel.poLineItemId,poLineItemModel.poQuantity,
+                    poLineItemModel.poUnitPrice,poLineItemModel.posapLineItemNumber,poLineItemModel.pouom,poLineItemModel.poNumber,poLineItemModel.GDPONumber,
+                    poLineItemModel.ExpiryDate,poLineItemModel.ReceivedQty,true,poLineItemModel.materialType))
                 Log.d("fromclick", poLineItemMainModel[position].toString())
             } else {
-                onItemUncheckClickListener?.invoke(poLineItemMainModel[position])
+
+                onItemUncheckClickListener?.invoke(PoLineItemSelectionModel(
+                    poLineItemModel.itemCode,poLineItemModel.itemDescription,
+                    poLineItemModel.itemName,poLineItemModel.lineNumber,poLineItemModel.poId,poLineItemModel.poLineItemId,poLineItemModel.poQuantity,
+                    poLineItemModel.poUnitPrice,poLineItemModel.posapLineItemNumber,poLineItemModel.pouom,poLineItemModel.poNumber,poLineItemModel.GDPONumber,
+                    poLineItemModel.ExpiryDate,poLineItemModel.ReceivedQty,false,poLineItemModel.materialType))
                 Log.d("fromclick", poLineItemMainModel[position].toString())
             }
         }
@@ -72,6 +91,29 @@ class LineItemAdapter  : RecyclerView.Adapter<LineItemAdapter.ViewHolder>() {
         }*/
 
     }
+
+
+    private fun listsAreEqual(list1: List<PoLineItemSelectionModel>, list2: List<PoLineItemSelectionModel>): Boolean {
+        if (list1.size != list2.size) {
+            return false
+        }
+
+        for (i in list1.indices) {
+            if (list1[i] != list2[i]) {
+                return false
+            }
+        }
+        return true
+    }
+    fun updateList(newList: ArrayList<PoLineItemSelectionModel>,  context: Context,) {
+        if (!listsAreEqual(poLineItemMainModel, newList)) {
+            poLineItemMainModel = newList
+            this.context=context
+            notifyDataSetChanged()
+        }
+    }
+
+
 
     override fun getItemCount(): Int {
         if(poLineItemMainModel.size==0){

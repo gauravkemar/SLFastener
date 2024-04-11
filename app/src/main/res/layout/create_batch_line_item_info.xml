@@ -98,29 +98,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvItemDesc"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tvQuantityPrice">
-
-    </TextView>
-
-
-    <TextView
-        android:id="@+id/tvQuantityPrice"
-        android:textSize="14sp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:layout_margin="2dp"
-        android:textStyle="bold"
-        android:padding="5dp"
-        android:text="$/₹/€"
-        app:layout_constraintHorizontal_weight="0.07"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvPuom"
         app:layout_constraintEnd_toStartOf="@+id/tvPoQty">
 
     </TextView>
+
     <TextView
         android:id="@+id/tvPoQty"
         android:textSize="14sp"
@@ -135,7 +116,7 @@
         app:layout_constraintHorizontal_weight="0.07"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvQuantityPrice"
+        app:layout_constraintStart_toEndOf="@+id/tvPuom"
         app:layout_constraintEnd_toStartOf="@+id/tvOpenQty">
 
     </TextView>
@@ -208,16 +189,16 @@
         android:textColor="@color/black"
         android:textStyle="bold"
         android:padding="5dp"
-        android:text="BatchNo"
-        app:layout_constraintHorizontal_weight="0.06"
+        android:text="Batch No"
+        app:layout_constraintHorizontal_weight="0.07"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvEpiryDt"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tvSaveLineItem">
+        app:layout_constraintEnd_toStartOf="@+id/tvBarcodeNo">
 
     </TextView>
     <TextView
-        android:id="@+id/tvSaveLineItem"
+        android:id="@+id/tvBarcodeNo"
         android:layout_width="0dp"
         android:textSize="14sp"
         android:layout_margin="2dp"
@@ -226,32 +207,15 @@
         android:textColor="@color/black"
         android:textStyle="bold"
         android:padding="5dp"
-        android:text="Save"
-        app:layout_constraintHorizontal_weight="0.04"
+        android:text="BarcodeNo"
+        app:layout_constraintHorizontal_weight="0.07"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvBatchNo"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tvDeleteLineItem">
-
-    </TextView>
-    <TextView
-        android:id="@+id/tvDeleteLineItem"
-        android:layout_width="0dp"
-        android:textSize="14sp"
-        android:layout_margin="2dp"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:padding="5dp"
-        android:text="Delete"
-        app:layout_constraintHorizontal_weight="0.05"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvSaveLineItem"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
     </TextView>
+
 
 
 

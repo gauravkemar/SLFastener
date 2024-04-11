@@ -52,8 +52,6 @@ class GRNMainActivity : AppCompatActivity() {
             showLogoutDialog()
         }
 
-
-
         binding.mcvAddGrn.setOnClickListener {
             var intent = Intent(this@GRNMainActivity, GRNAddActivity::class.java)
             startActivity(intent)
@@ -95,11 +93,12 @@ class GRNMainActivity : AppCompatActivity() {
                             {
                                 grnMainResponse.addAll(resultResponse)
                                 setGrnList(grnMainResponse)
-
+                                binding.tvDraftCount.setText(grnMainResponse.size.toString())
                             }
                             else
                             {
-                                Toast.makeText(this,"List is Empty!!",Toast.LENGTH_SHORT).show()
+                                //Toast.makeText(this,"List is Empty!!",Toast.LENGTH_SHORT).show()
+                                setGrnList(grnMainResponse)
                             }
 
 
@@ -158,7 +157,6 @@ class GRNMainActivity : AppCompatActivity() {
         binding.rcGrnMain.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
     }
-
 
     private fun showLogoutDialog() {
         val builder = AlertDialog.Builder(this)

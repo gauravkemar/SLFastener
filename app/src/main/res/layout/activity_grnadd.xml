@@ -8,10 +8,10 @@
         android:layout_height="match_parent"
         android:background="@drawable/page_bg">
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+      <!--  <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/home_swipe_refresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent">-->
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -130,13 +130,15 @@
 
 
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/clContainer"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_margin="20dp"
+
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent">
+                        app:layout_constraintBottom_toTopOf="@+id/clContainer2">
 
                         <com.google.android.material.card.MaterialCardView
                             android:id="@+id/mcvHeaders"
@@ -161,8 +163,8 @@
                                 <androidx.constraintlayout.widget.ConstraintLayout
                                     android:id="@+id/clSelectSupplier"
                                     android:layout_width="0dp"
-                                    android:layout_height="0dp"
-                                    android:layout_margin="10dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="15dp"
                                     android:background="@drawable/round_border_grey"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toStartOf="@+id/clEnterInvNo"
@@ -204,8 +206,8 @@
                                 <androidx.constraintlayout.widget.ConstraintLayout
                                     android:id="@+id/clEnterInvNo"
                                     android:layout_width="0dp"
-                                    android:layout_height="0dp"
-                                    android:layout_margin="10dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="15dp"
                                     android:background="@drawable/round_border_grey"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toStartOf="@+id/clEnterDGPO"
@@ -233,9 +235,8 @@
                                 <androidx.constraintlayout.widget.ConstraintLayout
                                     android:id="@+id/clEnterDGPO"
                                     android:layout_width="0dp"
-                                    android:layout_height="0dp"
-                                    android:layout_margin="10dp"
-
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="15dp"
                                     android:background="@drawable/round_border_grey"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toStartOf="@+id/clEnterInvDate"
@@ -264,8 +265,8 @@
                                 <androidx.constraintlayout.widget.ConstraintLayout
                                     android:id="@+id/clEnterInvDate"
                                     android:layout_width="0dp"
-                                    android:layout_height="0dp"
-                                    android:layout_margin="10dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="15dp"
                                     android:background="@drawable/round_border_grey"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toStartOf="@+id/clSelectPo"
@@ -275,10 +276,11 @@
 
                                     <TextView
                                         android:id="@+id/tvDate"
-                                        android:layout_width="wrap_content"
+                                        android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:background="@android:color/transparent"
                                         android:hint="Select Inv Date"
+
                                         android:padding="10dp"
                                         android:textColor="@color/tv_sub_head_color"
                                         android:textSize="12sp"
@@ -294,7 +296,8 @@
                                     android:id="@+id/clSelectPo"
                                     android:layout_width="0dp"
                                     android:layout_height="0dp"
-                                    android:layout_margin="10dp"
+                                    android:layout_margin="15dp"
+                                    android:visibility="gone"
                                     app:cardBackgroundColor="@color/blue"
                                     app:cardCornerRadius="5dp"
                                     app:layout_constraintBottom_toBottomOf="parent"
@@ -315,8 +318,8 @@
                                 <com.google.android.material.card.MaterialCardView
                                     android:id="@+id/mcvAddGrn"
                                     android:layout_width="0dp"
-                                    android:layout_height="0dp"
-                                    android:layout_margin="10dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="15dp"
                                     app:cardCornerRadius="5dp"
                                     app:cardBackgroundColor="@color/bg_orange"
                                     app:layout_constraintEnd_toEndOf="parent"
@@ -360,6 +363,7 @@
                                     android:id="@+id/clMidChild1"
                                     android:layout_width="match_parent"
                                     android:layout_height="0dp"
+                                    android:visibility="gone"
                                     app:layout_constraintVertical_weight="0.15"
                                     app:layout_constraintBottom_toTopOf="@+id/clMidChild2"
                                     app:layout_constraintEnd_toEndOf="parent"
@@ -404,7 +408,7 @@
                                                     android:id="@+id/tvUnProcessed"
                                                     android:layout_width="wrap_content"
                                                     android:layout_height="wrap_content"
-                                                    android:padding="10dp"
+                                                    android:padding="5dp"
                                                     android:text="UnProcessed"
                                                     android:textColor="@color/white"
                                                     app:layout_constraintBottom_toBottomOf="parent"
@@ -481,8 +485,8 @@
                                                     android:id="@+id/tvprocessed"
                                                     android:layout_width="wrap_content"
                                                     android:layout_height="wrap_content"
-                                                    android:padding="10dp"
-                                                    android:text="Processed"
+                                                    android:padding="5dp"
+                                                    android:text="  Processed"
                                                     android:textColor="@color/blue"
                                                     app:layout_constraintBottom_toBottomOf="parent"
                                                     app:layout_constraintEnd_toEndOf="parent"
@@ -537,6 +541,8 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:id="@+id/grnAddHeader"
+                                        android:layout_marginStart="5dp"
+                                        android:layout_marginEnd="5dp"
                                         layout="@layout/grn_add_list_header"
                                         app:layout_constraintEnd_toEndOf="parent"
                                         app:layout_constraintStart_toStartOf="parent"
@@ -571,6 +577,7 @@
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_margin="10dp"
+                                        android:clickable="true"
                                         app:cardBackgroundColor="@color/blue"
                                         app:cardCornerRadius="5dp"
                                         app:layout_constraintBottom_toBottomOf="parent"
@@ -600,7 +607,7 @@
                                                 android:layout_width="wrap_content"
                                                 android:layout_height="wrap_content"
                                                 android:layout_gravity="center"
-                                                android:padding="10dp"
+                                                android:padding="5dp"
                                                 android:text="Imp All Line Items"
                                                 android:textColor="@color/white"
                                                 app:layout_constraintBottom_toBottomOf="parent"
@@ -619,6 +626,7 @@
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
                                         android:layout_margin="10dp"
+                                        android:clickable="true"
                                         app:cardCornerRadius="5dp"
                                         app:layout_constraintBottom_toBottomOf="parent"
                                         app:layout_constraintEnd_toEndOf="parent"
@@ -637,6 +645,7 @@
                                                 android:layout_width="wrap_content"
                                                 android:layout_height="wrap_content"
                                                 android:src="@drawable/ic_add_blue"
+                                                android:padding="5dp"
                                                 app:layout_constraintBottom_toBottomOf="parent"
                                                 app:layout_constraintEnd_toStartOf="@+id/tvNewLineItem"
                                                 app:layout_constraintStart_toStartOf="parent"
@@ -646,7 +655,7 @@
                                                 android:id="@+id/tvNewLineItem"
                                                 android:layout_width="wrap_content"
                                                 android:layout_height="wrap_content"
-                                                android:padding="10dp"
+                                                android:padding="5dp"
                                                 android:text="New Line Item"
                                                 android:textColor="@color/blue"
                                                 app:layout_constraintBottom_toBottomOf="parent"
@@ -681,6 +690,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="15dp"
+                                android:clickable="true"
                                 app:cardBackgroundColor="@color/add_btn_color"
                                 app:cardCornerRadius="5dp"
                                 app:layout_constraintBottom_toBottomOf="parent"
@@ -703,6 +713,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="15dp"
+                                android:clickable="true"
                                 app:cardBackgroundColor="@color/blue"
                                 app:cardCornerRadius="5dp"
                                 app:layout_constraintBottom_toBottomOf="parent"
@@ -725,6 +736,7 @@
                                 android:id="@+id/mcvSaveToDraft"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:clickable="true"
                                 android:layout_margin="15dp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -760,6 +772,21 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/clContainer2"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:visibility="gone"
+                        android:layout_margin="20dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/clContainer"
+                        app:layout_constraintBottom_toBottomOf="parent">
+
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -789,8 +816,8 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
+     <!--   </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

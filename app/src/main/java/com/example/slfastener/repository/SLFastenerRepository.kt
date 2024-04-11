@@ -45,7 +45,7 @@ class SLFastenerRepository {
         baseUrl: String,
         @Body
         getSuppliersPOsRequest: ArrayList<Int>
-    ) = RetrofitInstance.api(baseUrl).getPosLineItemsOnPoIds(bearerToken,getSuppliersPOsRequest)
+    ) = RetrofitInstance.api(baseUrl).getPosLineItemsOnPoIds("Bearer $bearerToken","application/json","PostmanRuntime/7.37.3",getSuppliersPOsRequest)
 
     suspend fun getFilteredGRN(
         @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,

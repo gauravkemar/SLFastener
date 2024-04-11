@@ -13,7 +13,6 @@ import com.example.slfastener.model.GetActiveSuppliersDDLResponse
 import com.example.slfastener.model.GetPOsAndLineItemsOnPOIdsResponse
 import com.example.slfastener.model.GetSuppliersPOsDDLResponse
 import com.example.slfastener.model.GetSuppliersPOsRequest
-import com.example.slfastener.model.grn.GrnMainListResponse
 import com.example.slfastener.model.grnmain.GetFilteredGRNRequest
 import com.example.slfastener.model.grnmain.GetFilteredGRNResponse
 import com.example.slfastener.model.login.LoginRequest
@@ -65,6 +64,8 @@ interface SLFastenerAPI {
     @POST(GET_POS_LINE_ITEMS_ON_POIDS)
     suspend fun getPosLineItemsOnPoIds(
         @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Header("Content-Type") contentType: String,
+        @Header("User-Agent") userAgent: String,
         @Body poIds: List<Int>
     ): Response<ArrayList<GetPOsAndLineItemsOnPOIdsResponse>>
 

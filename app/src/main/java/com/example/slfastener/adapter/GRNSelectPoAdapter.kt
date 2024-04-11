@@ -6,12 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
-import android.widget.EditText
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.slfastener.R
 import com.example.slfastener.model.GetSuppliersPOsDDLResponse
-import com.example.slfastener.model.grn.GrnMainAddListResponse
 
 class GRNSelectPoAdapter : RecyclerView.Adapter<GRNSelectPoAdapter.ViewHolder>() {
 

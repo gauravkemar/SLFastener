@@ -8,11 +8,11 @@
         android:layout_height="match_parent"
         android:background="@drawable/page_bg">
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    <!--    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/home_swipe_refresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
+-->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -147,6 +147,7 @@
                             android:layout_height="wrap_content"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toTopOf="@+id/rcList"
                             >
                             <com.google.android.material.card.MaterialCardView
                                 android:id="@+id/mcvGRNDraft"
@@ -175,7 +176,7 @@
                                         android:paddingTop="5dp"
                                         android:paddingEnd="10dp"
                                         android:paddingBottom="5dp"
-                                        android:text="2"
+                                        android:text="0"
                                         android:textColor="@color/white"
                                         android:textSize="15sp"
                                         android:textStyle="bold"
@@ -247,7 +248,7 @@
                                         android:paddingTop="5dp"
                                         android:paddingEnd="10dp"
                                         android:paddingBottom="5dp"
-                                        android:text="2"
+                                        android:text="0"
                                         android:textColor="@color/white"
                                         android:textSize="15sp"
                                         android:textStyle="bold"
@@ -281,7 +282,7 @@
                         <com.google.android.material.card.MaterialCardView
                             android:id="@+id/rcList"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="0dp"
                             android:layout_margin="10dp"
                             app:cardCornerRadius="10dp"
                             app:layout_constraintTop_toBottomOf="@+id/clAddDelete"
@@ -289,19 +290,24 @@
                             >
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
+                                android:layout_height="match_parent"
                                 >
                                 <include
-
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
                                     android:id="@+id/grnHeader"
-                                    layout="@layout/grn_main_list_header"/>
+                                    layout="@layout/grn_main_list_header"
+                                    app:layout_constraintVertical_weight="0.07"
+                                    app:layout_constraintBottom_toTopOf="@+id/rcGrnMain"/>
 
                                 <androidx.recyclerview.widget.RecyclerView
                                     android:id="@+id/rcGrnMain"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
+                                    android:layout_height="0dp"
                                     tools:listitem="@layout/grn_main_list_item"
                                     android:layout_margin="10dp"
+                                    app:layout_constraintVertical_weight="0.93"
                                     app:layout_constraintTop_toBottomOf="@+id/grnHeader"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
@@ -326,7 +332,8 @@
                             app:cardCornerRadius="10dp"
                             app:cardBackgroundColor="@color/blue"
                             app:layout_constraintTop_toBottomOf="@+id/rcList"
-                            app:layout_constraintEnd_toEndOf="parent">
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent">
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -371,7 +378,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+       <!-- </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

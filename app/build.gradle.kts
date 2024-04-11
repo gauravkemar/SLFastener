@@ -82,4 +82,5 @@ dependencies {
     implementation ("com.github.GrenderG:Toasty:1.5.2")
 
     implementation ("com.github.f0ris.sweetalert:library:1.6.2")
+    implementation ("com.github.mik3y:usb-serial-for-android:3.7.0")
 }

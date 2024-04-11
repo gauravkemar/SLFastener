@@ -31,10 +31,7 @@ object Constants {
     const val KEY_PORT = "port"
     const val HTTP_HEADER_AUTHORIZATION = "Authorization"
 
-
-
-
-    //const val BASE_URL = "http://103.240.90.141/Service/api/"
+    //const val BASE_URL = "http://103.240.90.141:80/Service/api/"
     const val BASE_URL = "http://192.168.1.46:5000/api/"
 
 

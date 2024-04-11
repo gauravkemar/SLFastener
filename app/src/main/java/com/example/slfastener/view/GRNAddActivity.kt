@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.DatePicker
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -23,30 +22,33 @@ import com.example.demorfidapp.helper.Resource
 import com.example.demorfidapp.helper.SessionManager
 import com.example.demorfidapp.repository.SLFastenerRepository
 import com.example.slfastener.R
+import com.example.slfastener.adapter.CreateBatchesSingleList
 import com.example.slfastener.adapter.GRNSelectPoAdapter
 import com.example.slfastener.adapter.GrnMainAddAdapter
 import com.example.slfastener.adapter.LineItemAdapter
 import com.example.slfastener.databinding.ActivityGrnaddBinding
+import com.example.slfastener.databinding.CreateBatchesDialogBinding
 import com.example.slfastener.databinding.SelectLineItemDialogBinding
-import com.example.slfastener.databinding.SelectSupplierDialogBinding
+import com.example.slfastener.databinding.SelectSupplierPoLineItemBinding
 import com.example.slfastener.helper.CustomArrayAdapter
+import com.example.slfastener.helper.UsbCommunicationManager
+import com.example.slfastener.model.BatchInfoListModel
 import com.example.slfastener.model.GetPOsAndLineItemsOnPOIdsResponse
 import com.example.slfastener.model.GetSuppliersPOsDDLResponse
-import com.example.slfastener.model.PoLineItem
 import com.example.slfastener.model.PoLineItemSelectionModel
-import com.example.slfastener.model.grn.GrnMainAddListResponse
 import com.example.slfastener.viewmodel.GRNTransactionViewModel
 import com.example.slfastener.viewmodel.GRNTransactionViewModelProviderFactory
 import es.dmoral.toasty.Toasty
 import java.util.Calendar
 
-class GRNAddActivity : AppCompatActivity() {
+class GRNAddActivity : AppCompatActivity(),CreateBatchesFragment.OnCancelListener {
     lateinit var binding: ActivityGrnaddBinding
     lateinit var spinnerItems: MutableList<String>
     private var selectedReasonSpinnerString: String? = ""
     private lateinit var viewModel: GRNTransactionViewModel
     private var grnMainItemAdapter: GrnMainAddAdapter? = null
     private var grnSelectPoAdapter: GRNSelectPoAdapter? = null
+    private var createBatchesMainRcAdapter: CreateBatchesSingleList? = null
     private var lineItemAdapter: LineItemAdapter? = null
     lateinit var grnMainResponse: ArrayList<GrnMainAddListResponse>
     lateinit var getSuppliersPOsDDLResponse: ArrayList<GetSuppliersPOsDDLResponse>
@@ -55,11 +57,11 @@ class GRNAddActivity : AppCompatActivity() {
     lateinit var selectedPoLineItem: ArrayList<PoLineItemSelectionModel>
     private lateinit var session: SessionManager
     private lateinit var progress: ProgressDialog
-    lateinit var selectPoBinding: SelectSupplierDialogBinding
+    lateinit var selectPoBinding: SelectSupplierPoLineItemBinding
     lateinit var supplierSpinnerArray: ArrayList<String>
     lateinit var selectedPoFilteredList: ArrayList<Int>
     val supplierMap = HashMap<String, String>()
-    var selectedSupplierCode:String=""
+    var selectedSupplierCode: String = ""
 
     private var supplierSpinnerAdapter: CustomArrayAdapter? = null
     private var isIntialSelectSupplier = true
@@ -69,51 +71,68 @@ class GRNAddActivity : AppCompatActivity() {
     lateinit var selectLineItemBinding: SelectLineItemDialogBinding
     var selectLineItemDialog: Dialog? = null
 
-    var selectedDate:String=""
-    var edInvoiceNo:String=""
-    var edGdpoNo:String=""
-    var receivedQty:String=""
+    lateinit var createBatchesDialogBinding: CreateBatchesDialogBinding
+    var createBatchedDialog: Dialog? = null
+    lateinit var createBatchesList: ArrayList<BatchInfoListModel>
+
+    private lateinit var createBatchesListMap: HashMap<String, ArrayList<BatchInfoListModel>>
+
+
+    var selectedDate: String = ""
+    var edInvoiceNo: String = ""
+    var edGdpoNo: String = ""
+    var receivedQty: String = ""
     private lateinit var userDetails: HashMap<String, Any?>
-    var token:String=""
+    var token: String = ""
+    private lateinit var usbCommunicationManager: UsbCommunicationManager
+
+    // Define a debounce period in milliseconds
+    private val DEBOUNCE_PERIOD = 1000L
+
+    // Variable to keep track of the last data update time
+    private var lastUpdateTime: Long = 0
+    private var previousData: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_grnadd)
         session = SessionManager(this)
-        selectPoBinding = SelectSupplierDialogBinding.inflate(getLayoutInflater());
+        selectPoBinding = SelectSupplierPoLineItemBinding.inflate(getLayoutInflater());
         selectLineItemBinding = SelectLineItemDialogBinding.inflate(getLayoutInflater());
+        createBatchesDialogBinding = CreateBatchesDialogBinding.inflate(getLayoutInflater());
         selectPoDialog = Dialog(this)
-        selectLineItemDialog= Dialog(this)
+        selectLineItemDialog = Dialog(this)
+        createBatchedDialog = Dialog(this)
         progress = ProgressDialog(this)
+        usbCommunicationManager = UsbCommunicationManager(this)
+
         progress.setMessage("Loading...")
         supplierSpinnerArray = ArrayList()
         selectedPoFilteredList = ArrayList()
         getSuppliersPOsDDLResponse = ArrayList()
+        createBatchesList = ArrayList()
+        createBatchesListMap = HashMap()
         poLineItem = ArrayList()
         selectedPoLineItem = ArrayList()
         getPOsAndLineItemsOnPOIdsResponse = ArrayList()
         userDetails = session.getUserDetails()
         token = userDetails["jwtToken"].toString()
 
-
-
-
         val SLFastenerRepository = SLFastenerRepository()
-        val viewModelProviderFactory = GRNTransactionViewModelProviderFactory(application, SLFastenerRepository)
-        viewModel = ViewModelProvider(this, viewModelProviderFactory)[GRNTransactionViewModel::class.java]
+        val viewModelProviderFactory =
+            GRNTransactionViewModelProviderFactory(application, SLFastenerRepository)
+        viewModel =
+            ViewModelProvider(this, viewModelProviderFactory)[GRNTransactionViewModel::class.java]
 
         getApplicationVersionDetails()
 
 
         grnMainResponse = ArrayList()
-        grnMainItemAdapter = GrnMainAddAdapter()
 
         binding.mcvAddGrn.setOnClickListener {
-            if(selectedPoFilteredList.size>0)
-            {
-                callSelectedPoLineItems(selectedPoFilteredList )
-            }
-            else{
+            if (selectedPoFilteredList.size > 0) {
+                callSelectedPoLineItems(selectedPoFilteredList)
+            } else {
                 Toasty.warning(
                     this@GRNAddActivity,
                     "Please Select Po from list!!",
@@ -166,6 +185,7 @@ class GRNAddActivity : AppCompatActivity() {
 
                     }
                 }
+
                 is Resource.Error -> {
                     hideProgressBar()
                     response.message?.let { errorMessage ->
@@ -175,6 +195,7 @@ class GRNAddActivity : AppCompatActivity() {
                         ).show()
                     }
                 }
+
                 is Resource.Loading -> {
                     showProgressBar()
                 }
@@ -187,14 +208,14 @@ class GRNAddActivity : AppCompatActivity() {
                     hideProgressBar()
                     response.data?.let { resultResponse ->
                         try {
-                            if(resultResponse.size>0)
-                            {
+                            if (resultResponse.size > 0) {
                                 getSuppliersPOsDDLResponse.addAll(resultResponse)
+                                binding.clSelectPo.visibility = View.VISIBLE
                                 selectePoRc(getSuppliersPOsDDLResponse)
-                            }
-                            else
-                            {
-                                Toast.makeText(this,"List is Empty!!",Toast.LENGTH_SHORT).show()
+
+                            } else {
+                                Toast.makeText(this, "List is Empty!!", Toast.LENGTH_SHORT).show()
+                                binding.clSelectPo.visibility = View.GONE
                             }
 
 
@@ -208,8 +229,10 @@ class GRNAddActivity : AppCompatActivity() {
 
                     }
                 }
+
                 is Resource.Error -> {
                     hideProgressBar()
+                    binding.clSelectPo.visibility = View.GONE
                     response.message?.let { errorMessage ->
                         Toasty.error(
                             this@GRNAddActivity,
@@ -217,6 +240,7 @@ class GRNAddActivity : AppCompatActivity() {
                         ).show()
                     }
                 }
+
                 is Resource.Loading -> {
                     showProgressBar()
                 }
@@ -233,38 +257,43 @@ class GRNAddActivity : AppCompatActivity() {
                     hideProgressBar()
                     response.data?.let { resultResponse ->
                         try {
-                            edInvoiceNo=binding.edInvoiceNumber.text.toString().trim()
-                            edGdpoNo=binding.edGdpo.text.toString().trim()
+                            edInvoiceNo = binding.edInvoiceNumber.text.toString().trim()
+                            edGdpoNo = binding.edGdpo.text.toString().trim()
 
 
-                            if(resultResponse.size>0)
-                            {
+                            if (resultResponse.size > 0) {
                                 getPOsAndLineItemsOnPOIdsResponse.addAll(resultResponse)
 
-                                for(r in resultResponse)
-                                {
+                                for (r in resultResponse) {
 
-                                    for(e in r.poLineItems)
-                                    {
-                                        poLineItem.add(PoLineItemSelectionModel(
-                                            e.itemCode,e.itemDescription,
-                                            e.itemName,e.lineNumber,
-                                            e.poId,e.poLineItemId,
-                                            e.poQuantity,e.poUnitPrice,
-                                            e.posapLineItemNumber,e.pouom,
-                                            r.poNumber,edGdpoNo,"",receivedQty))
+                                    for (e in r.poLineItems) {
+                                        poLineItem.add(
+                                            PoLineItemSelectionModel(
+                                                e.itemCode,
+                                                e.itemDescription,
+                                                e.itemName,
+                                                e.lineNumber,
+                                                e.poId,
+                                                e.poLineItemId,
+                                                e.poQuantity,
+                                                e.poUnitPrice,
+                                                e.posapLineItemNumber,
+                                                e.pouom,
+                                                r.poNumber,
+                                                edGdpoNo,
+                                                "",
+                                                receivedQty,
+                                                false,
+                                                e.materialType
+                                            )
+                                        )
                                     }
 
                                 }
 
-                                binding.mcvNewLineItem.setOnClickListener {
-                                    setSelectLineItemDialog(poLineItem)
-                                }
 
-                            }
-                            else
-                            {
-                                Toast.makeText(this,"List is Empty!!",Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(this, "List is Empty!!", Toast.LENGTH_SHORT).show()
                             }
 
 
@@ -278,6 +307,7 @@ class GRNAddActivity : AppCompatActivity() {
 
                     }
                 }
+
                 is Resource.Error -> {
                     hideProgressBar()
                     response.message?.let { errorMessage ->
@@ -287,6 +317,7 @@ class GRNAddActivity : AppCompatActivity() {
                         ).show()
                     }
                 }
+
                 is Resource.Loading -> {
                     showProgressBar()
                 }
@@ -296,14 +327,21 @@ class GRNAddActivity : AppCompatActivity() {
             showDatePickerDialog()
         }
     }
-
+    override fun onCancel() {
+        // Hide the current fragment
+        supportFragmentManager.popBackStack()
+        // You can also handle showing the previous view here if needed
+        binding.clContainer2.visibility = View.GONE
+        binding.clContainer.visibility = View.VISIBLE
+    }
     private fun showDatePickerDialog() {
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH)
         val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
 
-        val datePickerDialog = DatePickerDialog(this,
+        val datePickerDialog = DatePickerDialog(
+            this,
             DatePickerDialog.OnDateSetListener { _: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDay: Int ->
                 // Do something with the selected date
                 val selectedDateCal = Calendar.getInstance()
@@ -311,17 +349,21 @@ class GRNAddActivity : AppCompatActivity() {
                 // You can handle the selected date here, for example, set it to a TextView
                 binding.tvDate.text = "$selectedDay/${selectedMonth + 1}/$selectedYear"
                 selectedDate = "$selectedDay/${selectedMonth + 1}/$selectedYear"
-            }, year, month, dayOfMonth)
+            }, year, month, dayOfMonth
+        )
 
         // Set maximum date
-        datePickerDialog.datePicker.maxDate = System.currentTimeMillis() // Optional: Set maximum date to current date
+        datePickerDialog.datePicker.maxDate =
+            System.currentTimeMillis() // Optional: Set maximum date to current date
         datePickerDialog.show()
     }
+
     private fun setSupplierSpinner() {
 
         //supplierSpinnerAdapter = ArrayAdapter<String>(this, R.layout.spinner_layout, supplierSpinnerArray)
 
-        supplierSpinnerAdapter = CustomArrayAdapter(this, android.R.layout.simple_spinner_item, supplierSpinnerArray)
+        supplierSpinnerAdapter =
+            CustomArrayAdapter(this, android.R.layout.simple_spinner_item, supplierSpinnerArray)
         supplierSpinnerAdapter!!.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
 
@@ -363,15 +405,17 @@ class GRNAddActivity : AppCompatActivity() {
         grnSelectPoAdapter = GRNSelectPoAdapter()
         grnSelectPoAdapter?.setGrnMainList(productList, this@GRNAddActivity)
         selectPoBinding.rcPo.adapter = grnSelectPoAdapter
-        selectPoBinding.rcPo.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
+        selectPoBinding.rcPo.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         grnSelectPoAdapter!!.setOnItemCheckClickListener {
             //submitInvoiceCheckedList.add(product);
             //Log.d("thisChecked","checked "+submitInvoiceCheckedList.toString());
-             var selectedPoList: ArrayList<Int>
+            var selectedPoList: ArrayList<Int>
             selectedPoList = ArrayList()
             for (poCode in selectedPoFilteredList) {
                 selectedPoList.add(poCode)
-                Log.e("onitemclick",poCode.toString())
+                Log.e("onitemclick", poCode.toString())
             }
             if (!selectedPoList.contains(it.value)) {
                 selectedPoFilteredList.add(it.value)
@@ -382,25 +426,26 @@ class GRNAddActivity : AppCompatActivity() {
             val iterator: MutableIterator<Int> = selectedPoFilteredList.iterator()
             while (iterator.hasNext()) {
                 val item: Int = iterator.next()
-                if (item==it.value) {
+                if (item == it.value) {
                     iterator.remove()
                 }
             }
-            Log.d("selectedPoFilteredListghj",selectedPoFilteredList.toString())
+            Log.d("selectedPoFilteredListghj", selectedPoFilteredList.toString())
         }
 
         selectPoBinding.btnSubmit.setOnClickListener {
-            if(selectedPoFilteredList.size>0)
-            {
-                callSelectedPoLineItems(selectedPoFilteredList )
-            }
-            else{
+            if (selectedPoFilteredList.size > 0) {
+                callSelectedPoLineItems(selectedPoFilteredList)
+            } else {
                 Toasty.warning(
                     this@GRNAddActivity,
                     "Please Select Po from list!!",
                     Toasty.LENGTH_SHORT
                 ).show()
             }
+        }
+        binding.mcvNewLineItem.setOnClickListener {
+            setSelectLineItemDialog()
 
         }
 
@@ -408,10 +453,8 @@ class GRNAddActivity : AppCompatActivity() {
 
     private fun callParentLocationApi(selectedKey: String) {
         try {
-            viewModel.getSuppliersPosDDLL(token,Constants.BASE_URL,selectedKey)
-        }
-        catch (e:Exception)
-        {
+            viewModel.getSuppliersPosDDLL(token, Constants.BASE_URL, selectedKey)
+        } catch (e: Exception) {
             Toasty.error(
                 this,
                 e.message.toString(),
@@ -423,10 +466,8 @@ class GRNAddActivity : AppCompatActivity() {
     private fun callSelectedPoLineItems(poCode: ArrayList<Int>) {
         try {
 
-            viewModel.getPosLineItemsOnPoIds(token,Constants.BASE_URL,poCode )
-        }
-        catch (e:Exception)
-        {
+            viewModel.getPosLineItemsOnPoIds(token, Constants.BASE_URL, poCode)
+        } catch (e: Exception) {
             Toasty.error(
                 this,
                 e.message.toString(),
@@ -442,13 +483,15 @@ class GRNAddActivity : AppCompatActivity() {
     private fun hideProgressBar() {
         progress.cancel()
     }
+
     override fun onBackPressed() {
         super.onBackPressed()
         finish()
     }
+
     private fun getApplicationVersionDetails() {
         try {
-            viewModel.getActiveSuppliersDDL(token,Constants.BASE_URL)
+            viewModel.getActiveSuppliersDDL(token, Constants.BASE_URL)
         } catch (e: Exception) {
             Toasty.error(
                 this,
@@ -461,12 +504,35 @@ class GRNAddActivity : AppCompatActivity() {
     private fun setPoLineItemList(poLineItemSelected: ArrayList<PoLineItemSelectionModel>) {
 
         grnMainItemAdapter = GrnMainAddAdapter()
-        grnMainItemAdapter?.setGrnMainList(poLineItemSelected, this@GRNAddActivity)
+        grnMainItemAdapter?.updateList(poLineItemSelected, this@GRNAddActivity)
         binding.rcGrnAdd!!.adapter = grnMainItemAdapter
         binding.rcGrnAdd.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-    }
+        grnMainItemAdapter?.setOnItemCheckClickListener {
+            //setCreateBatchesDialog(it)
 
+            binding.clContainer.visibility=View.GONE
+            binding.clContainer2.visibility=View.VISIBLE
+            transacton(it)
+        }
+    }
+    private fun transacton(poLineItemSelectionModel: PoLineItemSelectionModel)
+    {
+   /*     val fragment = CreateBatchesFragment()
+        fragment.setPoModel(poLineItemSelectionModel)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.clContainer2, fragment)
+            .commit()
+*/
+        val fragment = CreateBatchesFragment()
+        fragment.setPoModel(poLineItemSelectionModel)
+        // Set the cancel listener for the fragment
+        fragment.callback = this
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.clContainer2, fragment)
+            .addToBackStack(null) // Optional: Add fragment to back stack
+            .commit()
+    }
     private fun setSelectSupplierDialog() {
         selectPoDialog!!.setContentView(selectPoBinding.root)
         selectPoDialog!!.getWindow()?.setBackgroundDrawable(
@@ -480,6 +546,9 @@ class GRNAddActivity : AppCompatActivity() {
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
         selectPoDialog!!.setCancelable(true)
+        selectPoBinding.btnSubmit.setOnClickListener {
+            selectPoDialog!!.dismiss()
+        }
 
 
         selectPoBinding.closeDialogueTopButton.setOnClickListener {
@@ -488,7 +557,7 @@ class GRNAddActivity : AppCompatActivity() {
         selectPoDialog!!.show()
     }
 
-    private fun setSelectLineItemDialog(poLineItem: ArrayList<PoLineItemSelectionModel>) {
+    private fun setSelectLineItemDialog() {
         selectLineItemDialog!!.setContentView(selectLineItemBinding.root)
         selectLineItemDialog!!.getWindow()?.setBackgroundDrawable(
             AppCompatResources.getDrawable(
@@ -502,47 +571,105 @@ class GRNAddActivity : AppCompatActivity() {
         )
         selectLineItemDialog!!.setCancelable(true)
 
-        setLineItemRc(poLineItem)
 
+        setLineItemRc()
         selectLineItemBinding.closeDialogueTopButton.setOnClickListener {
+            selectLineItemDialog!!.dismiss()
+        }
+
+        selectLineItemBinding.mcvSubmit.setOnClickListener {
             selectLineItemDialog!!.dismiss()
         }
         selectLineItemDialog!!.show()
     }
 
+    private fun setLineItemRc() {
 
-
-    private fun setLineItemRc (lineItems: ArrayList<PoLineItemSelectionModel>) {
-
-        lineItemAdapter = LineItemAdapter()
-        lineItemAdapter?.setGrnMainList(lineItems, this@GRNAddActivity)
-        selectLineItemBinding.rcLineItem .adapter = lineItemAdapter
-        selectLineItemBinding.rcLineItem .layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        lineItemAdapter!!.setOnItemCheckClickListener {
-            //submitInvoiceCheckedList.add(product);
-            //Log.d("thisChecked","checked "+submitInvoiceCheckedList.toString());
-            var selectedPoList: ArrayList<String>
-            selectedPoList = ArrayList()
-            for (poCode in selectedPoLineItem) {
-                selectedPoList.add(poCode.itemCode)
-                Log.e("onitemclick",poCode.toString())
-            }
-            if (!selectedPoList.contains(it.itemCode)) {
-                selectedPoLineItem.add(it)
-            }
-            setPoLineItemList(selectedPoLineItem)
-
-        }
-        lineItemAdapter!!.setOnItemUncheckClickListener {
-            val iterator: MutableIterator<PoLineItemSelectionModel> = selectedPoLineItem.iterator()
-            while (iterator.hasNext()) {
-                val item: PoLineItemSelectionModel = iterator.next()
-                if (item.itemCode == it.itemCode) {
-                    iterator.remove()
+        runOnUiThread {
+            lineItemAdapter = LineItemAdapter()
+            lineItemAdapter?.updateList(poLineItem, this@GRNAddActivity)
+            selectLineItemBinding.rcLineItem.adapter = lineItemAdapter
+            selectLineItemBinding.rcLineItem.layoutManager =
+                LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+            lineItemAdapter!!.setOnItemCheckClickListener {
+                val selectedPoList = HashMap<String, String>()
+                for (poCode in selectedPoLineItem) {
+                    selectedPoList[poCode.itemCode] = poCode.poNumber
+                    Log.e("onitemclick", selectedPoList.toString())
                 }
+                val itemCodeMatch =
+                    selectedPoList.containsKey(it.itemCode) && selectedPoList[it.itemCode] == it.poNumber
+                if (!itemCodeMatch) {
+                    selectedPoLineItem.add(it)
+                }
+                /*if (!selectedPoList .contains(it.itemCode) && ) {
+                    selectedPoLineItem.add(it)
+                }*/
+
+                for (selectedPo in selectedPoLineItem) {
+                    val itemToUpdate =
+                        poLineItem.find { it.itemCode == selectedPo.itemCode && it.poNumber == selectedPo.poNumber }
+                    itemToUpdate?.isSelected = true
+                    itemToUpdate?.let {
+                        val index = poLineItem.indexOf(it)
+                        if (index != -1) {
+                            poLineItem[index] = it
+                        }
+                    }
+                }
+                setPoLineItemList(selectedPoLineItem)
+
+
             }
-            Log.d("selectedPoFilteredListghj",selectedPoLineItem.toString())
+            lineItemAdapter!!.setOnItemUncheckClickListener {
+                /*val iterator: MutableIterator<PoLineItemSelectionModel> =
+                    selectedPoLineItem.iterator()
+                while (iterator.hasNext()) {
+                    val item: PoLineItemSelectionModel = iterator.next()
+                    val itemToUpdate =
+                        poLineItem.find { it.itemCode == item.itemCode && it.poNumber == item.poNumber }
+                    itemToUpdate?.isSelected = false
+                    itemToUpdate?.let {
+                        val index = poLineItem.indexOf(it)
+                        if (index != -1) {
+                            poLineItem[index] = it
+                        }
+                    }
+                    if (item.itemCode == it.itemCode && item.poNumber == it.poNumber) {
+                        iterator.remove()
+                    }
+
+                }
+                setPoLineItemList(selectedPoLineItem)*/
+
+                val iterator = selectedPoLineItem.iterator()
+                while (iterator.hasNext()) {
+                    val item = iterator.next()
+                    val foundItem =
+                        poLineItem.find { it.itemCode == item.itemCode && it.poNumber == item.poNumber }
+                    if (foundItem != null) {
+                        foundItem.isSelected = false
+                        iterator.remove() // Remove only the first found item
+                        break // Break the loop after removing the item
+                    }
+                }
+
+                // Update poLineItem list
+                poLineItem.forEachIndexed { index, item ->
+                    if (selectedPoLineItem.any { it.itemCode == item.itemCode && it.poNumber == item.poNumber }) {
+                        item.isSelected = true
+                        poLineItem[index] = item // Update the item in the list
+                    }
+                }
+
+                setPoLineItemList(selectedPoLineItem)
+
+
+                Log.d("selectedPoFilteredListghj", selectedPoLineItem.toString())
+            }
+
         }
+
 
     }
 
@@ -563,7 +690,461 @@ class GRNAddActivity : AppCompatActivity() {
         val dialog = builder.create()
         dialog.show()
     }
-    private fun logout(){
+
+    ////Batches activity
+    private fun setCreateBatchesDialog(poModel: PoLineItemSelectionModel) {
+        createBatchedDialog!!.setContentView(createBatchesDialogBinding.root)
+        createBatchedDialog!!.getWindow()?.setBackgroundDrawable(
+            AppCompatResources.getDrawable(
+                this@GRNAddActivity,
+                android.R.color.transparent
+            )
+        )
+        createBatchedDialog!!.getWindow()?.setLayout(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.MATCH_PARENT
+        )
+
+        //createBatchedDialog!!.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+
+
+        createBatchedDialog!!.setCancelable(true)
+
+
+        setBatchesRc()
+        setInfoValues(poModel)
+        createBatchesDialogBinding.closeDialogueTopButton.setOnClickListener {
+            createBatchedDialog!!.dismiss()
+        }
+        createBatchesDialogBinding.mcvClearBatchBarcode.setOnClickListener {
+            createBatchesDialogBinding.edBatchNo.setText("")
+        }
+
+
+
+        createBatchesDialogBinding.mcvAddBatches.setOnClickListener {
+
+            addNewBatch(poModel)
+
+            //createBatchesList.add(newItem)
+            //adapter.notifyItemInserted(itemList.size - 1)
+        }
+
+
+
+
+        createBatchedDialog!!.show()
+    }
+
+    private fun setInfoValues(poModel: PoLineItemSelectionModel) {
+        createBatchesDialogBinding.tvPoNoValue.setText(poModel.poNumber)
+        createBatchesDialogBinding.tvGdPoNoValue.setText(poModel.GDPONumber)
+        createBatchesDialogBinding.tvLineItemDescValue.setText(poModel.itemCode)
+        createBatchesDialogBinding.tvItemDescValue.setText(poModel.itemDescription)
+        createBatchesDialogBinding.tvPuomValue.setText(poModel.pouom)
+
+        createBatchesDialogBinding.tvPoQtyValue.setText(poModel.poQuantity.toString())
+        createBatchesDialogBinding.tvOpenQtyValue.setText(poModel.poQuantity.toString())
+
+
+        createBatchesDialogBinding.tvQtyValue.setText(poModel.ReceivedQty)
+        createBatchesDialogBinding.tvEpiryDtValue.setText(poModel.ExpiryDate)
+        createBatchesDialogBinding.tvBatchNoValue.setText("")
+        createBatchesDialogBinding.tvBarcodeNoInfoValue.setText("")
+    }
+
+    /*    private fun addNewBatch(poModel: PoLineItemSelectionModel) {
+            var edBatchNo = createBatchesDialogBinding.edBatchNo.text.toString().trim()
+
+            if (edBatchNo.isNotEmpty()) {
+                // Check if the batch barcode number already exists in the map
+                if (createBatchesListMap.containsKey(edBatchNo)) {
+                    // Add the new item to the existing batch
+                    createBatchesListMap[edBatchNo]?.add(createBatchInfo(poModel, edBatchNo))
+                } else {
+                    // Create a new ArrayList and add the new item to it
+                    val newBatchList = arrayListOf(createBatchInfo(poModel, edBatchNo))
+                    createBatchesListMap[edBatchNo] = newBatchList
+                }
+            } else {
+                Toasty.warning(
+                    this@GRNAddActivity,
+                    "Please Enter Batch No.!!",
+                    Toasty.LENGTH_SHORT
+                ).show()
+            }
+
+            // Add the new item to createBatchesList (if required)
+            createBatchesList.add(createBatchInfo(poModel, edBatchNo))
+            Log.e("onitemclickFromAddBatch", createBatchesList.toString())
+            createBatchesMainRcAdapter?.notifyItemInserted(createBatchesList.size - 1)
+            createBatchesMainRcAdapter?.updateList(createBatchesList, this)
+
+        }*/
+    private fun addNewBatch(poModel: PoLineItemSelectionModel) {
+        var edBatchNo = createBatchesDialogBinding.edBatchNo.text.toString().trim()
+
+        if (edBatchNo.isNotEmpty()) {
+            // Check if the batch barcode number already exists in the map
+            if (createBatchesListMap.containsKey(edBatchNo)) {
+                Toasty.warning(
+                    this@GRNAddActivity,
+                    "Batch No. $edBatchNo already exists!",
+                    Toasty.LENGTH_SHORT
+                ).show()
+            } else {
+                // Create a new ArrayList and add the new item to it
+                val newBatchList = arrayListOf(createBatchInfo(poModel, edBatchNo))
+                createBatchesListMap[edBatchNo] = newBatchList
+
+                // Add the new item to createBatchesList
+                createBatchesList.add(createBatchInfo(poModel, edBatchNo))
+                //createBatchesMainRcAdapter?.updateList(createBatchesList, this)
+                createBatchesMainRcAdapter?.notifyItemInserted(createBatchesList.size - 1)
+                for (i in 0 until createBatchesList.size - 1) {
+                    createBatchesMainRcAdapter?.notifyItemChanged(i)
+                }
+
+            }
+        } else {
+            Toasty.warning(
+                this@GRNAddActivity,
+                "Please Enter Batch No.!!",
+                Toasty.LENGTH_SHORT
+            ).show()
+        }
+
+    }
+
+    private fun createBatchInfo(
+        poModel: PoLineItemSelectionModel,
+        edBatchNo: String
+    ): BatchInfoListModel {
+        // Find the latest number associated with the batch prefix
+
+
+        val latestNumber = createBatchesList.filter { it.generatedBarcodeNo.startsWith(edBatchNo) }
+            .mapNotNull { it.generatedBarcodeNo.removePrefix(edBatchNo).toIntOrNull() }
+            .maxOrNull() ?: 0
+
+        // Increment the number part for the new entry
+        val generatedBarcodeNo = "$edBatchNo-${latestNumber + 1}"
+
+        // Create and return the BatchInfoListModel
+        return BatchInfoListModel(
+            poModel.ExpiryDate,
+            poModel.GDPONumber,
+            "0.000",
+            0,
+            generatedBarcodeNo,
+            poModel.itemCode,
+            poModel.itemDescription,
+            poModel.itemName,
+            poModel.lineNumber,
+            poModel.materialType,
+            poModel.poId,
+            poModel.poLineItemId,
+            poModel.poNumber,
+            poModel.poQuantity,
+            poModel.poUnitPrice,
+            poModel.posapLineItemNumber,
+            poModel.pouom,
+            edBatchNo,false
+        )
+
+    }
+
+    private fun addNewExistingBatch(poModel: BatchInfoListModel) {
+        val existingBatch =
+            createBatchesList.find { it.generatedBarcodeNo == poModel.generatedBarcodeNo }
+        if (existingBatch != null) {
+            existingBatch.apply {
+                ReceivedQty = poModel.ReceivedQty
+                ExpiryDate = poModel.ExpiryDate
+                GDPONumber = poModel.GDPONumber
+                itemCode = poModel.itemCode
+                itemDescription = poModel.itemDescription
+                itemName = poModel.itemName
+                lineNumber = poModel.lineNumber
+                materialType = poModel.materialType
+                poId = poModel.poId
+                poLineItemId = poModel.poLineItemId
+                poNumber = poModel.poNumber
+                poQuantity = poModel.poQuantity
+                poUnitPrice = poModel.poUnitPrice
+                posapLineItemNumber = poModel.posapLineItemNumber
+                pouom = poModel.pouom
+                batchBarcodeNo = poModel.batchBarcodeNo
+            }
+
+
+        }
+
+
+        // Check if the batch barcode number already exists in the map
+        if (createBatchesListMap.containsKey(poModel.batchBarcodeNo)) {
+            // Update the existing item in the list with the changes from poModel
+            createBatchesListMap[poModel.batchBarcodeNo]?.let { batchList ->
+                val existingBatch =
+                    batchList.find { it.generatedBarcodeNo == poModel.generatedBarcodeNo }
+                existingBatch?.apply {
+                    ReceivedQty = poModel.ReceivedQty
+                    ExpiryDate = poModel.ExpiryDate
+                    GDPONumber = poModel.GDPONumber
+                    itemCode = poModel.itemCode
+                    itemDescription = poModel.itemDescription
+                    itemName = poModel.itemName
+                    lineNumber = poModel.lineNumber
+                    materialType = poModel.materialType
+                    poId = poModel.poId
+                    poLineItemId = poModel.poLineItemId
+                    poNumber = poModel.poNumber
+                    poQuantity = poModel.poQuantity
+                    poUnitPrice = poModel.poUnitPrice
+                    posapLineItemNumber = poModel.posapLineItemNumber
+                    pouom = poModel.pouom
+                    batchBarcodeNo = poModel.batchBarcodeNo
+                }
+
+            }
+        }
+        if (createBatchesListMap.containsKey(poModel.batchBarcodeNo)) {
+            // Add the new item to the existing batch
+            createBatchesListMap[poModel.batchBarcodeNo]?.add(
+                createNewExisitingBatchInfo(
+                    poModel
+                )
+            )
+        } else {
+            // Create a new ArrayList and add the new item to it
+            val newBatchList =
+                arrayListOf(createNewExisitingBatchInfo(poModel))
+            createBatchesListMap[poModel.batchBarcodeNo] = newBatchList
+        }
+        createBatchesList.add(createNewExisitingBatchInfo(poModel))
+        Log.e("AfterChange", createBatchesListMap.toString())
+        Log.e("AfterChange", createBatchesList.toString())
+        //Log.e("onitemclickFromAddNewExisitngBatch", createBatchesList.toString())
+        // Notify adapter about the insertion
+       // createBatchesMainRcAdapter?.updateList(createBatchesList, this)
+        createBatchesMainRcAdapter?.notifyItemInserted(createBatchesList.size - 1)
+
+        for (i in 0 until createBatchesList.size - 1) {
+            createBatchesMainRcAdapter?.notifyItemChanged(i)
+        }
+
+
+    }
+    private fun updateBatches(poModel: BatchInfoListModel)
+    {
+        // Update or add the new item to createBatchesList
+        val existingBatch =
+            createBatchesList.find { it.generatedBarcodeNo == poModel.generatedBarcodeNo }
+        if (existingBatch != null) {
+            existingBatch.apply {
+                ReceivedQty = poModel.ReceivedQty
+                ExpiryDate = poModel.ExpiryDate
+                GDPONumber = poModel.GDPONumber
+                itemCode = poModel.itemCode
+                itemDescription = poModel.itemDescription
+                itemName = poModel.itemName
+                lineNumber = poModel.lineNumber
+                materialType = poModel.materialType
+                poId = poModel.poId
+                poLineItemId = poModel.poLineItemId
+                poNumber = poModel.poNumber
+                poQuantity = poModel.poQuantity
+                poUnitPrice = poModel.poUnitPrice
+                posapLineItemNumber = poModel.posapLineItemNumber
+                pouom = poModel.pouom
+                batchBarcodeNo = poModel.batchBarcodeNo
+            }
+
+
+        }
+        Log.e("AfterChange", createBatchesList.toString())
+
+        // Check if the batch barcode number already exists in the map
+        if (createBatchesListMap.containsKey(poModel.batchBarcodeNo)) {
+            // Update the existing item in the list with the changes from poModel
+            createBatchesListMap[poModel.batchBarcodeNo]?.let { batchList ->
+                val existingBatch =
+                    batchList.find { it.generatedBarcodeNo == poModel.generatedBarcodeNo }
+                existingBatch?.apply {
+                    ReceivedQty = poModel.ReceivedQty
+                    ExpiryDate = poModel.ExpiryDate
+                    GDPONumber = poModel.GDPONumber
+                    itemCode = poModel.itemCode
+                    itemDescription = poModel.itemDescription
+                    itemName = poModel.itemName
+                    lineNumber = poModel.lineNumber
+                    materialType = poModel.materialType
+                    poId = poModel.poId
+                    poLineItemId = poModel.poLineItemId
+                    poNumber = poModel.poNumber
+                    poQuantity = poModel.poQuantity
+                    poUnitPrice = poModel.poUnitPrice
+                    posapLineItemNumber = poModel.posapLineItemNumber
+                    pouom = poModel.pouom
+                    batchBarcodeNo = poModel.batchBarcodeNo
+                }
+
+            }
+        }
+     /*   createBatchesMainRcAdapter?.updateList(createBatchesList, this)
+        for (i in 0 until createBatchesList.size - 1) {
+            createBatchesMainRcAdapter?.notifyItemChanged(i)
+        }*/
+
+    }
+
+    private fun createNewExisitingBatchInfo(
+        poModel: BatchInfoListModel,
+    ): BatchInfoListModel {
+
+        /*   val latestNumber = poModel.generatedBarcodeNo.removePrefix("${poModel.batchBarcodeNo}-")
+               .toIntOrNull() ?: 0
+   */
+        val latestNumber = createBatchesList
+            .filter { it.batchBarcodeNo == poModel.batchBarcodeNo }
+            .flatMap {
+                it.generatedBarcodeNo
+                    .removePrefix("${poModel.batchBarcodeNo}-")
+                    .split("-")
+                    .lastOrNull()
+                    ?.toIntOrNull()
+                    ?.let { listOf(it) }
+                    ?: emptyList()
+            }
+            .maxOrNull() ?: 0
+
+        val generatedBarcodeNo = "${poModel.batchBarcodeNo}-${latestNumber + 1}"
+
+        // Create and return the BatchInfoListModel
+        return BatchInfoListModel(
+            poModel.ExpiryDate,
+            poModel.GDPONumber,
+            "0.000",
+            0,
+            generatedBarcodeNo,
+            poModel.itemCode,
+            poModel.itemDescription,
+            poModel.itemName,
+            poModel.lineNumber,
+            poModel.materialType,
+            poModel.poId,
+            poModel.poLineItemId,
+            poModel.poNumber,
+            poModel.poQuantity,
+            poModel.poUnitPrice,
+            poModel.posapLineItemNumber,
+            poModel.pouom,
+            poModel.batchBarcodeNo,
+            false
+        )
+
+    }
+
+
+    private fun deleteExistingBatch(poModel: BatchInfoListModel) {
+
+        val batchBarcodeNo = poModel.batchBarcodeNo
+        /*if (createBatchesListMap.containsKey(batchBarcodeNo)) {
+            val batchList = createBatchesListMap[batchBarcodeNo]
+            batchList?.let {
+                // Find and remove the specific BatchInfoListModel object from the list
+                val iterator = it.iterator()
+                while (iterator.hasNext()) {
+                    val batch = iterator.next()
+                    if (batch.generatedBarcodeNo == poModel.generatedBarcodeNo) {
+                        iterator.remove()
+                        // If the list becomes empty after removal, remove the entry from the map
+                        if (it.isEmpty()) {
+                            createBatchesListMap.remove(batchBarcodeNo)
+                        }
+                        // Exit loop after removal
+                        break
+                    }
+                }
+            }
+        }*/
+
+        if (createBatchesListMap.containsKey(batchBarcodeNo)) {
+            val batchList = createBatchesListMap[batchBarcodeNo]
+            batchList?.let {
+                val iterator = it.iterator()
+                while (iterator.hasNext()) {
+                    val batch = iterator.next()
+                    if (batch.generatedBarcodeNo == poModel.generatedBarcodeNo) {
+                        iterator.remove()
+                        break
+                    }
+                }
+                // If the list becomes empty after removal, no need to remove the key
+            }
+        }
+
+        for (r in createBatchesList) {
+            if (r.generatedBarcodeNo == batchBarcodeNo) {
+                createBatchesList.remove(poModel)
+            }
+        }
+        Log.e("onitemclickFromDeleteBatch", createBatchesList.toString())
+        // Notify adapter about the removal
+
+        for (i in 0 until createBatchesList.size - 1) {
+            createBatchesMainRcAdapter?.notifyItemChanged(i)
+        }
+
+
+    }
+
+
+    private fun setBatchesRc() {
+
+        createBatchesMainRcAdapter = CreateBatchesSingleList()
+        createBatchesMainRcAdapter?.updateList(createBatchesList, this@GRNAddActivity)
+        createBatchesDialogBinding.rcBatchs.adapter = createBatchesMainRcAdapter
+        createBatchesDialogBinding.rcBatchs.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
+        createBatchesMainRcAdapter?.setOnItemAddClickListener {
+            addNewExistingBatch(it)
+            Log.e("ONITEMCLICKExisting", it.toString())
+        }
+        createBatchesMainRcAdapter?.setOnItemUpdatelickListener {
+            updateBatches(it)
+        }
+
+        createBatchesMainRcAdapter?.setOnItemDeleteClickListener {
+            deleteExistingBatch(it)
+        }
+
+        usbCommunicationManager.receivedData.observe(this) { data ->
+            if (data != null) {
+                createBatchesMainRcAdapter?.updateWeightValue(data)
+            }
+            print("weightfromgrnadd" + data)
+        }
+        usbCommunicationManager.receivedData.observe(this) { data ->
+            val currentTime = System.currentTimeMillis()
+            // Check if the time elapsed since the last update is greater than the debounce period
+            if (currentTime - lastUpdateTime >= DEBOUNCE_PERIOD) {
+                lastUpdateTime = currentTime
+                // Check if the current data is different from the previous one
+                if (data != null && data != previousData) {
+                    // Update the previous data value
+                    previousData = data
+                    createBatchesMainRcAdapter?.updateWeightValue(data)
+                }
+                print("weightfromgrnadd: $data")
+            }
+        }
+
+    }
+
+
+    private fun logout() {
         session.logoutUser()
         startActivity(Intent(this@GRNAddActivity, LoginActivity::class.java))
         finish()
@@ -571,15 +1152,93 @@ class GRNAddActivity : AppCompatActivity() {
 }
 
 
+/*    private fun addNewExistingBatch(poModel: BatchInfoListModel) {
+         // Create a BatchInfoListModel with receivedQty as ""
+         val defaultArrayList = BatchInfoListModel(
+             poModel.ExpiryDate,
+             poModel.GDPONumber,
+             "",
+             0,
+             "",
+             poModel.itemCode,
+             poModel.itemDescription,
+             poModel.itemName,
+             poModel.lineNumber,
+             poModel.materialType,
+             poModel.poId,
+             poModel.poLineItemId,
+             poModel.poNumber,
+             poModel.poQuantity,
+             poModel.poUnitPrice,
+             poModel.posapLineItemNumber,
+             poModel.pouom,
+             poModel.batchBarcodeNo
+         )
+
+         // Update or add the new item to createBatchesList
+         val existingBatch = createBatchesList.find { it.generatedBarcodeNo == poModel.generatedBarcodeNo }
+         if (existingBatch != null) {
+             existingBatch.apply {
+                 ExpiryDate = poModel.ExpiryDate
+                 GDPONumber = poModel.GDPONumber
+                 itemCode = poModel.itemCode
+                 itemDescription = poModel.itemDescription
+                 itemName = poModel.itemName
+                 lineNumber = poModel.lineNumber
+                 materialType = poModel.materialType
+                 poId = poModel.poId
+                 poLineItemId = poModel.poLineItemId
+                 poNumber = poModel.poNumber
+                 poQuantity = poModel.poQuantity
+                 poUnitPrice = poModel.poUnitPrice
+                 posapLineItemNumber = poModel.posapLineItemNumber
+                 pouom = poModel.pouom
+                 batchBarcodeNo = poModel.batchBarcodeNo
+             }
+         }
+
+         // Check if the batch barcode number already exists in the map
+         if (createBatchesListMap.containsKey(poModel.batchBarcodeNo)) {
+             // Update the existing item in the list with the changes from poModel
+             createBatchesListMap[poModel.batchBarcodeNo]?.let { batchList ->
+                 val existingBatch =
+                     batchList.find { it.generatedBarcodeNo == poModel.generatedBarcodeNo }
+                 existingBatch?.apply {
+                     ExpiryDate = poModel.ExpiryDate
+                     GDPONumber = poModel.GDPONumber
+                     itemCode = poModel.itemCode
+                     itemDescription = poModel.itemDescription
+                     itemName = poModel.itemName
+                     lineNumber = poModel.lineNumber
+                     materialType = poModel.materialType
+                     poId = poModel.poId
+                     poLineItemId = poModel.poLineItemId
+                     poNumber = poModel.poNumber
+                     poQuantity = poModel.poQuantity
+                     poUnitPrice = poModel.poUnitPrice
+                     posapLineItemNumber = poModel.posapLineItemNumber
+                     pouom = poModel.pouom
+                     batchBarcodeNo = poModel.batchBarcodeNo
+                 }
+             }
+         }
 
 
+         if (createBatchesListMap.containsKey(poModel.batchBarcodeNo)) {
+             // Add the new item to the existing batch
+             createBatchesListMap[poModel.batchBarcodeNo]?.add(defaultArrayList)
+         } else {
+             // Create a new ArrayList and add the new item to it
+             val newBatchList = arrayListOf(defaultArrayList)
+             createBatchesListMap[poModel.batchBarcodeNo] = newBatchList
+         }
+         createBatchesList.add(defaultArrayList)
 
-
-
-
-
-
-
+         Log.e("onitemclickFromAddNewExisitngBatch", createBatchesList.toString())
+         // Notify adapter about the insertion
+         createBatchesMainRcAdapter?.notifyItemInserted(createBatchesList.size - 1)
+         createBatchesMainRcAdapter?.updateList(createBatchesList, this)
+     }*/
 
 /* private fun setSupplierDropDown()
     {
@@ -645,3 +1304,63 @@ class GRNAddActivity : AppCompatActivity() {
               )
           )
       )*/
+
+
+/* private fun createNewExisitingBatchInfo(
+        poModel: BatchInfoListModel,
+        edBatchNo: String
+    ): BatchInfoListModel {
+        // Find the latest number associated with the batch prefix
+        val latestNumber = createBatchesList.filter {
+            poModel.generatedBarcodeNo.startsWith("$edBatchNo-") // Check if the generatedBarcodeNo starts with the prefix followed by a hyphen
+        }.mapNotNull {
+            poModel.generatedBarcodeNo.removePrefix("$edBatchNo-").toIntOrNull() // Extract the numeric part after the hyphen
+        }.maxOrNull() ?: 0
+        Log.e("onitemclicklatestNumberExisiting", latestNumber.toString())
+        // Increment the number part for the new entry
+        val generatedBarcodeNo = "$edBatchNo-${latestNumber + 1}"
+        Log.e(
+            "onitemclicklatestNumberExisiting", BatchInfoListModel(
+                poModel.ExpiryDate,
+                poModel.GDPONumber,
+                "",
+                0,
+                generatedBarcodeNo,
+                poModel.itemCode,
+                poModel.itemDescription,
+                poModel.itemName,
+                poModel.lineNumber,
+                poModel.materialType,
+                poModel.poId,
+                poModel.poLineItemId,
+                poModel.poNumber,
+                poModel.poQuantity,
+                poModel.poUnitPrice,
+                poModel.posapLineItemNumber,
+                poModel.pouom,
+                edBatchNo
+            ).toString()
+        )
+        // Create and return the BatchInfoListModel
+        return BatchInfoListModel(
+            poModel.ExpiryDate,
+            poModel.GDPONumber,
+            "",
+            0,
+            generatedBarcodeNo,
+            poModel.itemCode,
+            poModel.itemDescription,
+            poModel.itemName,
+            poModel.lineNumber,
+            poModel.materialType,
+            poModel.poId,
+            poModel.poLineItemId,
+            poModel.poNumber,
+            poModel.poQuantity,
+            poModel.poUnitPrice,
+            poModel.posapLineItemNumber,
+            poModel.pouom,
+            edBatchNo
+        )
+
+    }*/

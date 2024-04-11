@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.slfastener.R
-import com.example.slfastener.model.grn.GrnMainListResponse
 import com.example.slfastener.model.grnmain.GetFilteredGRNResponse
 import java.util.ArrayList
 
@@ -32,7 +31,7 @@ class GrnMainAdapter : RecyclerView.Adapter<GrnMainAdapter.ViewHolder>() {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var grnMainModel:GetFilteredGRNResponse=grnMainModel.get(position)
 
-        holder.tvSrNo.setText(position.toString())
+        holder.tvSrNo.setText("${position+1}")
         holder.tvKGRNNO.setText(grnMainModel.kgrnNumber)
         holder.tvBPCodeName.setText(grnMainModel.bpName)
         holder.tvType.setText(grnMainModel.transactionType)
