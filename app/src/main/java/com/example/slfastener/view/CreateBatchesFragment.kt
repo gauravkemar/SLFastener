@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.example.slfastener.R
-import com.example.slfastener.adapter.demoAdapter.CreateBatchesDemoAdapter
 import com.example.slfastener.databinding.FragmentCreateBatchesBinding
 import com.example.slfastener.helper.UsbCommunicationManager
 import com.example.slfastener.model.BatchInfoListModel
@@ -16,7 +15,7 @@ import es.dmoral.toasty.Toasty
 
 class CreateBatchesFragment : Fragment() {
     lateinit var binding:FragmentCreateBatchesBinding
-    private lateinit var usbCommunicationManager: UsbCommunicationManager
+  /*  private lateinit var usbCommunicationManager: UsbCommunicationManager
     lateinit var createBatchesList: ArrayList<BatchInfoListModel>
     lateinit var poLineItemSelectionModel: PoLineItemSelectionModel
     lateinit var  createBatchesListRecyclerList: ArrayList<BatchInfoListModel>
@@ -36,7 +35,7 @@ class CreateBatchesFragment : Fragment() {
     private lateinit var createBatchesListMap: HashMap<String, ArrayList<BatchInfoListModel>>
     fun setPoModel(poModel: PoLineItemSelectionModel) {
         this.poLineItemSelectionModel = poModel
-    }
+    }*/
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,10 +44,12 @@ class CreateBatchesFragment : Fragment() {
         // Inflate the layout for this fragment
 
         binding=DataBindingUtil.inflate(inflater,R.layout.fragment_create_batches, container, false)
+/*
         usbCommunicationManager = UsbCommunicationManager(requireActivity())
         createBatchesList = ArrayList()
         createBatchesListRecyclerList = ArrayList()
         createBatchesListMap = HashMap()
+*/
 
 
 
@@ -64,6 +65,7 @@ class CreateBatchesFragment : Fragment() {
             deleteExistingBatch(it)
         }
 */
+/*
 
         usbCommunicationManager.receivedData.observe(requireActivity()) { data ->
             val currentTime = System.currentTimeMillis()
@@ -71,11 +73,13 @@ class CreateBatchesFragment : Fragment() {
             if (currentTime - lastUpdateTime >= DEBOUNCE_PERIOD) {
                 lastUpdateTime = currentTime
                 // Check if the current data is different from the previous one
-             /*   if (data != null && data != previousData) {
+             */
+/*   if (data != null && data != previousData) {
                     // Update the previous data value
                     previousData = data
                     createBatchesMainRcAdapter?.updateWeightValue(data)
-                }*/
+                }*//*
+
 
                   if (data != null ) {
                     createBatchesMainRcAdapter?.updateWeightValue(data)
@@ -83,9 +87,10 @@ class CreateBatchesFragment : Fragment() {
                 print("weightfromgrnadd: $data")
             }
         }
+*/
 
 
-        setInfoValues(poLineItemSelectionModel)
+   /*     setInfoValues(poLineItemSelectionModel)
 
         binding.mcvClearBatchBarcode.setOnClickListener {
             binding.edBatchNo.setText("")
@@ -99,7 +104,7 @@ class CreateBatchesFragment : Fragment() {
 
         binding.mcvCancel.setOnClickListener {
             callback?.onCancel()
-        }
+        }*/
     /*    createBatchesMainRcAdapter?.setOnItemDeleteClickListener {
 
 
@@ -107,6 +112,7 @@ class CreateBatchesFragment : Fragment() {
 */
         return binding.root
     }
+/*
 
     private fun deleteExistingBatch(poModel: BatchInfoListModel) {
 
@@ -379,13 +385,15 @@ class CreateBatchesFragment : Fragment() {
     private fun addUpdateDeleteList(createBatchesList: ArrayList<BatchInfoListModel>)
     {
 
-    /*    Log.e("createBatchesList",createBatchesList.toString())
+    */
+/*    Log.e("createBatchesList",createBatchesList.toString())
         createBatchesListRecyclerList.clear()
         createBatchesListRecyclerList.addAll(createBatchesList)
         createBatchesMainRcAdapter = CreateBatchesDemoAdapter()
         createBatchesMainRcAdapter?.updateList(createBatchesListRecyclerList, requireActivity())
         binding.rcBatchs.adapter = createBatchesMainRcAdapter
-        binding.rcBatchs.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)*/
+        binding.rcBatchs.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)*//*
+
     }
 
     private fun setInfoValues(poModel: PoLineItemSelectionModel) {
@@ -404,6 +412,7 @@ class CreateBatchesFragment : Fragment() {
         binding.tvBatchNoValue.setText("")
         binding.tvBarcodeNoInfoValue.setText("")
     }
+*/
 
 
 

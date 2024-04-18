@@ -6,13 +6,16 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.DatePicker
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDialog
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -22,11 +25,10 @@ import com.example.demorfidapp.helper.Resource
 import com.example.demorfidapp.helper.SessionManager
 import com.example.demorfidapp.repository.SLFastenerRepository
 import com.example.slfastener.R
-import com.example.slfastener.adapter.CreateBatchesSingleList
+import com.example.slfastener.adapter.demoAdapter.CreateBatchesSingleList
 import com.example.slfastener.adapter.GRNSelectPoAdapter
 import com.example.slfastener.adapter.GrnMainAddAdapter
 import com.example.slfastener.adapter.LineItemAdapter
-import com.example.slfastener.adapter.demoAdapter.CreateBatchesDemoAdapter
 import com.example.slfastener.databinding.ActivityGrnaddBinding
 import com.example.slfastener.databinding.CreateBatchesDialogBinding
 import com.example.slfastener.databinding.SelectLineItemDialogBinding
@@ -45,7 +47,7 @@ import com.example.slfastener.viewmodel.GRNTransactionViewModelProviderFactory
 import es.dmoral.toasty.Toasty
 import java.util.Calendar
 
-class GRNAddActivity : AppCompatActivity(), CreateBatchesFragment.OnCancelListener {
+class GRNAddActivity : AppCompatActivity() {
     lateinit var binding: ActivityGrnaddBinding
     lateinit var spinnerItems: MutableList<String>
     private var selectedReasonSpinnerString: String? = ""
@@ -76,7 +78,7 @@ class GRNAddActivity : AppCompatActivity(), CreateBatchesFragment.OnCancelListen
     var selectLineItemDialog: Dialog? = null
 
     lateinit var createBatchesDialogBinding: CreateBatchesDialogBinding
-    var createBatchedDialog: Dialog? = null
+    lateinit var createBatchedDialog: AppCompatDialog
     lateinit var createBatchesList: ArrayList<BatchInfoListModel>
     lateinit var getActiveSuppliersDDLResponse: ArrayList<GetActiveSuppliersDDLResponse>
 
@@ -104,10 +106,10 @@ class GRNAddActivity : AppCompatActivity(), CreateBatchesFragment.OnCancelListen
         session = SessionManager(this)
         selectPoBinding = SelectSupplierPoLineItemBinding.inflate(getLayoutInflater());
         selectLineItemBinding = SelectLineItemDialogBinding.inflate(getLayoutInflater());
-        createBatchesDialogBinding = CreateBatchesDialogBinding.inflate(getLayoutInflater());
+
         selectPoDialog = Dialog(this)
         selectLineItemDialog = Dialog(this)
-        createBatchedDialog = Dialog(this)
+
         progress = ProgressDialog(this)
         usbCommunicationManager = UsbCommunicationManager(this)
 
@@ -159,7 +161,6 @@ class GRNAddActivity : AppCompatActivity(), CreateBatchesFragment.OnCancelListen
         binding.logoutBtn.setOnClickListener {
             showLogoutDialog()
         }
-
 
         viewModel.getActiveSuppliersDDLMutable.observe(this) { response ->
             when (response) {
@@ -331,17 +332,31 @@ class GRNAddActivity : AppCompatActivity(), CreateBatchesFragment.OnCancelListen
             showDatePickerDialog()
         }
 
-        createBatchesMainRcAdapter = CreateBatchesSingleList(createBatchesList)
+
+        ////batches dialog
+        createBatchesDialogBinding = CreateBatchesDialogBinding.inflate(LayoutInflater.from(this));
+        createBatchedDialog = AppCompatDialog(this).apply {
+            setContentView(createBatchesDialogBinding.root)
+            window?.setLayout(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT
+            )
+        }
+        createBatchedDialog!!.setCancelable(true)
+        createBatchesDialogBinding.closeDialogueTopButton.setOnClickListener {
+            createBatchedDialog!!.dismiss()
+        }
+        createBatchesDialogBinding.mcvClearBatchBarcode.setOnClickListener {
+            createBatchesDialogBinding.edBatchNo.setText("")
+        }
+       // createBatchesMainRcAdapter = CreateBatchesSingleList(createBatchesList)
+        createBatchesMainRcAdapter = CreateBatchesSingleList(createBatchesList) { position, updatedItem ->
+            createBatchesList[position] = updatedItem.copy()
+            createBatchesMainRcAdapter!!.notifyItemChanged(position)
+        }
         createBatchesDialogBinding.rcBatchs.adapter = createBatchesMainRcAdapter
         createBatchesDialogBinding.rcBatchs.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        createBatchesMainRcAdapter!!.setOnItemClickListener(object : ItemClickListener {
-            override fun onItemClick(position: Int, batchInfoListModel: BatchInfoListModel) {
-                createBatchesMainRcAdapter!!.updateData(position, batchInfoListModel)
-
-            }
-        })
-
         usbCommunicationManager.receivedData.observe(this) { data ->
 
             val currentTime = System.currentTimeMillis()
@@ -357,14 +372,7 @@ class GRNAddActivity : AppCompatActivity(), CreateBatchesFragment.OnCancelListen
                 print("weightfromgrnadd: $data")
             }
         }
-    }
 
-    override fun onCancel() {
-        // Hide the current fragment
-        supportFragmentManager.popBackStack()
-        // You can also handle showing the previous view here if needed
-        binding.clContainer2.visibility = View.GONE
-        binding.clContainer.visibility = View.VISIBLE
     }
 
     private fun showDatePickerDialog() {
@@ -498,7 +506,6 @@ class GRNAddActivity : AppCompatActivity(), CreateBatchesFragment.OnCancelListen
 
     private fun callSelectedPoLineItems(poCode: ArrayList<Int>) {
         try {
-
             viewModel.getPosLineItemsOnPoIds(token, Constants.BASE_URL, poCode)
 
         } catch (e: Exception) {
@@ -509,7 +516,6 @@ class GRNAddActivity : AppCompatActivity(), CreateBatchesFragment.OnCancelListen
             ).show()
         }
     }
-
     private fun processGrn(selectedPoFilteredList: ArrayList<Int>) {
         try {
             var grnSaveToDraftDefaultRequest: GRNSaveToDraftDefaultRequest? = null
@@ -553,7 +559,6 @@ class GRNAddActivity : AppCompatActivity(), CreateBatchesFragment.OnCancelListen
         super.onBackPressed()
         finish()
     }
-
     private fun getSupplierList() {
         try {
             viewModel.getActiveSuppliersDDL(token, Constants.BASE_URL)
@@ -567,7 +572,6 @@ class GRNAddActivity : AppCompatActivity(), CreateBatchesFragment.OnCancelListen
     }
 
     private fun setPoLineItemList(poLineItemSelected: ArrayList<PoLineItemSelectionModel>) {
-
         grnMainItemAdapter = GrnMainAddAdapter()
         grnMainItemAdapter?.updateList(poLineItemSelected, this@GRNAddActivity)
         binding.rcGrnAdd!!.adapter = grnMainItemAdapter
@@ -576,12 +580,12 @@ class GRNAddActivity : AppCompatActivity(), CreateBatchesFragment.OnCancelListen
         grnMainItemAdapter?.setOnItemCheckClickListener {
             setCreateBatchesDialog(it)
 
+
             /*   binding.clContainer.visibility=View.GONE
                binding.clContainer2.visibility=View.VISIBLE
                transacton(it)*/
         }
     }
-
     /*   private fun transacton(poLineItemSelectionModel: PoLineItemSelectionModel)
        {
            val fragment = CreateBatchesFragment()
@@ -630,8 +634,6 @@ class GRNAddActivity : AppCompatActivity(), CreateBatchesFragment.OnCancelListen
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
         selectLineItemDialog!!.setCancelable(true)
-
-
         setLineItemRc()
         selectLineItemBinding.closeDialogueTopButton.setOnClickListener {
             selectLineItemDialog!!.dismiss()
@@ -757,33 +759,11 @@ class GRNAddActivity : AppCompatActivity(), CreateBatchesFragment.OnCancelListen
 
     ////Batches activity
     private fun setCreateBatchesDialog(poModel: PoLineItemSelectionModel) {
-        createBatchedDialog!!.setContentView(createBatchesDialogBinding.root)
-        createBatchedDialog!!.getWindow()?.setBackgroundDrawable(
-            AppCompatResources.getDrawable(
-                this@GRNAddActivity,
-                android.R.color.transparent
-            )
-        )
-        createBatchedDialog!!.getWindow()?.setLayout(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.MATCH_PARENT
-        )
-
-        createBatchedDialog!!.setCancelable(true)
-
-
         setInfoValues(poModel)
-        createBatchesDialogBinding.closeDialogueTopButton.setOnClickListener {
-            createBatchedDialog!!.dismiss()
-        }
-        createBatchesDialogBinding.mcvClearBatchBarcode.setOnClickListener {
-            createBatchesDialogBinding.edBatchNo.setText("")
-        }
         createBatchesDialogBinding.mcvAddBatches.setOnClickListener {
             addNewBatch(poModel)
-            //createBatchesList.add(newItem)
-            //adapter.notifyItemInserted(itemList.size - 1)
         }
+
         createBatchedDialog!!.show()
     }
 
@@ -803,11 +783,21 @@ class GRNAddActivity : AppCompatActivity(), CreateBatchesFragment.OnCancelListen
     private fun addNewBatch(poModel: PoLineItemSelectionModel) {
         var edBatchNo = createBatchesDialogBinding.edBatchNo.text.toString().trim()
         if (edBatchNo.isNotEmpty()) {
-            val newBatchList = arrayListOf(createBatchInfo(poModel, edBatchNo))
-            createBatchesListMap[edBatchNo] = newBatchList
-            createBatchesList.add(createBatchInfo(poModel, edBatchNo))
-            Log.e("createBatchesListAddNewBAtch",createBatchesList.toString())
-            createBatchesMainRcAdapter?.notifyItemInserted(createBatchesList.size-1)
+            val hasItemWithZeroReceivedQuantity = createBatchesList.any { it.ReceivedQty == "0.000" }
+            if(hasItemWithZeroReceivedQuantity)
+            {
+                Toasty.warning(this@GRNAddActivity,"Please complete current transaction!!").show()
+            }
+            else
+            {
+                val newBatchList = arrayListOf(createBatchInfo(poModel, edBatchNo))
+                createBatchesListMap[edBatchNo] = newBatchList
+                createBatchesList.add(createBatchInfo(poModel, edBatchNo))
+                Log.e("createBatchesListAddNewBAtch",createBatchesList.toString())
+                createBatchesMainRcAdapter?.notifyItemInserted(createBatchesList.size-1)
+
+            }
+
         }
         else
         {

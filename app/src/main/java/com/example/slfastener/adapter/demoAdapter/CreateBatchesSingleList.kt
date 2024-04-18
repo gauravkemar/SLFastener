@@ -1,4 +1,4 @@
-package com.example.slfastener.adapter
+package com.example.slfastener.adapter.demoAdapter
 
 import android.content.Context
 import android.graphics.Color
@@ -9,22 +9,18 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.slfastener.R
 import com.example.slfastener.interfaceclass.ItemClickListener
 import com.example.slfastener.model.BatchInfoListModel
 import com.google.android.material.card.MaterialCardView
 
-class CreateBatchesSingleList(private val list: MutableList<BatchInfoListModel>) :
+class CreateBatchesSingleList(private val batches: MutableList<BatchInfoListModel>,
+                              private val onSave: (Int, BatchInfoListModel) -> Unit) :
     RecyclerView.Adapter<CreateBatchesSingleList.ViewHolder>() {
-
-
-    private var context: Context? = null
     private var weightData: String? = null
-    private var userInteracted = false
     private var focusedTextView: TextView? = null
-    private var itemClickListener: ItemClickListener? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.create_batchs_item, parent, false)
@@ -34,8 +30,7 @@ class CreateBatchesSingleList(private val list: MutableList<BatchInfoListModel>)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val itemPosition = holder.layoutPosition
-        val batchModel: BatchInfoListModel = list[itemPosition]
-
+        val batchModel: BatchInfoListModel = batches[itemPosition]
         holder.tvSrnNo.setText("${itemPosition + 1}")
         holder.tvBatchBarcodeNo.setText(batchModel.batchBarcodeNo)
         holder.edWeight.setText(batchModel.ReceivedQty)
@@ -49,7 +44,7 @@ class CreateBatchesSingleList(private val list: MutableList<BatchInfoListModel>)
                 focusedTextView = holder.edWeight
             }
         }
-        holder.ivAdd.setOnClickListener {
+      /*  holder.ivAdd.setOnClickListener {
             itemClickListener?.onItemClick(
                 itemPosition,
                 BatchInfoListModel(
@@ -75,15 +70,29 @@ class CreateBatchesSingleList(private val list: MutableList<BatchInfoListModel>)
                 )
             )
             holder.edWeight.clearFocus()
+        }*/
+
+        updateView(holder, batchModel)
+        holder.ivAdd.setOnClickListener {
+            batchModel.ReceivedQty=holder.edWeight.getText().toString()
+            batchModel.isUpdate = true
+            updateView(holder, batchModel)
+            onSave(position, batchModel)
+            holder.edWeight.clearFocus()
+        }
+        holder.ivDelete.setOnClickListener {
+            batches.removeAt(position)
+            notifyItemRemoved(position)
+            notifyItemRangeChanged(position, batches.size) // To update the positions of the remaining items
         }
 
-        if (batchModel.isUpdate) {
+       /* if (batchModel.isUpdate) {
             Log.d("MyTag", "Setting visibility and colors")
             holder.ivAdd.setImageResource(R.drawable.ic_save_black)
             holder.mcvWeight.visibility = View.VISIBLE
             holder.clCardMain.setBackgroundColor(Color.RED)
 
-           /* holder.clCardMain.setBackgroundColor(
+           *//* holder.clCardMain.setBackgroundColor(
                 ContextCompat.getColor(
                     context!!,
                     R.color.header_bg
@@ -94,49 +103,39 @@ class CreateBatchesSingleList(private val list: MutableList<BatchInfoListModel>)
                     context!!,
                     R.color.light_grey
                 )
-            )*/
+            )*//*
         } else {
             Log.d("MyTag", "Setting visibility and colors False $list")
-        }
+        }*/
 
         if (holder.edWeight.text.toString().trim() == "0.000") {
             holder.edWeight.requestFocus()
             holder.mcvWeight.visibility = View.GONE
         }
-        holder.ivDelete.setOnClickListener {
-            if (itemPosition < list.size) {
-                list.removeAt(itemPosition)
-                notifyItemRemoved(itemPosition)
-            }
-            //notifyDataSetChanged()
-        }
+
     }
-    private fun listsAreEqual(
-        list1: List<BatchInfoListModel>,
-        list2: List<BatchInfoListModel>
-    ): Boolean {
-        if (list1.size != list2.size) {
-            Log.e("MyTag", "notifyDataSetChanged()")
-            return false
-        }
-        for (i in list1.indices) {
-            if (list1[i] != list2[i]) {
-                return false
+    private fun updateView(holder: ViewHolder, batchInfoItem: BatchInfoListModel) {
+        with(holder) {
+            if (batchInfoItem.isUpdate) {
+                clCardMain.setBackgroundColor(Color.LTGRAY)
+            } else {
+                clCardMain.setBackgroundColor(Color.TRANSPARENT)
+
             }
         }
-        return true
     }
+
     fun updateWeightValue(weightData: String) {
         this.weightData = weightData
         focusedTextView?.setText(weightData)
     }
     override fun getItemCount(): Int {
-        if (list.size == 0) {
+        if (batches.size == 0) {
             //Toast.makeText(context,"List is empty", Toast.LENGTH_LONG).show()
         } else {
-            return list.size
+            return batches.size
         }
-        return list.size
+        return batches.size
     }
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
         val tvSrnNo: TextView = itemView.findViewById(R.id.tvSrnNo)
@@ -150,35 +149,25 @@ class CreateBatchesSingleList(private val list: MutableList<BatchInfoListModel>)
         val clCardMain: ConstraintLayout = itemView.findViewById(R.id.clCardMain)
         val tvPrint: TextView = itemView.findViewById(R.id.tvPrint)
     }
-    fun setOnItemClickListener(itemClickListener: ItemClickListener) {
-        this.itemClickListener = itemClickListener
-    }
-    fun updateData(position: Int, batchInfoListModel: BatchInfoListModel) {
-        list[position] = batchInfoListModel
-        notifyItemChanged(position)
-    }
 
 }
 
 
-/*if (position == batchInfoListModel.size - 1) {
-    holder.edWeight.setText(weightData ?: "")
-} else {
-    holder.edWeight.setText(batchModel.ReceivedQty)
-}*/
-/* holder.btCreatebatches.setOnClickListener {
-     onItemClickListener?.invoke(batchInfoListModel[position])
- }*/
 
-/*     if (position == 0) {
-         holder.edWeight.requestFocus() // Set focus on EditText for the first item
-     }
-     holder.edWeight.setText(if (userInteracted) weightData ?: "" else batchModel.ReceivedQty)
-*/
-// Set a listener to detect user interaction with the EditText
-/*  holder.edWeight.setOnFocusChangeListener { _, hasFocus ->
-      if (hasFocus) {
-          holder.edWeight.setText(weightData)
-      }
 
-  }*/
+
+/*    private fun listsAreEqual(
+        list1: List<BatchInfoListModel>,
+        list2: List<BatchInfoListModel>
+    ): Boolean {
+        if (list1.size != list2.size) {
+            Log.e("MyTag", "notifyDataSetChanged()")
+            return false
+        }
+        for (i in list1.indices) {
+            if (list1[i] != list2[i]) {
+                return false
+            }
+        }
+        return true
+    }*/
