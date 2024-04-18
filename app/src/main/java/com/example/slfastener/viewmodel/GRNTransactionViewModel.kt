@@ -8,10 +8,12 @@ import com.example.demorfidapp.helper.Constants
 import com.example.demorfidapp.helper.Resource
 import com.example.demorfidapp.helper.Utils
 import com.example.demorfidapp.repository.SLFastenerRepository
+import com.example.slfastener.model.GeneralResponse
 import com.example.slfastener.model.GetActiveSuppliersDDLResponse
 import com.example.slfastener.model.GetPOsAndLineItemsOnPOIdsResponse
 import com.example.slfastener.model.GetSuppliersPOsDDLResponse
 import com.example.slfastener.model.GetSuppliersPOsRequest
+import com.example.slfastener.model.grn.GRNSaveToDraftDefaultRequest
 import com.example.slfastener.model.grnmain.GetFilteredGRNRequest
 import com.example.slfastener.model.grnmain.GetFilteredGRNResponse
 import kotlinx.coroutines.launch
@@ -225,6 +227,51 @@ class GRNTransactionViewModel (
     }
 
     private fun handleGetFilteredGRN(response: Response<ArrayList<GetFilteredGRNResponse>>): Resource<ArrayList<GetFilteredGRNResponse>>{
+        var errorMessage = ""
+        if (response.isSuccessful) {
+            response.body()?.let { appDetailsResponse ->
+                return Resource.Success(appDetailsResponse)
+            }
+        } else if (response.errorBody() != null) {
+            val errorObject = response.errorBody()?.let {
+                JSONObject(it.charStream().readText())
+            }
+            errorObject?.let {
+                errorMessage = it.getString(Constants.HTTP_ERROR_MESSAGE)
+            }
+        }
+        return Resource.Error(errorMessage)
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    val processGRNMutableResponse: MutableLiveData<Resource<GeneralResponse>> = MutableLiveData()
+
+    fun processGRN(token: String,baseUrl: String , grnSaveToDraftDefaultRequest: GRNSaveToDraftDefaultRequest) {
+        viewModelScope.launch {
+            safeAPICallProcessGRN(token,baseUrl,grnSaveToDraftDefaultRequest)
+        }
+    }
+
+    private suspend fun safeAPICallProcessGRN(token: String,baseUrl: String,grnSaveToDraftDefaultRequest: GRNSaveToDraftDefaultRequest) {
+        processGRNMutableResponse.postValue(Resource.Loading())
+        try {
+            if (Utils.hasInternetConnection(getApplication())) {
+                val response = rfidRepository.processGRN(token,baseUrl,grnSaveToDraftDefaultRequest )
+                processGRNMutableResponse.postValue(handleProcessGRN(response))
+            } else {
+                processGRNMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
+            }
+        } catch (t: Throwable) {
+            when (t) {
+                is IOException -> processGRNMutableResponse.postValue(Resource.Error(Constants.CONFIG_ERROR))
+                else -> processGRNMutableResponse.postValue(Resource.Error("${t.message}"))
+            }
+        }
+    }
+
+    private fun handleProcessGRN(response: Response<GeneralResponse>): Resource<GeneralResponse>{
         var errorMessage = ""
         if (response.isSuccessful) {
             response.body()?.let { appDetailsResponse ->

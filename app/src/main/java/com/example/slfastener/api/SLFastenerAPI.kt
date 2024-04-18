@@ -2,6 +2,7 @@ package  com.example.demorfidapp.api
 
 
 
+import com.example.demorfidapp.helper.Constants
 import com.example.demorfidapp.helper.Constants.GET_ACTIVE_SUPPLIERS_DDL
 import com.example.demorfidapp.helper.Constants.GET_GRN_FILTERED_GRN
 import com.example.demorfidapp.helper.Constants.GET_POS_LINE_ITEMS_ON_POIDS
@@ -9,10 +10,12 @@ import com.example.demorfidapp.helper.Constants.GET_SUPPLIERS_POS
 import com.example.demorfidapp.helper.Constants.GET_SUPPLIERS_POS_DDL
 import com.example.demorfidapp.helper.Constants.HTTP_HEADER_AUTHORIZATION
 import com.example.demorfidapp.helper.Constants.LOGIN_URL
+import com.example.slfastener.model.GeneralResponse
 import com.example.slfastener.model.GetActiveSuppliersDDLResponse
 import com.example.slfastener.model.GetPOsAndLineItemsOnPOIdsResponse
 import com.example.slfastener.model.GetSuppliersPOsDDLResponse
 import com.example.slfastener.model.GetSuppliersPOsRequest
+import com.example.slfastener.model.grn.GRNSaveToDraftDefaultRequest
 import com.example.slfastener.model.grnmain.GetFilteredGRNRequest
 import com.example.slfastener.model.grnmain.GetFilteredGRNResponse
 import com.example.slfastener.model.login.LoginRequest
@@ -74,6 +77,20 @@ interface SLFastenerAPI {
         @Body
         loginRequest: LoginRequest
     ): Response<LoginResponse>
+
+  @POST(Constants.PROCESS_GRN)
+    suspend fun processGRN(
+      @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Body
+        grnSaveToDraftDefaultRequest: GRNSaveToDraftDefaultRequest
+    ): Response<GeneralResponse>
+
+    @POST(Constants.PROCESS_SINGLE_GRN_GRN_ITEM_BATCHES)
+    suspend fun processSingleGRNGRNItemBatches(
+      @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Body
+        grnSaveToDraftDefaultRequest: GRNSaveToDraftDefaultRequest
+    ): Response<GeneralResponse>
 
 
 }

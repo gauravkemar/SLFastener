@@ -9,7 +9,6 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.slfastener.R
-import com.example.slfastener.model.PoLineItem
 import com.example.slfastener.model.PoLineItemSelectionModel
 
 class LineItemAdapter  : RecyclerView.Adapter<LineItemAdapter.ViewHolder>() {

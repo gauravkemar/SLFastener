@@ -4,11 +4,11 @@ data class PoLineItemSelectionModel(
     val itemCode: String,
     val itemDescription: String,
     val itemName: String,
-    val lineNumber: String,
+    val lineNumber: Int,
     val poId: Int,
     val poLineItemId: Int,
     val poQuantity: Int,
-    val poUnitPrice: Double,
+    val poUnitPrice: Any?,
     val posapLineItemNumber: String,
     val pouom: String,
     val poNumber: String,
@@ -17,5 +17,4 @@ data class PoLineItemSelectionModel(
     val ReceivedQty:String,
     var isSelected: Boolean?,
     var materialType: String,
-
     )

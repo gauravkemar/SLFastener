@@ -1,5 +1,7 @@
 package com.example.slfastener.model
 
+
+
 /*data class GetPOsAndLineItemsOnPOIdsResponse(
     val bpCode: String,
     val bpName: String,
@@ -23,7 +25,7 @@ data class GetPOsAndLineItemsOnPOIdsResponse(
     val createdDate: String,
     val isActive: Boolean,
     val modifiedBy: String,
-    val modifiedDate: String,
+    val modifiedDate: Any,
     val poCurrency: Any,
     val poDate: String,
     val poId: Int,

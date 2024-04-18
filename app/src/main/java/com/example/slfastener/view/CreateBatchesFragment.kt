@@ -1,13 +1,11 @@
 package com.example.slfastener.view
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.slfastener.R
 import com.example.slfastener.adapter.demoAdapter.CreateBatchesDemoAdapter
 import com.example.slfastener.databinding.FragmentCreateBatchesBinding
@@ -58,14 +56,14 @@ class CreateBatchesFragment : Fragment() {
             addNewExistingBatch(it)
 
         }*/
-        createBatchesMainRcAdapter?.setOnItemUpdatelickListener {
+ /*       createBatchesMainRcAdapter?.setOnItemUpdatelickListener {
             updateBatches(it)
         }
 
         createBatchesMainRcAdapter?.setOnItemDeleteClickListener {
             deleteExistingBatch(it)
         }
-
+*/
 
         usbCommunicationManager.receivedData.observe(requireActivity()) { data ->
             val currentTime = System.currentTimeMillis()
@@ -102,11 +100,11 @@ class CreateBatchesFragment : Fragment() {
         binding.mcvCancel.setOnClickListener {
             callback?.onCancel()
         }
-        createBatchesMainRcAdapter?.setOnItemDeleteClickListener {
+    /*    createBatchesMainRcAdapter?.setOnItemDeleteClickListener {
 
 
         }
-
+*/
         return binding.root
     }
 
@@ -193,9 +191,7 @@ class CreateBatchesFragment : Fragment() {
         if (createBatchesListMap.containsKey(poModel.batchBarcodeNo)) {
             // Add the new item to the existing batch
             createBatchesListMap[poModel.batchBarcodeNo]?.add(
-                createNewExisitingBatchInfo(
-                    poModel
-                )
+                createNewExisitingBatchInfo(poModel)
             )
         } else {
             // Create a new ArrayList and add the new item to it
@@ -383,13 +379,13 @@ class CreateBatchesFragment : Fragment() {
     private fun addUpdateDeleteList(createBatchesList: ArrayList<BatchInfoListModel>)
     {
 
-        Log.e("createBatchesList",createBatchesList.toString())
+    /*    Log.e("createBatchesList",createBatchesList.toString())
         createBatchesListRecyclerList.clear()
         createBatchesListRecyclerList.addAll(createBatchesList)
         createBatchesMainRcAdapter = CreateBatchesDemoAdapter()
         createBatchesMainRcAdapter?.updateList(createBatchesListRecyclerList, requireActivity())
         binding.rcBatchs.adapter = createBatchesMainRcAdapter
-        binding.rcBatchs.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
+        binding.rcBatchs.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)*/
     }
 
     private fun setInfoValues(poModel: PoLineItemSelectionModel) {

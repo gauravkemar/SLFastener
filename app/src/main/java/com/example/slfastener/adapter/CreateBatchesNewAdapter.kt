@@ -29,8 +29,8 @@ class CreateBatchesNewAdapter (
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val itemPosition = holder.layoutPosition
-        val batchModel = batchInfoListModel[position]
-        holder.tvSrnNo.setText("${position + 1}")
+        val batchModel = batchInfoListModel[itemPosition]
+        holder.tvSrnNo.setText("${itemPosition + 1}")
         holder.tvBatchBarcodeNo.setText(batchModel.batchBarcodeNo)
         holder.edWeight.setText(batchModel.ReceivedQty)
         holder.tvBarcodeNo.setText(batchModel.generatedBarcodeNo)
@@ -66,7 +66,7 @@ class CreateBatchesNewAdapter (
             Log.d("MyTag", "Setting visibility and colors False $batchInfoListModel")
         }
         holder.ivAdd.setOnClickListener {
-            updateItem(position, holder.edWeight.getText().toString(), true)
+            updateItem(itemPosition, holder.edWeight.getText().toString(), true)
             holder.edWeight.clearFocus()
         }
 

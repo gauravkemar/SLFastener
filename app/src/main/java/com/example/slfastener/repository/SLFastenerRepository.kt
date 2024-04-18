@@ -3,6 +3,7 @@ package com.example.demorfidapp.repository
 import com.example.demorfidapp.api.RetrofitInstance
 import com.example.demorfidapp.helper.Constants
 import com.example.slfastener.model.GetSuppliersPOsRequest
+import com.example.slfastener.model.grn.GRNSaveToDraftDefaultRequest
 import com.example.slfastener.model.grnmain.GetFilteredGRNRequest
 import com.example.slfastener.model.login.LoginRequest
 import retrofit2.http.Body
@@ -53,5 +54,12 @@ class SLFastenerRepository {
         @Body
         getFilteredGRNRequest: GetFilteredGRNRequest
     ) = RetrofitInstance.api(baseUrl).getFilteredGRN(bearerToken,getFilteredGRNRequest)
+
+    suspend fun processGRN(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+        @Body
+        grnSaveToDraftDefaultRequest: GRNSaveToDraftDefaultRequest
+    ) = RetrofitInstance.api(baseUrl).processGRN(bearerToken,grnSaveToDraftDefaultRequest)
 
 }
