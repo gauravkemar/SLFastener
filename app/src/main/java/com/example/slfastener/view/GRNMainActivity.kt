@@ -4,6 +4,7 @@ import android.app.ProgressDialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
@@ -14,7 +15,9 @@ import com.example.demorfidapp.helper.Resource
 import com.example.demorfidapp.helper.SessionManager
 import com.example.demorfidapp.repository.SLFastenerRepository
 import com.example.slfastener.R
+import com.example.slfastener.adapter.GRNMainCompletedAdapter
 import com.example.slfastener.adapter.GrnMainAdapter
+import com.example.slfastener.adapter.GrnMainAddAdapter
 import com.example.slfastener.databinding.ActivityGrnmainBinding
 import com.example.slfastener.model.grnmain.GetFilteredGRNRequest
 import com.example.slfastener.model.grnmain.GetFilteredGRNResponse
@@ -27,7 +30,9 @@ class GRNMainActivity : AppCompatActivity() {
     lateinit var binding: ActivityGrnmainBinding
     private lateinit var session: SessionManager
     private var grnMainItemAdapter: GrnMainAdapter? = null
+    private var grnMainCompletedAdapter: GRNMainCompletedAdapter? = null
     lateinit var grnMainResponse: ArrayList<GetFilteredGRNResponse>
+    lateinit var grnMainResponseCompleted: ArrayList<GetFilteredGRNResponse>
     private lateinit var userDetails: HashMap<String, Any?>
     private lateinit var viewModel: GRNTransactionViewModel
     var token:String=""
@@ -37,21 +42,20 @@ class GRNMainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_grnmain)
         session = SessionManager(this)
         grnMainResponse = ArrayList()
+        grnMainResponseCompleted = ArrayList()
         progress = ProgressDialog(this)
         progress.setMessage("Loading...")
-        grnMainItemAdapter = GrnMainAdapter()
         userDetails = session.getUserDetails()
         token = userDetails["jwtToken"].toString()
-
         val slFastenerRepository = SLFastenerRepository()
         val viewModelProviderFactory = GRNTransactionViewModelProviderFactory(application, slFastenerRepository)
         viewModel = ViewModelProvider(this, viewModelProviderFactory)[GRNTransactionViewModel ::class.java]
         getGrnList("Draft")
-
+        getFilteredGRNCompleted("Complete")
+        binding.rcGrnMainCompleted.visibility=View.GONE
         binding.logoutBtn.setOnClickListener {
             showLogoutDialog()
         }
-
         binding.mcvAddGrn.setOnClickListener {
             var intent = Intent(this@GRNMainActivity, GRNAddActivity::class.java)
             startActivity(intent)
@@ -59,27 +63,29 @@ class GRNMainActivity : AppCompatActivity() {
         binding.mcvGRNDraft.setCardBackgroundColor(resources.getColor(R.color.lighter_blue))
         binding.tvDraft.setTextColor(resources.getColor(R.color.white))
         binding.tvCompleted.setTextColor(resources.getColor(R.color.blue))
-
-
         binding.mcvCancel.setOnClickListener {
             var intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
             finish()
         }
-
         binding.mcvGRNDraft.setOnClickListener {
             binding.mcvGRNDraft.setCardBackgroundColor(resources.getColor(R.color.lighter_blue))
             binding.tvDraft.setTextColor(resources.getColor(R.color.white))
             binding.tvCompleted.setTextColor(resources.getColor(R.color.blue))
             binding.mcvGRNCompleted.setCardBackgroundColor(resources.getColor(R.color.white))
             getGrnList("Draft")
+            binding.rcGrnMain.visibility=View.VISIBLE
+            binding.rcGrnMainCompleted.visibility=View.GONE
         }
         binding.mcvGRNCompleted.setOnClickListener {
             binding.tvCompleted.setTextColor(resources.getColor(R.color.white))
             binding.tvDraft.setTextColor(resources.getColor(R.color.blue))
             binding.mcvGRNCompleted.setCardBackgroundColor(resources.getColor(R.color.lighter_blue))
             binding.mcvGRNDraft.setCardBackgroundColor(resources.getColor(R.color.white))
-            getGrnList("Complete")
+            //getGrnList("Complete")
+            getFilteredGRNCompleted("Complete")
+            binding.rcGrnMainCompleted.visibility=View.VISIBLE
+            binding.rcGrnMain.visibility=View.GONE
         }
 
         viewModel.getFilteredGRNMutableResponse.observe(this) { response ->
@@ -101,6 +107,48 @@ class GRNMainActivity : AppCompatActivity() {
                                 setGrnList(grnMainResponse)
                             }
 
+                        } catch (e: Exception) {
+                            Toasty.warning(
+                                this@GRNMainActivity,
+                                e.printStackTrace().toString(),
+                                Toasty.LENGTH_SHORT
+                            ).show()
+                        }
+
+                    }
+                }
+                is Resource.Error -> {
+                    hideProgressBar()
+                    response.message?.let { errorMessage ->
+                        Toasty.error(
+                            this@GRNMainActivity,
+                            "Login failed - \nError Message: $errorMessage"
+                        ).show()
+                    }
+                }
+                is Resource.Loading -> {
+                    showProgressBar()
+                }
+            }
+        }
+        viewModel.getFilteredGRNCompletedMutableResponse .observe(this) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    hideProgressBar()
+                    grnMainResponseCompleted.clear()
+                    response.data?.let { resultResponse ->
+                        try {
+                            if(resultResponse.size>0)
+                            {
+                                grnMainResponseCompleted.addAll(resultResponse)
+                                setGrnCompletedList(grnMainResponseCompleted)
+                                binding.tvCompletedCount.setText(grnMainResponseCompleted.size.toString())
+                            }
+                            else
+                            {
+                                //Toast.makeText(this,"List is Empty!!",Toast.LENGTH_SHORT).show()
+                                setGrnCompletedList(grnMainResponseCompleted)
+                            }
 
                         } catch (e: Exception) {
                             Toasty.warning(
@@ -149,12 +197,33 @@ class GRNMainActivity : AppCompatActivity() {
             ).show()
         }
     }
+    private fun getFilteredGRNCompleted(status: String)
+    {
+        try {
+            viewModel.getFilteredGRNCompleted(token,Constants.BASE_URL, GetFilteredGRNRequest(status))
+        }
+        catch (e:Exception)
+        {
+            Toasty.warning(
+                this@GRNMainActivity,
+                "Please Select Po from list!!",
+                Toasty.LENGTH_SHORT
+            ).show()
+        }
+    }
 
     private fun setGrnList(grnMainResponse: ArrayList<GetFilteredGRNResponse>) {
         grnMainItemAdapter = GrnMainAdapter()
         grnMainItemAdapter?.setGrnMainList(grnMainResponse, this@GRNMainActivity)
         binding.rcGrnMain!!.adapter = grnMainItemAdapter
         binding.rcGrnMain.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+    }
+    private fun setGrnCompletedList(grnMainResponse: ArrayList<GetFilteredGRNResponse>) {
+        grnMainCompletedAdapter = GRNMainCompletedAdapter()
+        grnMainCompletedAdapter?.setGrnMainList(grnMainResponse, this@GRNMainActivity)
+        binding.rcGrnMainCompleted!!.adapter = grnMainCompletedAdapter
+        binding.rcGrnMainCompleted.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
     }
 

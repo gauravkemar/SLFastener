@@ -16,26 +16,44 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <View
+            android:id="@+id/view3"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintVertical_weight="0.20"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/view1"
+            app:layout_constraintBottom_toTopOf="@+id/cl_middle"
+            app:layout_constraintEnd_toStartOf="@+id/view2"
+
+           />
+
+
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cl_middle"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             app:layout_constraintHorizontal_weight="0.30"
             app:cardCornerRadius="10dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/view4"
             app:layout_constraintEnd_toStartOf="@+id/view2"
             app:layout_constraintStart_toEndOf="@+id/view1"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintVertical_weight="0.40"
+            app:layout_constraintTop_toBottomOf="@+id/view3">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cl_1"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:background="@color/blue"
+                    app:layout_constraintVertical_weight="0.10"
+                    app:layout_constraintBottom_toTopOf="@+id/cl_2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -83,7 +101,9 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cl_2"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
+                    app:layout_constraintVertical_weight="0.90"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/cl_1">
@@ -91,8 +111,8 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/clCheckbox"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-
+                        android:layout_height="0dp"
+                        app:layout_constraintVertical_weight="0.85"
                         app:layout_constraintBottom_toTopOf="@+id/btnSubmit"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -101,7 +121,7 @@
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rcPo"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             tools:listitem="@layout/supplier_po_list_item"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -114,14 +134,14 @@
                     <Button
                         android:id="@+id/btnSubmit"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginEnd="10dp"
+                        android:layout_height="0dp"
+                       android:layout_margin="5dp"
                         android:visibility="visible"
-                        android:layout_marginBottom="10dp"
+                        app:layout_constraintVertical_weight="0.15"
+
                         android:backgroundTint="@color/blue"
                         android:text="       Submit      "
+                        app:layout_constraintTop_toBottomOf="@+id/clCheckbox"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent" />
@@ -131,6 +151,17 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
+        <View
+            android:id="@+id/view4"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintVertical_weight="0.20"
+            app:layout_constraintTop_toBottomOf="@+id/cl_middle"
+            app:layout_constraintStart_toEndOf="@+id/view1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/view2"
+            />
+
         <View
             android:id="@+id/view2"
             android:layout_width="0dp"

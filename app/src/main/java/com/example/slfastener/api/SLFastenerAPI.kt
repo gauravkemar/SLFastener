@@ -10,14 +10,17 @@ import com.example.demorfidapp.helper.Constants.GET_SUPPLIERS_POS
 import com.example.demorfidapp.helper.Constants.GET_SUPPLIERS_POS_DDL
 import com.example.demorfidapp.helper.Constants.HTTP_HEADER_AUTHORIZATION
 import com.example.demorfidapp.helper.Constants.LOGIN_URL
-import com.example.slfastener.model.GeneralResponse
 import com.example.slfastener.model.GetActiveSuppliersDDLResponse
 import com.example.slfastener.model.GetPOsAndLineItemsOnPOIdsResponse
 import com.example.slfastener.model.GetSuppliersPOsDDLResponse
 import com.example.slfastener.model.GetSuppliersPOsRequest
+import com.example.slfastener.model.generalrequest.GeneralResponse
 import com.example.slfastener.model.grn.GRNSaveToDraftDefaultRequest
+import com.example.slfastener.model.grn.GRNSaveToDraftDefaultResponse
+import com.example.slfastener.model.grn.ProcessGRNLineItemsResponse
 import com.example.slfastener.model.grnmain.GetFilteredGRNRequest
 import com.example.slfastener.model.grnmain.GetFilteredGRNResponse
+import com.example.slfastener.model.grnsavebatches.ProcessGRNLineItemsRequest
 import com.example.slfastener.model.login.LoginRequest
 import com.example.slfastener.model.login.LoginResponse
 
@@ -63,13 +66,19 @@ interface SLFastenerAPI {
       getFilteredGRNRequest: GetFilteredGRNRequest
      ): Response<ArrayList<GetFilteredGRNResponse>>
 
+     @POST(GET_GRN_FILTERED_GRN)
+     suspend fun getFilteredGRNCompleted (
+      @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+      @Body
+      getFilteredGRNRequest: GetFilteredGRNRequest
+     ): Response<ArrayList<GetFilteredGRNResponse>>
 
     @POST(GET_POS_LINE_ITEMS_ON_POIDS)
     suspend fun getPosLineItemsOnPoIds(
         @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         @Header("Content-Type") contentType: String,
         @Header("User-Agent") userAgent: String,
-        @Body poIds: List<Int>
+        @Body poIds: MutableList<Int>
     ): Response<ArrayList<GetPOsAndLineItemsOnPOIdsResponse>>
 
     @POST(LOGIN_URL)
@@ -78,19 +87,32 @@ interface SLFastenerAPI {
         loginRequest: LoginRequest
     ): Response<LoginResponse>
 
-  @POST(Constants.PROCESS_GRN)
+/*  @POST(Constants.PROCESS_GRN)
     suspend fun processGRN(
       @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         @Body
         grnSaveToDraftDefaultRequest: GRNSaveToDraftDefaultRequest
-    ): Response<GeneralResponse>
+    ): Response<ProcessGRNLineItemsResponse> */
+    @POST(Constants.PROCESS_GRN)
+    suspend fun processGRND(
+      @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Body
+        grnSaveToDraftDefaultRequest: GRNSaveToDraftDefaultRequest
+    ): Response<ProcessGRNLineItemsResponse>
 
     @POST(Constants.PROCESS_SINGLE_GRN_GRN_ITEM_BATCHES)
     suspend fun processSingleGRNGRNItemBatches(
       @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         @Body
-        grnSaveToDraftDefaultRequest: GRNSaveToDraftDefaultRequest
+        processGRNLineItemsRequest: ProcessGRNLineItemsRequest
     ): Response<GeneralResponse>
 
+
+    @GET(GET_SUPPLIERS_POS_DDL)
+    suspend fun getBarcodeValueWithPrefix
+    (
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Query("transactionPrefix") transactionPrefix: String?
+    ): Response<GeneralResponse>
 
 }

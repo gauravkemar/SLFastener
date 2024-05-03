@@ -5,6 +5,7 @@ import com.example.demorfidapp.helper.Constants
 import com.example.slfastener.model.GetSuppliersPOsRequest
 import com.example.slfastener.model.grn.GRNSaveToDraftDefaultRequest
 import com.example.slfastener.model.grnmain.GetFilteredGRNRequest
+import com.example.slfastener.model.grnsavebatches.ProcessGRNLineItemsRequest
 import com.example.slfastener.model.login.LoginRequest
 import retrofit2.http.Body
 import retrofit2.http.Header
@@ -45,7 +46,7 @@ class SLFastenerRepository {
         @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         baseUrl: String,
         @Body
-        getSuppliersPOsRequest: ArrayList<Int>
+        getSuppliersPOsRequest: MutableList<Int>
     ) = RetrofitInstance.api(baseUrl).getPosLineItemsOnPoIds("Bearer $bearerToken","application/json","PostmanRuntime/7.37.3",getSuppliersPOsRequest)
 
     suspend fun getFilteredGRN(
@@ -55,11 +56,32 @@ class SLFastenerRepository {
         getFilteredGRNRequest: GetFilteredGRNRequest
     ) = RetrofitInstance.api(baseUrl).getFilteredGRN(bearerToken,getFilteredGRNRequest)
 
-    suspend fun processGRN(
+    suspend fun getFilteredGRNCompleted(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+        @Body
+        getFilteredGRNRequest: GetFilteredGRNRequest
+    ) = RetrofitInstance.api(baseUrl).getFilteredGRNCompleted(bearerToken,getFilteredGRNRequest)
+
+    suspend fun processGRND(
         @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         baseUrl: String,
         @Body
         grnSaveToDraftDefaultRequest: GRNSaveToDraftDefaultRequest
-    ) = RetrofitInstance.api(baseUrl).processGRN(bearerToken,grnSaveToDraftDefaultRequest)
+    ) = RetrofitInstance.api(baseUrl).processGRND(bearerToken,grnSaveToDraftDefaultRequest)
+
+
+    suspend fun processSingleGRNGRNItemBatches(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+        @Body
+        processGRNLineItemsRequest: ProcessGRNLineItemsRequest
+    ) = RetrofitInstance.api(baseUrl).processSingleGRNGRNItemBatches(bearerToken,processGRNLineItemsRequest)
+
+    suspend fun getBarcodeValueWithPrefix(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+        @Query("transactionPrefix") transactionPrefix: String?
+    ) = RetrofitInstance.api(baseUrl).getBarcodeValueWithPrefix(bearerToken,transactionPrefix)
 
 }

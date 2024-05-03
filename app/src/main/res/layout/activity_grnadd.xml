@@ -167,7 +167,7 @@
                                     android:layout_margin="15dp"
                                     android:background="@drawable/round_border_grey"
                                     app:layout_constraintBottom_toBottomOf="parent"
-                                    app:layout_constraintEnd_toStartOf="@+id/clEnterInvNo"
+                                    app:layout_constraintEnd_toStartOf="@+id/clSelectPo"
                                     app:layout_constraintHorizontal_weight="0.16"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toTopOf="parent">
@@ -203,6 +203,29 @@
                                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+                                <com.google.android.material.card.MaterialCardView
+                                    android:id="@+id/clSelectPo"
+                                    android:layout_width="0dp"
+                                    android:layout_height="0dp"
+                                    android:layout_margin="15dp"
+                                    android:visibility="gone"
+                                    app:cardBackgroundColor="@color/blue"
+                                    app:cardCornerRadius="5dp"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toStartOf="@+id/clEnterInvNo"
+                                    app:layout_constraintHorizontal_weight="0.16"
+                                    app:layout_constraintStart_toEndOf="@+id/clSelectSupplier"
+                                    app:layout_constraintTop_toTopOf="parent">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:padding="10dp"
+                                        android:text="Select PO"
+                                        android:textColor="@color/white" />
+                                </com.google.android.material.card.MaterialCardView>
+
                                 <androidx.constraintlayout.widget.ConstraintLayout
                                     android:id="@+id/clEnterInvNo"
                                     android:layout_width="0dp"
@@ -210,9 +233,9 @@
                                     android:layout_margin="15dp"
                                     android:background="@drawable/round_border_grey"
                                     app:layout_constraintBottom_toBottomOf="parent"
-                                    app:layout_constraintEnd_toStartOf="@+id/clEnterDGPO"
+                                    app:layout_constraintEnd_toStartOf="@+id/clCurrencyType"
                                     app:layout_constraintHorizontal_weight="0.16"
-                                    app:layout_constraintStart_toEndOf="@+id/clSelectSupplier"
+                                    app:layout_constraintStart_toEndOf="@+id/clSelectPo"
                                     app:layout_constraintTop_toTopOf="parent">
 
                                     <EditText
@@ -233,7 +256,7 @@
                                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                                 <androidx.constraintlayout.widget.ConstraintLayout
-                                    android:id="@+id/clEnterDGPO"
+                                    android:id="@+id/clCurrencyType"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_margin="15dp"
@@ -244,13 +267,12 @@
                                     app:layout_constraintStart_toEndOf="@+id/clEnterInvNo"
                                     app:layout_constraintTop_toTopOf="parent">
 
-                                    <EditText
-                                        android:id="@+id/edGdpo"
+                                    <TextView
+                                        android:id="@+id/tvCurrencyType"
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:background="@android:color/transparent"
-                                        android:hint="Enter GDPO"
-                                        android:inputType="textCapCharacters"
+                                        android:text=""
                                         android:padding="10dp"
                                         android:textColor="@color/tv_sub_head_color"
                                         android:textSize="12sp"
@@ -269,9 +291,9 @@
                                     android:layout_margin="15dp"
                                     android:background="@drawable/round_border_grey"
                                     app:layout_constraintBottom_toBottomOf="parent"
-                                    app:layout_constraintEnd_toStartOf="@+id/clSelectPo"
+                                    app:layout_constraintEnd_toStartOf="@+id/mcvAddGrn"
                                     app:layout_constraintHorizontal_weight="0.16"
-                                    app:layout_constraintStart_toEndOf="@+id/clEnterDGPO"
+                                    app:layout_constraintStart_toEndOf="@+id/clCurrencyType"
                                     app:layout_constraintTop_toTopOf="parent">
 
                                     <TextView
@@ -292,28 +314,7 @@
 
                                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                                <com.google.android.material.card.MaterialCardView
-                                    android:id="@+id/clSelectPo"
-                                    android:layout_width="0dp"
-                                    android:layout_height="0dp"
-                                    android:layout_margin="15dp"
-                                    android:visibility="gone"
-                                    app:cardBackgroundColor="@color/blue"
-                                    app:cardCornerRadius="5dp"
-                                    app:layout_constraintBottom_toBottomOf="parent"
-                                    app:layout_constraintEnd_toStartOf="@+id/mcvAddGrn"
-                                    app:layout_constraintHorizontal_weight="0.16"
-                                    app:layout_constraintStart_toEndOf="@+id/clEnterInvDate"
-                                    app:layout_constraintTop_toTopOf="parent">
 
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center"
-                                        android:padding="10dp"
-                                        android:text="Select PO"
-                                        android:textColor="@color/white" />
-                                </com.google.android.material.card.MaterialCardView>
 
                                 <com.google.android.material.card.MaterialCardView
                                     android:id="@+id/mcvAddGrn"
@@ -324,7 +325,7 @@
                                     app:cardBackgroundColor="@color/bg_orange"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintHorizontal_weight="0.16"
-                                    app:layout_constraintStart_toEndOf="@+id/clSelectPo"
+                                    app:layout_constraintStart_toEndOf="@+id/clEnterInvDate"
                                     app:layout_constraintTop_toTopOf="parent"
                                     app:layout_constraintBottom_toBottomOf="parent">
 
@@ -459,7 +460,6 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_margin="10dp"
-
                                             app:layout_constraintBottom_toBottomOf="parent"
                                             app:layout_constraintEnd_toEndOf="parent"
                                             app:layout_constraintStart_toStartOf="parent"
@@ -469,7 +469,6 @@
                                                 android:layout_width="wrap_content"
                                                 android:layout_height="wrap_content"
                                                 android:background="@drawable/round_border_blue">
-
                                                 <ImageView
                                                     android:id="@+id/processIvOnOff"
                                                     android:layout_width="25dp"
@@ -493,8 +492,6 @@
                                                     app:layout_constraintStart_toEndOf="@id/processIvOnOff"
                                                     app:layout_constraintTop_toTopOf="parent" />
                                             </androidx.constraintlayout.widget.ConstraintLayout>
-
-
                                         </com.google.android.material.card.MaterialCardView>
 
                                         <com.google.android.material.card.MaterialCardView
@@ -505,9 +502,7 @@
                                             app:cardBackgroundColor="@color/bg_orange"
                                             app:layout_constraintEnd_toEndOf="parent"
                                             app:layout_constraintTop_toTopOf="parent"
-
                                             >
-
                                             <TextView
                                                 android:layout_width="wrap_content"
                                                 android:layout_height="wrap_content"
@@ -578,6 +573,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_margin="10dp"
                                         android:clickable="true"
+                                        android:visibility="gone"
                                         app:cardBackgroundColor="@color/blue"
                                         app:cardCornerRadius="5dp"
                                         app:layout_constraintBottom_toBottomOf="parent"

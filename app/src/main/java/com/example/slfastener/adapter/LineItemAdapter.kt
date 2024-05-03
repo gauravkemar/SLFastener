@@ -37,12 +37,10 @@ class LineItemAdapter  : RecyclerView.Adapter<LineItemAdapter.ViewHolder>() {
         holder.tvColumnThree.setText(poLineItemModel.itemName)
         holder.tvColumnFour.setText(poLineItemModel.itemDescription)
 
-
         if(poLineItemModel.poQuantity.toString()!=null)
         {
             holder.tvColumnFive.setText(poLineItemModel.poQuantity.toString())
         }
-
         holder.tvColumnSix.setText(poLineItemModel.pouom)
 
         holder.cbPcbLineItem.setOnCheckedChangeListener(null) // Reset listener to avoid unwanted calls
@@ -58,7 +56,7 @@ class LineItemAdapter  : RecyclerView.Adapter<LineItemAdapter.ViewHolder>() {
                     poLineItemModel.itemCode,poLineItemModel.itemDescription,
                     poLineItemModel.itemName,poLineItemModel.lineNumber,poLineItemModel.poId,poLineItemModel.poLineItemId,poLineItemModel.poQuantity,
                     poLineItemModel.poUnitPrice,poLineItemModel.posapLineItemNumber,poLineItemModel.pouom,poLineItemModel.poNumber,poLineItemModel.GDPONumber,
-                    poLineItemModel.ExpiryDate,poLineItemModel.ReceivedQty,true,poLineItemModel.materialType))
+                    poLineItemModel.ExpiryDate,poLineItemModel.ReceivedQty,true,poLineItemModel.materialType,null))
                 Log.d("fromclick", poLineItemMainModel[position].toString())
             } else {
 
@@ -66,7 +64,7 @@ class LineItemAdapter  : RecyclerView.Adapter<LineItemAdapter.ViewHolder>() {
                     poLineItemModel.itemCode,poLineItemModel.itemDescription,
                     poLineItemModel.itemName,poLineItemModel.lineNumber,poLineItemModel.poId,poLineItemModel.poLineItemId,poLineItemModel.poQuantity,
                     poLineItemModel.poUnitPrice,poLineItemModel.posapLineItemNumber,poLineItemModel.pouom,poLineItemModel.poNumber,poLineItemModel.GDPONumber,
-                    poLineItemModel.ExpiryDate,poLineItemModel.ReceivedQty,false,poLineItemModel.materialType))
+                    poLineItemModel.ExpiryDate,poLineItemModel.ReceivedQty,false,poLineItemModel.materialType,null))
                 Log.d("fromclick", poLineItemMainModel[position].toString())
             }
         }

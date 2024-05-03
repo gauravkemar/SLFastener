@@ -26,7 +26,7 @@ data class GetPOsAndLineItemsOnPOIdsResponse(
     val isActive: Boolean,
     val modifiedBy: String,
     val modifiedDate: Any,
-    val poCurrency: Any,
+    val poCurrency: String,
     val poDate: String,
     val poId: Int,
     val poLineItems: List<PoLineItem>,

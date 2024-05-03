@@ -29,8 +29,6 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-
-
                     >
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
@@ -292,23 +290,52 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 >
-                                <include
-                                    app:layout_constraintTop_toTopOf="parent"
+                                <androidx.constraintlayout.widget.ConstraintLayout
+                                    android:id="@+id/clGrnHeader"
                                     android:layout_width="match_parent"
                                     android:layout_height="0dp"
-                                    android:id="@+id/grnHeader"
-                                    layout="@layout/grn_main_list_header"
-                                    app:layout_constraintVertical_weight="0.07"
-                                    app:layout_constraintBottom_toTopOf="@+id/rcGrnMain"/>
+                                    android:background="@drawable/round_corner_header"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+
+                                    >
+                                    <include
+                                        app:layout_constraintTop_toTopOf="parent"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:id="@+id/grnHeader"
+                                        android:layout_margin="5dp"
+                                        layout="@layout/grn_main_list_header"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintBottom_toBottomOf="parent"/>
+                                </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                                 <androidx.recyclerview.widget.RecyclerView
                                     android:id="@+id/rcGrnMain"
                                     android:layout_width="match_parent"
                                     android:layout_height="0dp"
                                     tools:listitem="@layout/grn_main_list_item"
-                                    android:layout_margin="10dp"
+                                    android:layout_margin="5dp"
                                     app:layout_constraintVertical_weight="0.93"
-                                    app:layout_constraintTop_toBottomOf="@+id/grnHeader"
+                                    app:layout_constraintTop_toBottomOf="@+id/clGrnHeader"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    >
+
+                                </androidx.recyclerview.widget.RecyclerView>
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:id="@+id/rcGrnMainCompleted"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:visibility="gone"
+                                    tools:listitem="@layout/grn_main_list_item"
+                                    android:layout_margin="5dp"
+                                    app:layout_constraintVertical_weight="0.93"
+                                    app:layout_constraintTop_toBottomOf="@+id/clGrnHeader"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintEnd_toEndOf="parent"

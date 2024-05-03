@@ -2,17 +2,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:background="@color/header_bg"
         >
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clTop"
             android:layout_width="match_parent"
@@ -20,9 +15,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-
             >
-
             <CheckBox
                 android:id="@+id/cbLineItem"
                 android:layout_width="0dp"
@@ -31,6 +24,7 @@
                 app:layout_constraintHorizontal_weight="0.05"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tvColumnOne"
                 />
 
@@ -41,13 +35,13 @@
                 app:layout_constraintEnd_toStartOf="@+id/tvColumnOne"
                 app:layout_constraintStart_toEndOf="@+id/cbLineItem"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="@+id/cbLineItem"/>
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
 
             <TextView
                 android:id="@+id/tvColumnOne"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textColor="@color/black"
                 android:padding="5dp"
@@ -66,13 +60,14 @@
                 app:layout_constraintEnd_toStartOf="@+id/tvColumnTwo"
                 app:layout_constraintStart_toEndOf="@+id/tvColumnOne"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="@+id/tvColumnOne"/>
+                app:layout_constraintBottom_toBottomOf="parent"
+             />
 
 
             <TextView
                 android:id="@+id/tvColumnTwo"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textColor="@color/black"
                 android:padding="5dp"
@@ -92,13 +87,13 @@
                 app:layout_constraintEnd_toStartOf="@+id/tvColumnThree"
                 app:layout_constraintStart_toEndOf="@+id/tvColumnTwo"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="@+id/tvColumnTwo"/>
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
 
             <TextView
                 android:id="@+id/tvColumnThree"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="5dp"
                 android:textColor="@color/black"
@@ -119,13 +114,14 @@
                 app:layout_constraintEnd_toStartOf="@+id/tvColumnFour"
                 app:layout_constraintStart_toEndOf="@+id/tvColumnThree"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="@+id/tvColumnThree"/>
+                app:layout_constraintBottom_toBottomOf="parent"
+               />
 
 
             <TextView
                 android:id="@+id/tvColumnFour"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="5dp"
                 android:textColor="@color/black"
@@ -145,13 +141,13 @@
                 app:layout_constraintEnd_toStartOf="@+id/tvColumnFive"
                 app:layout_constraintStart_toEndOf="@+id/tvColumnFour"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="@+id/tvColumnFour"/>
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
 
             <TextView
                 android:id="@+id/tvColumnFive"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="5dp"
                 android:textColor="@color/black"
@@ -170,13 +166,13 @@
                 app:layout_constraintEnd_toStartOf="@+id/tvColumnSix"
                 app:layout_constraintStart_toEndOf="@+id/tvColumnFive"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="@+id/tvColumnFive"/>
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
 
             <TextView
                 android:id="@+id/tvColumnSix"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="5dp"
                 android:text="@string/pouom"

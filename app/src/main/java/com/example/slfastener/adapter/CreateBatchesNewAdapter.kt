@@ -56,12 +56,12 @@ class CreateBatchesNewAdapter (
                     R.color.header_bg
                 )
             )
-            holder.mcvGenerateBarcode.setCardBackgroundColor(
+          /*  holder.mcvGenerateBarcode.setCardBackgroundColor(
                 ContextCompat.getColor(
                     context!!,
                     R.color.light_grey
                 )
-            )
+            )*/
         } else {
             Log.d("MyTag", "Setting visibility and colors False $batchInfoListModel")
         }
@@ -166,13 +166,13 @@ class CreateBatchesNewAdapter (
         val tvSrnNo: TextView = itemView.findViewById(R.id.tvSrnNo)
         val tvBatchBarcodeNo: TextView = itemView.findViewById(R.id.tvBatchBarcodeNo)
         val edWeight: TextView = itemView.findViewById(R.id.edWeight)
-        val mcvGenerateBarcode: MaterialCardView = itemView.findViewById(R.id.mcvGenerateBarcode)
+        //val mcvGenerateBarcode: MaterialCardView = itemView.findViewById(R.id.mcvGenerateBarcode)
         val tvBarcodeNo: TextView = itemView.findViewById(R.id.tvBarcodeNo)
         val ivDelete: ImageView = itemView.findViewById(R.id.ivDelete)
         val ivAdd: ImageView = itemView.findViewById(R.id.ivAdd)
         val mcvWeight: MaterialCardView = itemView.findViewById(R.id.mcvWeight)
         val clCardMain: ConstraintLayout = itemView.findViewById(R.id.clCardMain)
-        val tvPrint: TextView = itemView.findViewById(R.id.tvPrint)
+       // val tvPrint: TextView = itemView.findViewById(R.id.tvPrint)
 
 
     }

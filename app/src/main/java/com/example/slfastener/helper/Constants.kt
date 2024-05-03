@@ -32,6 +32,7 @@ object Constants {
     const val HTTP_HEADER_AUTHORIZATION = "Authorization"
 
     //const val BASE_URL = "http://103.240.90.141:80/Service/api/"
+    //const val BASE_URL = "http://192.168.1.205:4800/service/api/"
     const val BASE_URL = "http://192.168.1.46:5000/api/"
 
 

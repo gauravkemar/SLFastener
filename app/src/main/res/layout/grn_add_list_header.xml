@@ -1,258 +1,516 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_margin="5dp"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <TextView
-        android:id="@+id/tvPoNo"
-        android:layout_width="0dp"
-        android:textSize="14sp"
+    android:layout_margin="5dp">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:textAlignment="center"
-        android:text="PO No"
-        android:layout_margin="2dp"
-        app:layout_constraintHorizontal_weight="0.09"
-        android:padding="5dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tvGdPoNo"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-    </TextView>
-
-    <TextView
-        android:id="@+id/tvGdPoNo"
-        android:layout_width="0dp"
-        android:textSize="14sp"
-        android:textAlignment="center"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:layout_margin="2dp"
-        android:padding="5dp"
-        android:text="GDPO NO"
-        app:layout_constraintHorizontal_weight="0.09"
-        app:layout_constraintStart_toEndOf="@+id/tvPoNo"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tvLineItemDesc">
-
-    </TextView>
-
-    <TextView
-        android:id="@+id/tvLineItemDesc"
-        android:textSize="14sp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:layout_margin="2dp"
-        android:textStyle="bold"
-        android:padding="5dp"
-        android:text="Line Item Desc"
-        app:layout_constraintHorizontal_weight="0.10"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tvItemDesc"
-        app:layout_constraintStart_toEndOf="@+id/tvGdPoNo">
-
-    </TextView>
-
-    <TextView
-        android:id="@+id/tvItemDesc"
-        android:textSize="14sp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:textAlignment="center"
-        android:layout_margin="2dp"
-        android:padding="5dp"
-        android:textStyle="bold"
-        android:text="Item Desc"
-        app:layout_constraintHorizontal_weight="0.10"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvLineItemDesc"
-        app:layout_constraintEnd_toStartOf="@+id/tvPuom"
+        app:layout_constraintEnd_toEndOf="parent"
         >
+        <TextView
+            android:id="@+id/tvSrNo"
+            android:layout_width="0dp"
+            android:text="SR"
+            android:textAlignment="center"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:layout_constraintHorizontal_weight="0.04"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tvPoNo"
+            />
 
-    </TextView>
-    <TextView
-        android:id="@+id/tvPuom"
-        android:textSize="14sp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:layout_margin="2dp"
-        android:textStyle="bold"
-        android:padding="5dp"
-        android:text="PUOM"
-        app:layout_constraintHorizontal_weight="0.09"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvItemDesc"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tvQuantityPrice">
+  
 
-    </TextView>
+        <TextView
+            android:id="@+id/tvPoNo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="5dp"
+            android:textStyle="bold"
+            android:layout_marginEnd="2dp"
+            android:layout_marginBottom="5dp"
+            android:background="@android:color/transparent"
+            android:padding="5dp"
+            android:text="PO No"
+            android:textSize="12sp"
+            android:textAlignment="center"
+            android:textColor="@color/black"
 
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/edGDPO"
+            app:layout_constraintHorizontal_weight="0.07"
+            app:layout_constraintStart_toEndOf="@+id/tvSrNo"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/tvQuantityPrice"
-        android:textSize="14sp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:layout_margin="2dp"
-        android:textStyle="bold"
-        android:padding="5dp"
-        android:text="$/₹/€"
-        app:layout_constraintHorizontal_weight="0.07"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvPuom"
-        app:layout_constraintEnd_toStartOf="@+id/tvPoQty">
-
-    </TextView>
-    <TextView
-        android:id="@+id/tvPoQty"
-        android:textSize="14sp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:layout_margin="2dp"
-        android:textStyle="bold"
-        android:padding="5dp"
-        android:text="PO Qty"
-        app:layout_constraintHorizontal_weight="0.07"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvQuantityPrice"
-        app:layout_constraintEnd_toStartOf="@+id/tvOpenQty">
-
-    </TextView>
-    <TextView
-        android:id="@+id/tvOpenQty"
-        android:textSize="14sp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:layout_margin="2dp"
-        android:textStyle="bold"
-        android:padding="5dp"
-        android:text="Open Qty"
-        app:layout_constraintHorizontal_weight="0.07"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvPoQty"
-        app:layout_constraintEnd_toStartOf="@+id/tvQty">
-
-    </TextView>
+        </TextView>
 
 
+        <EditText
+            android:id="@+id/edGDPO"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="2dp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:layout_marginBottom="5dp"
+            android:background="@android:color/transparent"
+            android:padding="5dp"
+            android:hint="GDPO NO"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tvPoLineNo"
+            app:layout_constraintHorizontal_weight="0.09"
+            app:layout_constraintStart_toEndOf="@+id/tvPoNo"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/tvQty"
-        android:textSize="14sp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:layout_margin="2dp"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:padding="5dp"
-        android:text="Qty"
-        app:layout_constraintHorizontal_weight="0.09"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvOpenQty"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tvEpiryDt">
+        </EditText>
 
-    </TextView>
+        <TextView
+            android:id="@+id/tvPoLineNo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="2dp"
+            android:textStyle="bold"
+            android:layout_marginBottom="5dp"
+            android:background="@android:color/transparent"
+            android:padding="5dp"
+            android:text="Po Li NO"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tvItemCode"
+            app:layout_constraintHorizontal_weight="0.05"
+            app:layout_constraintStart_toEndOf="@+id/edGDPO"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/tvEpiryDt"
-        android:layout_margin="2dp"
-        android:layout_width="0dp"
-        android:textSize="14sp"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:padding="5dp"
-        android:text="Expiry Dt"
-        app:layout_constraintHorizontal_weight="0.09"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvQty"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tvBatchNo">
+        </TextView>
 
-    </TextView>
+      
 
-    <TextView
-        android:id="@+id/tvBatchNo"
-        android:layout_width="0dp"
-        android:textSize="14sp"
-        android:layout_margin="2dp"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:padding="5dp"
-        android:text="BatchNo"
-        app:layout_constraintHorizontal_weight="0.06"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvEpiryDt"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tvSaveLineItem">
+        <TextView
+            android:id="@+id/tvItemCode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginBottom="5dp"
+            android:background="@android:color/transparent"
+            android:padding="5dp"
+            android:textStyle="bold"
+            android:text="Item Code"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tvItemDesc"
+            app:layout_constraintHorizontal_weight="0.10"
+            app:layout_constraintStart_toEndOf="@+id/tvPoLineNo"
+            app:layout_constraintTop_toTopOf="parent">
 
-    </TextView>
-    <TextView
-        android:id="@+id/tvSaveLineItem"
-        android:layout_width="0dp"
-        android:textSize="14sp"
-        android:layout_margin="2dp"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:padding="5dp"
-        android:text="Save"
-        app:layout_constraintHorizontal_weight="0.04"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvBatchNo"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tvDeleteLineItem">
+        </TextView>
 
-    </TextView>
-    <TextView
-        android:id="@+id/tvDeleteLineItem"
-        android:layout_width="0dp"
-        android:textSize="14sp"
-        android:layout_margin="2dp"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:padding="5dp"
-        android:text="Delete"
-        app:layout_constraintHorizontal_weight="0.05"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvSaveLineItem"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+     
 
-    </TextView>
+        <TextView
+            android:id="@+id/tvItemDesc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginBottom="5dp"
+            android:textStyle="bold"
+            android:background="@android:color/transparent"
+            android:padding="5dp"
+            android:text="Item Desc"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tvPuom"
+            app:layout_constraintHorizontal_weight="0.15"
+            app:layout_constraintStart_toEndOf="@+id/tvItemCode"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </TextView>
 
 
+        <TextView
+            android:id="@+id/tvPuom"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:padding="5dp"
+            android:textStyle="bold"
+            android:text="PUOM"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tvMhType"
+            app:layout_constraintHorizontal_weight="0.05"
+            app:layout_constraintStart_toEndOf="@+id/tvItemDesc"
+            app:layout_constraintTop_toTopOf="parent">
 
+        </TextView>
+
+     
+
+        <TextView
+            android:id="@+id/tvMhType"
+            android:textSize="12sp"
+            android:layout_width="0dp"
+            android:textStyle="bold"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:layout_margin="2dp"
+            android:padding="5dp"
+            android:text="MH TYPE"
+            app:layout_constraintHorizontal_weight="0.06"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvPuom"
+            app:layout_constraintEnd_toStartOf="@+id/tvPoQty">
+
+        </TextView>
+
+     
+
+        <TextView
+            android:id="@+id/tvPoQty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:padding="5dp"
+            android:text="PO Qty"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tvBalQty"
+            app:layout_constraintHorizontal_weight="0.06"
+            app:layout_constraintStart_toEndOf="@+id/tvMhType"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/tvBalQty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:padding="5dp"
+            android:textStyle="bold"
+            android:text="Bal. Qty"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tvRate"
+            app:layout_constraintHorizontal_weight="0.05"
+            app:layout_constraintStart_toEndOf="@+id/tvPoQty"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </TextView>
+
+        
+        <TextView
+            android:id="@+id/tvRate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:padding="5dp"
+            android:textStyle="bold"
+            android:text="Rate"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tvGRNQty"
+            app:layout_constraintHorizontal_weight="0.05"
+            app:layout_constraintStart_toEndOf="@+id/tvBalQty"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </TextView>
+
+
+
+
+        <TextView
+            android:id="@+id/tvGRNQty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:padding="5dp"
+            android:textStyle="bold"
+            android:text="GRN QTY"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tvWareHouse"
+            app:layout_constraintHorizontal_weight="0.06"
+            app:layout_constraintStart_toEndOf="@+id/tvRate"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </TextView>
+
+       
+
+
+        <TextView
+            android:id="@+id/tvWareHouse"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:padding="5dp"
+            android:textStyle="bold"
+            android:text="WareHouse"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/clAction"
+            app:layout_constraintHorizontal_weight="0.07"
+            app:layout_constraintStart_toEndOf="@+id/tvGRNQty"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </TextView>
+      
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clAction"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintHorizontal_weight="0.10"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvWareHouse"
+            >
+             <TextView
+                 android:id="@+id/tvAction"
+                 android:layout_width="0dp"
+                 android:layout_height="wrap_content"
+                 android:text="Action"
+                 android:padding="5dp"
+                 android:textStyle="bold"
+                 android:textAlignment="center"
+                 android:textColor="@color/black"
+                 android:textSize="12sp"
+                 app:layout_constraintTop_toTopOf="parent"
+                 app:layout_constraintStart_toStartOf="parent"
+                 app:layout_constraintEnd_toEndOf="parent"
+                 app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+        <!--  <com.google.android.material.card.MaterialCardView
+              android:id="@+id/btCreatebatches"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_marginStart="2dp"
+              android:layout_marginTop="5dp"
+              android:layout_marginEnd="2dp"
+              android:layout_marginBottom="5dp"
+              app:cardBackgroundColor="@color/blue"
+              app:layout_constraintBottom_toBottomOf="parent"
+              app:layout_constraintEnd_toStartOf="@+id/tvSaveLineItem"
+              app:layout_constraintHorizontal_weight="0.06"
+              app:layout_constraintStart_toEndOf="@+id/tvWareHouse"
+              app:layout_constraintTop_toTopOf="parent">
+
+              <TextView
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:background="@android:color/transparent"
+                  android:padding="5dp"
+                  android:text="+ Create"
+                  android:textAlignment="center"
+                  android:textColor="@color/white"
+                  android:textSize="12sp"
+                  android:textStyle="bold"/>
+
+          </com.google.android.material.card.MaterialCardView>-->
+
+
+
+        <!--<ImageView
+            android:id="@+id/tvSaveLineItem"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:padding="5dp"
+            android:src="@drawable/ic_save_black"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tvDeleteLineItem"
+            app:layout_constraintHorizontal_weight="0.04"
+            app:layout_constraintStart_toEndOf="@+id/btCreatebatches"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </ImageView>-->
+
+
+        <!--      <ImageView
+                  android:id="@+id/tvDeleteLineItem"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_margin="2dp"
+                  android:padding="5dp"
+                  android:src="@drawable/ic_delete_black"
+                  app:layout_constraintBottom_toBottomOf="parent"
+                  app:layout_constraintEnd_toEndOf="parent"
+                  app:layout_constraintHorizontal_weight="0.05"
+                  app:layout_constraintStart_toEndOf="@+id/tvSaveLineItem"
+                  app:layout_constraintTop_toTopOf="parent">
+
+              </ImageView>
+      -->
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--    <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/cl1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clAddBatch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/rcBatches"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                >
+
+                <EditText
+                    android:id="@+id/edBatchNo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:layout_marginStart="10dp"
+                    android:hint="Enter Batch Barcode Number"
+                    android:background="@drawable/round_border_blue"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    />
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcvClearBatchBarcode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="15dp"
+                    android:clickable="true"
+                    app:cardBackgroundColor="@color/blue"
+                    app:layout_constraintStart_toEndOf="@+id/edBatchNo"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="20dp"
+                            android:paddingEnd="20dp"
+                            android:paddingTop="8dp"
+                            android:paddingBottom="8dp"
+                            android:text="Clear"
+                            android:textColor="@color/white"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcvAddBatches"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="15dp"
+                    android:clickable="true"
+                    app:cardBackgroundColor="@color/add_btn_color"
+                    app:cardCornerRadius="5dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/tvAddNewBatch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="10dp"
+                            android:paddingTop="8dp"
+                            android:paddingEnd="10dp"
+                            android:paddingBottom="8dp"
+                            android:text="Add New Batch"
+                            android:textColor="@color/white"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/ivAddbatch"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/ivAddbatch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:src="@drawable/add_circle_white"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/tvAddNewBatch"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcBatches"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/create_batchs_item"
+                app:layout_constraintTop_toBottomOf="@+id/clAddBatch"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>-->
 </androidx.constraintlayout.widget.ConstraintLayout>

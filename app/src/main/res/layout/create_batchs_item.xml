@@ -22,32 +22,46 @@
             android:padding="5dp"
             android:layout_margin="2dp"
             android:textAlignment="center"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_weight="0.05"
+            app:layout_constraintHorizontal_weight="0.04"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tvBatchBarcodeNo"
+            app:layout_constraintEnd_toStartOf="@+id/tvBatchNo"
             />
 
-
-
-
         <TextView
-            android:id="@+id/tvBatchBarcodeNo"
+            android:id="@+id/tvBatchNo"
             android:layout_width="0dp"
-            android:text="BATCH BARCODE NO"
+            android:text="BATCH No"
             android:textAlignment="center"
             android:padding="5dp"
             android:layout_margin="2dp"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:textColor="@color/black"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_weight="0.25"
+            app:layout_constraintHorizontal_weight="0.12"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tvSrnNo"
+            app:layout_constraintEnd_toStartOf="@+id/tvInternalBatchNo"
+            />
+
+        <TextView
+            android:id="@+id/tvInternalBatchNo"
+            android:layout_width="0dp"
+            android:text="KGRN/BATCH"
+            android:textAlignment="center"
+            android:padding="5dp"
+            android:layout_margin="2dp"
+            android:textSize="12sp"
+            android:textColor="@color/black"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_weight="0.16"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvBatchNo"
             app:layout_constraintEnd_toStartOf="@+id/clWeight"
             />
 
@@ -60,21 +74,38 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_weight="0.15"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tvBatchBarcodeNo"
-            app:layout_constraintEnd_toStartOf="@+id/mcvGenerateBarcode">
-            <TextView
-                android:id="@+id/edWeight"
+            app:layout_constraintStart_toEndOf="@+id/tvInternalBatchNo"
+            app:layout_constraintEnd_toStartOf="@+id/tvUOM">
+
+            <EditText
+                android:layout_height="0dp"
                 android:layout_width="0dp"
+                android:padding="5dp"
+                android:id="@+id/edWeight"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:background="@android:color/transparent"
+                android:visibility="gone"
+                android:textAlignment="center"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/mcvWeight"
+                />
+            <TextView
+                android:id="@+id/tvWeight"
                 android:layout_margin="2dp"
                 android:padding="5dp"
                 android:hint=""
+                android:visibility="gone"
                 android:focusable="true"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:focusableInTouchMode="true"
                 android:textAlignment="center"
                 android:textSize="14sp"
                 android:background="@android:color/transparent"
                 android:textColor="@color/black"
-                android:layout_height="0dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -103,9 +134,106 @@
             </com.google.android.material.card.MaterialCardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/tvUOM"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="UOM"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            android:textAlignment="center"
+            app:layout_constraintHorizontal_weight="0.05"
+            app:layout_constraintStart_toEndOf="@+id/clWeight"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tvBarcodeLableValue"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/tvBarcodeLableValue"
+            android:layout_width="0dp"
+            app:layout_constraintHorizontal_weight="0.15"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/black"
+            android:textAlignment="center"
+            android:text="G YY:MM:DD:HH:MM:SS:001"
+            app:layout_constraintStart_toEndOf="@+id/tvUOM"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tvExpiryDate"
+
+            />
+
+        <TextView
+            android:id="@+id/tvExpiryDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="YY:MM:DD"
+            android:textColor="@color/black"
+            android:visibility="gone"
+            android:textSize="12sp"
+            android:textAlignment="center"
+            app:layout_constraintHorizontal_weight="0.08"
+            app:layout_constraintEnd_toStartOf="@+id/clActions"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvBarcodeLableValue"
+            />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clActions"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintHorizontal_weight="0.17"
+            app:layout_constraintStart_toEndOf="@+id/tvExpiryDate"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            >
+            <ImageButton
+                android:id="@+id/ivAdd"
+                android:layout_width="0dp"
+                android:layout_margin="2dp"
+                android:padding="5dp"
+                android:src="@drawable/ic_add_black"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_weight="0.10"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/ivSave"
+                />
+            <ImageButton
+                android:id="@+id/ivSave"
+                android:layout_width="0dp"
+                android:layout_margin="2dp"
+                android:padding="5dp"
+                android:src="@drawable/ic_save_black"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_weight="0.10"
+                app:layout_constraintStart_toEndOf="@+id/ivAdd"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/ivDelete"
+                />
+
+            <ImageButton
+                android:id="@+id/ivDelete"
+                android:layout_width="0dp"
+                android:padding="5dp"
+                android:layout_margin="2dp"
+                android:src="@drawable/ic_delete_black"
+                android:layout_height="wrap_content"
+                app:layout_constraintHorizontal_weight="0.10"
+                app:layout_constraintStart_toEndOf="@+id/ivSave"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        <com.google.android.material.card.MaterialCardView
+       <!-- <com.google.android.material.card.MaterialCardView
             android:id="@+id/mcvGenerateBarcode"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -134,10 +262,10 @@
                 app:layout_constraintStart_toEndOf="@+id/btnGenerateBarcode"
                 app:layout_constraintEnd_toStartOf="@+id/ivAdd"
                 />
-        </com.google.android.material.card.MaterialCardView>
+        </com.google.android.material.card.MaterialCardView>-->
 
 
-        <TextView
+       <!-- <TextView
             android:id="@+id/tvBarcodeNo"
             android:layout_width="0dp"
             android:padding="5dp"
@@ -152,36 +280,10 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@+id/mcvGenerateBarcode"
             app:layout_constraintEnd_toStartOf="@+id/ivAdd"
-            />
+            />-->
 
-        <ImageView
-            android:id="@+id/ivAdd"
-            android:layout_width="0dp"
-            android:layout_margin="2dp"
-            android:padding="5dp"
-            android:src="@drawable/ic_save_black"
-            android:layout_height="35dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_weight="0.10"
-            app:layout_constraintStart_toEndOf="@+id/tvBarcodeNo"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/ivDelete"
 
-            />
 
-        <ImageView
-            android:id="@+id/ivDelete"
-            android:layout_width="0dp"
-            android:padding="5dp"
-            android:layout_margin="2dp"
-            android:src="@drawable/ic_delete_black"
-            android:layout_height="35dp"
-            app:layout_constraintHorizontal_weight="0.10"
-            app:layout_constraintStart_toEndOf="@+id/ivAdd"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
     </androidx.constraintlayout.widget.ConstraintLayout>
     <View
         app:layout_constraintTop_toBottomOf="@+id/cl1"

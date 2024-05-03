@@ -16,40 +16,48 @@
         android:theme="@style/Theme.SLFastener"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+
         <activity
-            android:name=".view.CreateBatchesActivity"
+            android:name=".view.GRNAddNewActivity"
             android:exported="true"
-            android:launchMode="singleTop">
-
-
-
-        </activity>
-        <activity
-            android:name=".view.GRNAddActivity"
-            android:exported="true"
-            android:windowSoftInputMode="adjustNothing"
-
-            >
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustNothing">
             <intent-filter>
-<!--
+
+                <!--
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />-->
+                <category android:name="android.intent.category.LAUNCHER" />
+                -->
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
             </intent-filter>
-
             <meta-data
                 android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
                 android:resource="@xml/device_filter" />
         </activity>
         <activity
+            android:name=".view.GRNAddActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustNothing">
+         <!--   <intent-filter>
+
+                &lt;!&ndash;
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                &ndash;&gt;
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>-->
+
+
+        </activity>
+        <activity
             android:name=".view.LoginActivity"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name=".view.GRNMainActivity"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name=".view.HomeActivity"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true" />
@@ -57,8 +65,8 @@
             android:name=".view.SplashActivity"
             android:exported="true">
             <intent-filter>
-
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

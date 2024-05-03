@@ -37,5 +37,5 @@ data class PoLineItem(
     val poqty: Int,
     val posapLineItemNumber: String,
     val pouom: String,
-    val unitPrice: Any
+    val unitPrice: String?
 )

@@ -4,5 +4,6 @@ data class GetSuppliersPOsDDLResponse(
     val code: String,
     val isActive: Boolean,
     val text: String,
-    val value: Int
+    val value: Int,
+    var isChecked:Boolean
 )

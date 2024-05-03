@@ -18,6 +18,16 @@
         android:text="po"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@+id/cbPo"
+        app:layout_constraintEnd_toStartOf="@+id/tvCode"
+        app:layout_constraintTop_toTopOf="parent"
+        android:padding="10dp"
+        />
+    <TextView
+        android:id="@+id/tvCode"
+        android:layout_width="0dp"
+        android:text="code"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/tvPo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:padding="10dp"

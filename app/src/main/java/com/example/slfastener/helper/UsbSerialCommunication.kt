@@ -92,7 +92,7 @@ class UsbSerialCommunication(private val context: Context) {
                                 val receivedDataString = String(receivedBytes, Charsets.UTF_8).toString().trim()
 
                                 withContext(Dispatchers.Main) {
-                                    Log.d("Weight", "Received weight: $receivedDataString grams")
+                                    //Log.d("Weight", "Received weight: $receivedDataString grams")
                                     val pattern: Regex = """^\d+\.\d{3}$""".toRegex()
                                     val cleanedWeight = receivedDataString.replace(Regex("^\\+0"), "")
                                     if(cleanedWeight.matches(pattern))
@@ -104,8 +104,8 @@ class UsbSerialCommunication(private val context: Context) {
                                 {
                                     receivedBytes = ByteArray(0) // Reset received bytes
                                 }
-                                Log.d("Weight", "Received weight Array: ${getFifoArray()} grams")
-                                Log.d("Weight", "Received weight Unique: ${getUniqueData()} grams")
+                               // Log.d("Weight", "Received weight Array: ${getFifoArray()} grams")
+                               // Log.d("Weight", "Received weight Unique: ${getUniqueData()} grams")
 
                                 getUniqueData()?.let { dataReceivedListener?.onDataReceived(it) } // Notify listener
                             }
@@ -133,26 +133,19 @@ class UsbSerialCommunication(private val context: Context) {
     }
 
     fun addWeightData(weight: String) {
-        // Regular expression to match the specified format (e.g., 0.00, 0.01, 0.123, 0.012, 12.234)
         val regex = Regex("^\\d+(\\.\\d+)?\$")
-        // Check if the weight data matches the specified format
         if (regex.matches(weight)) {
-            // If the weight data is repeated and different from the current uniqueData, update uniqueData
             if (fifoArray.count { it == weight } > 1 && weight != uniqueData) {
                 uniqueData = weight
             }
-            // Add the weight data to fifoArray
             fifoArray.addLast(weight)
-            // If fifoArray size exceeds 10, remove the oldest element
             if (fifoArray.size > 10) {
                 val removed = fifoArray.removeFirst()
-                // If the removed element is a repeated data and matches uniqueData, reset uniqueData
                 if (fifoArray.count { it == removed } <= 1 && removed == uniqueData) {
                     uniqueData = null
                 }
             }
         } else {
-            // If the weight data does not match the specified format, ignore it
             println("Invalid weight data: $weight")
         }
     }

@@ -15,8 +15,12 @@ import com.example.slfastener.interfaceclass.ItemClickListener
 import com.example.slfastener.model.BatchInfoListModel
 import com.google.android.material.card.MaterialCardView
 
-class CreateBatchesSingleList(private val batches: MutableList<BatchInfoListModel>,
-                              private val onSave: (Int, BatchInfoListModel) -> Unit) :
+class CreateBatchesSingleList(
+    private val batches: MutableList<BatchInfoListModel>,
+    private val onSave: (Int, BatchInfoListModel) -> Unit,
+
+
+) :
     RecyclerView.Adapter<CreateBatchesSingleList.ViewHolder>() {
     private var weightData: String? = null
     private var focusedTextView: TextView? = null
@@ -27,10 +31,9 @@ class CreateBatchesSingleList(private val batches: MutableList<BatchInfoListMode
         return ViewHolder(view)
     }
 
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val itemPosition = holder.layoutPosition
-        val batchModel: BatchInfoListModel = batches[itemPosition]
+        val batchModel: BatchInfoListModel = batches?.get(itemPosition)!!
         holder.tvSrnNo.setText("${itemPosition + 1}")
         holder.tvBatchBarcodeNo.setText(batchModel.batchBarcodeNo)
         holder.edWeight.setText(batchModel.ReceivedQty)
@@ -83,6 +86,7 @@ class CreateBatchesSingleList(private val batches: MutableList<BatchInfoListMode
         holder.ivDelete.setOnClickListener {
             batches.removeAt(position)
             notifyItemRemoved(position)
+
             notifyItemRangeChanged(position, batches.size) // To update the positions of the remaining items
         }
 
@@ -128,6 +132,7 @@ class CreateBatchesSingleList(private val batches: MutableList<BatchInfoListMode
     fun updateWeightValue(weightData: String) {
         this.weightData = weightData
         focusedTextView?.setText(weightData)
+        Log.d("weightFromInner",weightData)
     }
     override fun getItemCount(): Int {
         if (batches.size == 0) {
@@ -141,13 +146,13 @@ class CreateBatchesSingleList(private val batches: MutableList<BatchInfoListMode
         val tvSrnNo: TextView = itemView.findViewById(R.id.tvSrnNo)
         val tvBatchBarcodeNo: TextView = itemView.findViewById(R.id.tvBatchBarcodeNo)
         val edWeight: TextView = itemView.findViewById(R.id.edWeight)
-        val mcvGenerateBarcode: MaterialCardView = itemView.findViewById(R.id.mcvGenerateBarcode)
+        //val mcvGenerateBarcode: MaterialCardView = itemView.findViewById(R.id.mcvGenerateBarcode)
         val tvBarcodeNo: TextView = itemView.findViewById(R.id.tvBarcodeNo)
         val ivDelete: ImageView = itemView.findViewById(R.id.ivDelete)
         val ivAdd: ImageView = itemView.findViewById(R.id.ivAdd)
         val mcvWeight: MaterialCardView = itemView.findViewById(R.id.mcvWeight)
         val clCardMain: ConstraintLayout = itemView.findViewById(R.id.clCardMain)
-        val tvPrint: TextView = itemView.findViewById(R.id.tvPrint)
+       // val tvPrint: TextView = itemView.findViewById(R.id.tvPrint)
     }
 
 }
