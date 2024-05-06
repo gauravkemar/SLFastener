@@ -5,8 +5,6 @@
     android:layout_width="wrap_content"
     android:layout_margin="10dp"
     app:cardElevation="5dp"
-    app:cardCornerRadius="10dp"
-    app:cardBackgroundColor="@color/lighter_grey"
     android:layout_height="wrap_content">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
@@ -16,11 +14,10 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/mcv_num_1"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
+            android:layout_margin="5dp"
             android:clickable="true"
             app:cardElevation="5dp"
-            app:cardCornerRadius="10dp"
-            android:layout_margin="10dp"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -28,8 +25,8 @@
 
             <TextView
                 android:id="@+id/tv_1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:paddingStart="30dp"
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp"
@@ -41,11 +38,10 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/mcv_num_2"
-            android:layout_width="0dp"
-             app:cardElevation="5dp"
+            android:layout_width="wrap_content"
+            app:cardElevation="5dp"
             android:clickable="true"
-            android:layout_margin="10dp"
-            app:cardCornerRadius="10dp"
+            android:layout_margin="5dp"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toEndOf="@+id/mcv_num_1"
             app:layout_constraintTop_toTopOf="parent"
@@ -53,8 +49,8 @@
 
             <TextView
                 android:id="@+id/tv_2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:paddingStart="30dp"
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp"
@@ -66,11 +62,10 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/mcv_num_3"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:clickable="true"
-            android:layout_margin="10dp"
-            app:cardCornerRadius="10dp"
-             app:cardElevation="5dp"
+            android:layout_margin="5dp"
+            app:cardElevation="5dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/mcv_num_2"
@@ -78,8 +73,8 @@
 
             <TextView
                 android:id="@+id/tv_3"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:paddingStart="30dp"
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp"
@@ -91,20 +86,19 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/mcv_num_4"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:clickable="true"
-            app:cardCornerRadius="10dp"
             android:layout_height="wrap_content"
-             app:cardElevation="5dp"
-            android:layout_margin="10dp"
+            app:cardElevation="5dp"
+            android:layout_margin="5dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/mcv_num_1"
             app:layout_constraintEnd_toStartOf="@+id/mcv_num_5">
 
             <TextView
                 android:id="@+id/tv_4"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:paddingStart="30dp"
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp"
@@ -116,20 +110,19 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/mcv_num_5"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:clickable="true"
             android:layout_height="wrap_content"
             app:cardElevation="5dp"
-            app:cardCornerRadius="10dp"
-            android:layout_margin="10dp"
+            android:layout_margin="5dp"
             app:layout_constraintStart_toEndOf="@+id/mcv_num_4"
             app:layout_constraintTop_toBottomOf="@+id/mcv_num_2"
             app:layout_constraintEnd_toStartOf="@+id/mcv_num_6">
 
             <TextView
                 android:id="@+id/tv_5"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:paddingStart="30dp"
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp"
@@ -141,20 +134,19 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/mcv_num_6"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:cardElevation="5dp"
             android:clickable="true"
-            android:layout_margin="10dp"
-            app:cardCornerRadius="10dp"
+            android:layout_margin="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/mcv_num_5"
             app:layout_constraintTop_toBottomOf="@+id/mcv_num_3">
 
             <TextView
                 android:id="@+id/tv_6"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:paddingStart="30dp"
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp"
@@ -170,16 +162,15 @@
             android:layout_height="wrap_content"
             app:cardElevation="5dp"
             android:clickable="true"
-            app:cardCornerRadius="10dp"
-            android:layout_margin="10dp"
+            android:layout_margin="5dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/mcv_num_4"
             app:layout_constraintEnd_toStartOf="@+id/mcv_num_8">
 
             <TextView
                 android:id="@+id/tv_7"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:paddingStart="30dp"
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp"
@@ -195,16 +186,15 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             app:cardElevation="5dp"
-            android:layout_margin="10dp"
-            app:cardCornerRadius="10dp"
+            android:layout_margin="5dp"
             app:layout_constraintStart_toEndOf="@+id/mcv_num_7"
             app:layout_constraintTop_toBottomOf="@+id/mcv_num_5"
             app:layout_constraintEnd_toStartOf="@+id/mcv_num_9">
 
             <TextView
                 android:id="@+id/tv_8"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:paddingStart="30dp"
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp"
@@ -220,16 +210,15 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             app:cardElevation="5dp"
-            android:layout_margin="10dp"
-            app:cardCornerRadius="10dp"
+            android:layout_margin="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/mcv_num_8"
             app:layout_constraintTop_toBottomOf="@+id/mcv_num_6">
 
             <TextView
                 android:id="@+id/tv_9"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:paddingStart="30dp"
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp"
@@ -245,9 +234,8 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             app:cardElevation="5dp"
-            android:layout_margin="10dp"
-            app:cardCornerRadius="10dp"
-            app:layout_constraintEnd_toStartOf="@+id/mcv_clear"
+            android:layout_margin="5dp"
+            app:layout_constraintEnd_toStartOf="@+id/mcv_dot"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/mcv_num_7"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -255,8 +243,8 @@
 
             <TextView
                 android:id="@+id/tv_0"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:paddingStart="30dp"
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp"
@@ -265,6 +253,32 @@
                 android:textColor="@color/black"
                 android:textSize="16sp" />
         </com.google.android.material.card.MaterialCardView>
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mcv_dot"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:cardElevation="5dp"
+            android:clickable="true"
+            android:layout_margin="5dp"
+            app:layout_constraintStart_toEndOf="@+id/mcv_num_0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/mcv_clear"
+            >
+
+            <TextView
+                android:id="@+id/tv_dot"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="30dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="9dp"
+                android:paddingEnd="30dp"
+                android:text="."
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="26sp" />
+        </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/mcv_clear"
@@ -272,21 +286,20 @@
             android:layout_height="wrap_content"
             app:cardElevation="5dp"
             android:clickable="true"
-            android:layout_margin="10dp"
-            app:cardCornerRadius="10dp"
+            android:layout_margin="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/mcv_num_0"
+            app:layout_constraintStart_toEndOf="@+id/mcv_dot"
             app:layout_constraintTop_toBottomOf="@+id/mcv_num_9">
 
             <TextView
                 android:id="@+id/tv_clear"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingStart="30dp"
+                android:layout_height="wrap_content"
+                android:paddingStart="5dp"
                 android:paddingTop="15dp"
                 android:paddingBottom="15dp"
-                android:paddingEnd="30dp"
+                android:paddingEnd="5dp"
                 android:text="clear"
                 android:textAlignment="center"
                 android:textColor="@color/black"

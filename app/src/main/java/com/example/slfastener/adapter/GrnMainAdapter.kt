@@ -9,9 +9,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.slfastener.R
 import com.example.slfastener.model.grnmain.GetFilteredGRNResponse
+import com.example.slfastener.model.offlinebatchsave.GrnLineItemUnitStore
 import java.util.ArrayList
 
-class GrnMainAdapter : RecyclerView.Adapter<GrnMainAdapter.ViewHolder>() {
+class GrnMainAdapter(private val editItem: (Int) -> Unit,) : RecyclerView.Adapter<GrnMainAdapter.ViewHolder>() {
 
     private var grnMainModel = mutableListOf<GetFilteredGRNResponse>()
     private var context: Context?=null
@@ -47,7 +48,7 @@ class GrnMainAdapter : RecyclerView.Adapter<GrnMainAdapter.ViewHolder>() {
 
         }
         holder.ivEdit.setOnClickListener {
-
+            editItem(grnMainModel.grnId)
         }
         holder.ivDelete.setOnClickListener {
 
@@ -55,8 +56,6 @@ class GrnMainAdapter : RecyclerView.Adapter<GrnMainAdapter.ViewHolder>() {
         holder.ivPrint.setOnClickListener {
 
         }
-
-
 
     }
 

@@ -43,5 +43,7 @@ object Constants {
     const val GET_POS_LINE_ITEMS_ON_POIDS = "PurchaseOrder/getPOsAndLineItemsOnPOIds"
     const val GET_GRN_FILTERED_GRN = "GRN/filteredGRN"
     const val PROCESS_GRN = "GRN/processGRN"
-    const val PROCESS_SINGLE_GRN_GRN_ITEM_BATCHES = "GRN/processSingleGRNGRNItemBatches"
+    const val PROCESS_SINGLE_GRN_GRN_ITEM_BATCHES = "GRN/processGRNLineItems"
+    const val BARCODE_GENERATE_WITH_PREFIX = "BarcdeGenerator/GetBarcodeValueWithPrefix"
+    const val GET_DRAFT_GRN = "GRN/getDraftGrn"
 }

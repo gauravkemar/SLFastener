@@ -22,8 +22,7 @@ class CreateBatchesNewSingleList(
     private val onSave: (Int, GrnLineItemUnitStore) -> Unit,
     private val addItem: (GrnLineItemUnitStore) -> Unit,
     private val onDelete:(Int)->Unit,
-    private val customKeyboard: CustomKeyboard,
-    private val grnAddActivity: GRNAddActivity
+    private var customKeyboard: CustomKeyboard? = null
 ) :
     RecyclerView.Adapter<CreateBatchesNewSingleList.ViewHolder>() {
     private var weightData: String? = null
@@ -40,9 +39,11 @@ class CreateBatchesNewSingleList(
         val grnLineItemUnit: GrnLineItemUnitStore = batches?.get(itemPosition)!!
         holder.tvSrnNo.setText("${itemPosition + 1}")
         holder.tvBatchNo.setText(grnLineItemUnit.supplierBatchNo)
+        holder.tvInternalBatchNo.setText(grnLineItemUnit.internalBatchNo)
         holder.tvUOM.setText(grnLineItemUnit.UOM)
         holder.tvBarcodeLableValue.setText(grnLineItemUnit.barcode)
         holder.tvWeight.setText(grnLineItemUnit.recevedQty)
+        holder.edWeight.setText(grnLineItemUnit.recevedQty)
        /* holder.mcvWeight.setOnClickListener {
             holder.edWeight.requestFocus()
         }*/
@@ -51,9 +52,11 @@ class CreateBatchesNewSingleList(
                 focusedTextView = holder.edWeight
             }
         }
+        holder.edWeight.showSoftInputOnFocus = false
         holder.edWeight.setOnClickListener {
             // Show custom keyboard when edWeight EditText is clicked
-            customKeyboard.showAt(holder.edWeight, 0, grnAddActivity)
+            customKeyboard!!.setTargetEditText(holder.edWeight)
+            customKeyboard!!.showAt(holder.itemView)
         }
         holder.ivAdd.setOnClickListener {
             addItem(
@@ -77,7 +80,7 @@ class CreateBatchesNewSingleList(
         holder.ivSave.setOnClickListener {
             grnLineItemUnit.recevedQty =holder.edWeight.getText().toString()
             grnLineItemUnit.isUpdate = true
-            updateView(holder, grnLineItemUnit)
+            //updateView(holder, grnLineItemUnit)
             onSave(position, grnLineItemUnit)
             holder.edWeight.clearFocus()
         }
@@ -91,9 +94,13 @@ class CreateBatchesNewSingleList(
         if(grnLineItemUnit.UOM.equals("KG"))
         {
             holder.ivAdd.visibility=View.GONE
+            holder.tvWeight.visibility=View.VISIBLE
+            holder.edWeight.visibility=View.GONE
         }
         else{
             holder.ivAdd.visibility=View.VISIBLE
+            holder.tvWeight.visibility=View.GONE
+            holder.edWeight.visibility=View.VISIBLE
         }
 
        /* if (batchModel.isUpdate) {
@@ -123,7 +130,7 @@ class CreateBatchesNewSingleList(
             //holder.mcvWeight.visibility = View.GONE
         }
 
-        holder.edWeight.showSoftInputOnFocus = false
+
     }
     private fun updateView(holder: ViewHolder, batchInfoItem: GrnLineItemUnitStore) {
         with(holder) {

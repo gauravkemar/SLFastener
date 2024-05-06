@@ -16,11 +16,15 @@ import com.example.slfastener.model.generalrequest.GeneralResponse
 import com.example.slfastener.model.grn.GRNSaveToDraftDefaultRequest
 import com.example.slfastener.model.grn.GRNSaveToDraftDefaultResponse
 import com.example.slfastener.model.grn.ProcessGRNLineItemsResponse
+import com.example.slfastener.model.grndraftdata.GetDraftGrnResponse
+import com.example.slfastener.model.grnlineitemmain.GrnLineItemResponse
 import com.example.slfastener.model.grnmain.GetFilteredGRNRequest
 import com.example.slfastener.model.grnmain.GetFilteredGRNResponse
+import com.example.slfastener.model.polineitemnew.GRNUnitLineItemsSaveRequest
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.Response
+import retrofit2.http.Query
 import java.io.IOException
 
 class GRNTransactionViewModel (
@@ -384,32 +388,32 @@ class GRNTransactionViewModel (
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    val processSingleGRNGRNItemBatchesMutableResponse: MutableLiveData<Resource<GeneralResponse>> = MutableLiveData()
+    val getBarcodeValueWithPrefixForExisitngMutableResponse: MutableLiveData<Resource<GeneralResponse>> = MutableLiveData()
 
-    fun processSingleGRNGRNItemBatches(token: String,baseUrl: String ,transactionPrefix: String ) {
+    fun getBarcodeValueWithPrefixForExisitng(token: String,baseUrl: String ,transactionPrefix: String ) {
         viewModelScope.launch {
-            safeAPICallProcessSingleGRNGRNItemBatches(token,baseUrl,transactionPrefix)
+            safeAPICallGetBarcodeValueWithPrefixForExisitng(token,baseUrl,transactionPrefix)
         }
     }
 
-    private suspend fun safeAPICallProcessSingleGRNGRNItemBatches(token: String,baseUrl: String,transactionPrefix:  String ) {
-        getBarcodeValueWithPrefixMutableResponse.postValue(Resource.Loading())
+    private suspend fun safeAPICallGetBarcodeValueWithPrefixForExisitng(token: String,baseUrl: String,transactionPrefix:  String ) {
+        getBarcodeValueWithPrefixForExisitngMutableResponse.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.getBarcodeValueWithPrefix(token,baseUrl,transactionPrefix )
-                getBarcodeValueWithPrefixMutableResponse.postValue(handleProcessSingleGRNGRNItemBatches(response))
+                val response = rfidRepository.getBarcodeValueWithPrefixForExisitng(token,baseUrl,transactionPrefix )
+                getBarcodeValueWithPrefixForExisitngMutableResponse.postValue(handleGetBarcodeValueWithPrefixForExisitng(response))
             } else {
-                getBarcodeValueWithPrefixMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
+                getBarcodeValueWithPrefixForExisitngMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
             }
         } catch (t: Throwable) {
             when (t) {
-                is IOException -> getBarcodeValueWithPrefixMutableResponse.postValue(Resource.Error(Constants.CONFIG_ERROR))
-                else -> getBarcodeValueWithPrefixMutableResponse.postValue(Resource.Error("${t.message}"))
+                is IOException -> getBarcodeValueWithPrefixForExisitngMutableResponse.postValue(Resource.Error(Constants.CONFIG_ERROR))
+                else -> getBarcodeValueWithPrefixForExisitngMutableResponse.postValue(Resource.Error("${t.message}"))
             }
         }
     }
 
-    private fun handleProcessSingleGRNGRNItemBatches(response: Response<GeneralResponse>): Resource<GeneralResponse>{
+    private fun handleGetBarcodeValueWithPrefixForExisitng(response: Response<GeneralResponse>): Resource<GeneralResponse>{
         var errorMessage = ""
         if (response.isSuccessful) {
             response.body()?.let { appDetailsResponse ->
@@ -425,4 +429,95 @@ class GRNTransactionViewModel (
         }
         return Resource.Error(errorMessage)
     }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    val processSingleGRNGRNItemBatchesMutableResponse: MutableLiveData<Resource<GrnLineItemResponse>> = MutableLiveData()
+
+    fun processSingleGRNGRNItemBatches(token: String,baseUrl: String ,  grnUnitLineItemsSaveRequest: GRNUnitLineItemsSaveRequest) {
+        viewModelScope.launch {
+            safeAPICallProcessSingleGRNGRNItemBatches(token,baseUrl,grnUnitLineItemsSaveRequest)
+        }
+    }
+
+    private suspend fun safeAPICallProcessSingleGRNGRNItemBatches(token: String,baseUrl: String, grnUnitLineItemsSaveRequest: GRNUnitLineItemsSaveRequest) {
+        processSingleGRNGRNItemBatchesMutableResponse.postValue(Resource.Loading())
+        try {
+            if (Utils.hasInternetConnection(getApplication())) {
+                val response = rfidRepository.processSingleGRNGRNItemBatches(token,baseUrl,grnUnitLineItemsSaveRequest )
+                processSingleGRNGRNItemBatchesMutableResponse.postValue(handleProcessSingleGRNGRNItemBatches(response))
+            } else {
+                processSingleGRNGRNItemBatchesMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
+            }
+        } catch (t: Throwable) {
+            when (t) {
+                is IOException -> processSingleGRNGRNItemBatchesMutableResponse.postValue(Resource.Error(Constants.CONFIG_ERROR))
+                else -> processSingleGRNGRNItemBatchesMutableResponse.postValue(Resource.Error("${t.message}"))
+            }
+        }
+    }
+
+    private fun handleProcessSingleGRNGRNItemBatches(response: Response<GrnLineItemResponse>): Resource<GrnLineItemResponse>{
+        var errorMessage = ""
+        if (response.isSuccessful) {
+            response.body()?.let { appDetailsResponse ->
+                return Resource.Success(appDetailsResponse)
+            }
+        } else if (response.errorBody() != null) {
+            val errorObject = response.errorBody()?.let {
+                JSONObject(it.charStream().readText())
+            }
+            errorObject?.let {
+                errorMessage = it.getString(Constants.HTTP_ERROR_MESSAGE)
+            }
+        }
+        return Resource.Error(errorMessage)
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //defaultGRN Data
+    val getDraftGRNMutableResponse: MutableLiveData<Resource<GetDraftGrnResponse>> = MutableLiveData()
+
+    fun getDraftGRN(token: String,baseUrl: String ,grnId: Int ) {
+        viewModelScope.launch {
+            safeAPICallGetDraftGRN(token,baseUrl,grnId)
+        }
+    }
+
+    private suspend fun safeAPICallGetDraftGRN(token: String,baseUrl: String,grnId: Int ) {
+        getDraftGRNMutableResponse.postValue(Resource.Loading())
+        try {
+            if (Utils.hasInternetConnection(getApplication())) {
+                val response = rfidRepository.getDraftGRN(token,baseUrl,grnId )
+                getDraftGRNMutableResponse.postValue(handleGetDraftGRN(response))
+            } else {
+                getDraftGRNMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
+            }
+        } catch (t: Throwable) {
+            when (t) {
+                is IOException -> getDraftGRNMutableResponse.postValue(Resource.Error(Constants.CONFIG_ERROR))
+                else -> getDraftGRNMutableResponse.postValue(Resource.Error("${t.message}"))
+            }
+        }
+    }
+
+    private fun handleGetDraftGRN(response: Response<GetDraftGrnResponse>): Resource<GetDraftGrnResponse>{
+        var errorMessage = ""
+        if (response.isSuccessful) {
+            response.body()?.let { appDetailsResponse ->
+                return Resource.Success(appDetailsResponse)
+            }
+        } else if (response.errorBody() != null) {
+            val errorObject = response.errorBody()?.let {
+                JSONObject(it.charStream().readText())
+            }
+            errorObject?.let {
+                errorMessage = it.getString(Constants.HTTP_ERROR_MESSAGE)
+            }
+        }
+        return Resource.Error(errorMessage)
+    }
+
 }

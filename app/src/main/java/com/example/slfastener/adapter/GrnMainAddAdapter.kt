@@ -56,6 +56,11 @@ class GrnMainAddAdapter (
         }*/
 
 
+        if(poLineItemModel.grnLineItemUnit!=null)
+        {
+            holder.tvDeleteLineItem.setEnabled(false);
+        }
+
         holder.tvSaveLineItem.setOnClickListener {
             onItemClickListener?.invoke(position,poLineItemParent[position])
         }

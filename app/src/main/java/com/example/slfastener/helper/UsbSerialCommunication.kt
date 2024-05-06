@@ -59,8 +59,6 @@ class UsbSerialCommunication(private val context: Context) {
         {
             Log.e("Exception: ", "$e")
         }
-
-
     }
     fun setupUsbSerial() {
         try {

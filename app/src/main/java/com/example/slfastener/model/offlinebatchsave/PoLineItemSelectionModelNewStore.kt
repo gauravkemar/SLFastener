@@ -1,7 +1,7 @@
 package com.example.slfastener.model.offlinebatchsave
 
 data class PoLineItemSelectionModelNewStore(
-    val balQTY: Int,
+    var balQTY: Double,
     val currency: String,
     var grnLineItemUnit: MutableList<GrnLineItemUnitStore>?,
     val itemCode: String,
@@ -15,7 +15,7 @@ data class PoLineItemSelectionModelNewStore(
     val poqty: Int,
     val posapLineItemNumber: String,
     val pouom: String,
-    val quantityReceived: String,
+    var quantityReceived: String,
     var isSelected: Boolean,
     val GDPONumber: String,
     val unitPrice: String

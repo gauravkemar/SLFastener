@@ -5,8 +5,8 @@ import com.example.demorfidapp.helper.Constants
 import com.example.slfastener.model.GetSuppliersPOsRequest
 import com.example.slfastener.model.grn.GRNSaveToDraftDefaultRequest
 import com.example.slfastener.model.grnmain.GetFilteredGRNRequest
-import com.example.slfastener.model.grnsavebatches.ProcessGRNLineItemsRequest
 import com.example.slfastener.model.login.LoginRequest
+import com.example.slfastener.model.polineitemnew.GRNUnitLineItemsSaveRequest
 import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.Query
@@ -75,13 +75,25 @@ class SLFastenerRepository {
         @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         baseUrl: String,
         @Body
-        processGRNLineItemsRequest: ProcessGRNLineItemsRequest
-    ) = RetrofitInstance.api(baseUrl).processSingleGRNGRNItemBatches(bearerToken,processGRNLineItemsRequest)
+        grnUnitLineItemsSaveRequest: GRNUnitLineItemsSaveRequest
+    ) = RetrofitInstance.api(baseUrl).processSingleGRNGRNItemBatches(bearerToken,grnUnitLineItemsSaveRequest)
 
     suspend fun getBarcodeValueWithPrefix(
         @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         baseUrl: String,
         @Query("transactionPrefix") transactionPrefix: String?
     ) = RetrofitInstance.api(baseUrl).getBarcodeValueWithPrefix(bearerToken,transactionPrefix)
+
+    suspend fun getBarcodeValueWithPrefixForExisitng(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+        @Query("transactionPrefix") transactionPrefix: String?
+    ) = RetrofitInstance.api(baseUrl).getBarcodeValueWithPrefixForExisitng(bearerToken,transactionPrefix)
+
+    suspend fun getDraftGRN(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+        @Query("grnId") grnId: Int?
+    ) = RetrofitInstance.api(baseUrl).getDraftGRN(bearerToken,grnId)
 
 }

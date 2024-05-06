@@ -78,8 +78,8 @@
             app:layout_constraintEnd_toStartOf="@+id/tvUOM">
 
             <EditText
-                android:layout_height="0dp"
-                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
                 android:padding="5dp"
                 android:id="@+id/edWeight"
                 android:textSize="14sp"
@@ -97,19 +97,15 @@
                 android:layout_margin="2dp"
                 android:padding="5dp"
                 android:hint=""
-                android:visibility="gone"
                 android:focusable="true"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:focusableInTouchMode="true"
                 android:textAlignment="center"
                 android:textSize="14sp"
                 android:background="@android:color/transparent"
                 android:textColor="@color/black"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/mcvWeight"
+
                 />
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/mcvWeight"

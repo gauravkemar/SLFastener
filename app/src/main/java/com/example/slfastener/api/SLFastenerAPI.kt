@@ -3,7 +3,9 @@ package  com.example.demorfidapp.api
 
 
 import com.example.demorfidapp.helper.Constants
+import com.example.demorfidapp.helper.Constants.BARCODE_GENERATE_WITH_PREFIX
 import com.example.demorfidapp.helper.Constants.GET_ACTIVE_SUPPLIERS_DDL
+import com.example.demorfidapp.helper.Constants.GET_DRAFT_GRN
 import com.example.demorfidapp.helper.Constants.GET_GRN_FILTERED_GRN
 import com.example.demorfidapp.helper.Constants.GET_POS_LINE_ITEMS_ON_POIDS
 import com.example.demorfidapp.helper.Constants.GET_SUPPLIERS_POS
@@ -18,11 +20,13 @@ import com.example.slfastener.model.generalrequest.GeneralResponse
 import com.example.slfastener.model.grn.GRNSaveToDraftDefaultRequest
 import com.example.slfastener.model.grn.GRNSaveToDraftDefaultResponse
 import com.example.slfastener.model.grn.ProcessGRNLineItemsResponse
+import com.example.slfastener.model.grndraftdata.GetDraftGrnResponse
+import com.example.slfastener.model.grnlineitemmain.GrnLineItemResponse
 import com.example.slfastener.model.grnmain.GetFilteredGRNRequest
 import com.example.slfastener.model.grnmain.GetFilteredGRNResponse
-import com.example.slfastener.model.grnsavebatches.ProcessGRNLineItemsRequest
 import com.example.slfastener.model.login.LoginRequest
 import com.example.slfastener.model.login.LoginResponse
+import com.example.slfastener.model.polineitemnew.GRNUnitLineItemsSaveRequest
 
 import retrofit2.Response
 import retrofit2.http.*
@@ -104,15 +108,30 @@ interface SLFastenerAPI {
     suspend fun processSingleGRNGRNItemBatches(
       @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         @Body
-        processGRNLineItemsRequest: ProcessGRNLineItemsRequest
-    ): Response<GeneralResponse>
+        grnUnitLineItemsSaveRequest: GRNUnitLineItemsSaveRequest
+    ): Response<GrnLineItemResponse>
 
 
-    @GET(GET_SUPPLIERS_POS_DDL)
+    @GET(BARCODE_GENERATE_WITH_PREFIX)
     suspend fun getBarcodeValueWithPrefix
     (
         @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         @Query("transactionPrefix") transactionPrefix: String?
     ): Response<GeneralResponse>
+
+    @GET(BARCODE_GENERATE_WITH_PREFIX)
+    suspend fun getBarcodeValueWithPrefixForExisitng
+    (
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Query("transactionPrefix") transactionPrefix: String?
+    ): Response<GeneralResponse>
+
+
+    @GET(GET_DRAFT_GRN)
+    suspend fun getDraftGRN
+    (
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Query("grnId") grnId: Int?
+    ): Response<GetDraftGrnResponse>
 
 }
