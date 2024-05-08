@@ -7,7 +7,7 @@ data class PoLineItemSelectionModel(
     val lineNumber: Int,
     val poId: Int,
     val poLineItemId: Int,
-    val poQuantity: Int,
+    val poQuantity: Double,
     val poUnitPrice: Any?,
     val posapLineItemNumber: String,
     val pouom: String,

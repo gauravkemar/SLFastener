@@ -12,6 +12,9 @@ import com.example.slfastener.adapter.demoAdapter.CreateBatchesSingleList
 import com.example.slfastener.model.PoLineItemSelectionModel
 import com.example.slfastener.model.offlinebatchsave.PoLineItemSelectionModelNewStore
 import com.google.android.material.card.MaterialCardView
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class GrnMainAddAdapter (
     private val poLineItemParent: List<PoLineItemSelectionModelNewStore>,
@@ -26,19 +29,19 @@ class GrnMainAddAdapter (
 
         holder.tvSrNo.setText("${position+1}")
         holder.tvPoNo.setText(poLineItemModel.poNumber)
-        holder.edGDPO.setText(poLineItemModel.GDPONumber)
+        holder.edGDPO.setText(poLineItemModel.GDPONumber.toString())
         holder.tvPoLineNo.setText(poLineItemModel.poLineNo.toString())
         holder.tvItemCode.setText(poLineItemModel.itemCode)
         holder.tvItemDesc.setText(poLineItemModel.itemDescription)
         holder.tvMhType.setText(poLineItemModel.mhType)
         holder.tvPoQty.setText(poLineItemModel.poqty.toString())
         holder.tvBalQty.setText(poLineItemModel.balQTY.toString())
-        holder.tvRate.setText(poLineItemModel.unitPrice)
+        holder.tvRate.setText(poLineItemModel.unitPrice.toString()?:"")
         holder.tvGRNQty.setText(poLineItemModel.quantityReceived)
         holder.tvBatchCount.setText("${poLineItemModel.grnLineItemUnit?.size ?: 0}")
-
-
         holder.tvPuom.setText(poLineItemModel.pouom)
+
+
         //holder.tvEpiryDt.setText(poLineItemModel)
 
        /* holder.tvQuantityPrice.setText(poLineItemModel.poUnitPrice.toString())
@@ -58,23 +61,22 @@ class GrnMainAddAdapter (
 
         if(poLineItemModel.grnLineItemUnit!=null)
         {
+            holder.tvDeleteLineItem.visibility=View.INVISIBLE
             holder.tvDeleteLineItem.setEnabled(false);
+            holder.tvSaveLineItem.setImageResource(R.drawable.ic_save_black)
         }
 
         holder.tvSaveLineItem.setOnClickListener {
             onItemClickListener?.invoke(position,poLineItemParent[position])
         }
     }
-
     override fun getItemCount(): Int {
         if (poLineItemParent.size == 0) {
-            //Toast.makeText(context,"List is empty", Toast.LENGTH_LONG).show()
         } else {
             return poLineItemParent.size
         }
         return poLineItemParent.size
     }
-
     fun updateWeightValue(weightData: String) {
         this.weightData = weightData
 
@@ -97,7 +99,6 @@ class GrnMainAddAdapter (
         val tvBatchCount: TextView = itemView.findViewById(R.id.tvBatchCount)
         val tvSaveLineItem: ImageButton = itemView.findViewById(R.id.tvSaveLineItem)
         val tvDeleteLineItem: ImageButton = itemView.findViewById(R.id.tvDeleteLineItem)
-
     }
 
     private var onItemClickListener: ((Int,PoLineItemSelectionModelNewStore) -> Unit)? = null

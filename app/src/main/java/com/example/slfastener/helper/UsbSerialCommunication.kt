@@ -88,7 +88,6 @@ class UsbSerialCommunication(private val context: Context) {
                             if (numBytesRead > 0) {
                                 receivedBytes += buffer.copyOf(numBytesRead)
                                 val receivedDataString = String(receivedBytes, Charsets.UTF_8).toString().trim()
-
                                 withContext(Dispatchers.Main) {
                                     //Log.d("Weight", "Received weight: $receivedDataString grams")
                                     val pattern: Regex = """^\d+\.\d{3}$""".toRegex()
@@ -127,7 +126,6 @@ class UsbSerialCommunication(private val context: Context) {
         {
             Log.e("UsbSerialCommunication", "$e")
         }
-
     }
 
     fun addWeightData(weight: String) {

@@ -25,7 +25,28 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/edGDPONo"
+                />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintEnd_toStartOf="@+id/edGDPONo"
+                app:layout_constraintStart_toEndOf="@+id/cbLineItem"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <EditText
+                android:id="@+id/edGDPONo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="GDPO No"
+                app:layout_constraintHorizontal_weight="0.15"
+                app:layout_constraintStart_toEndOf="@+id/cbLineItem"
                 app:layout_constraintEnd_toStartOf="@+id/tvColumnOne"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 />
 
             <View
@@ -33,11 +54,9 @@
                 android:layout_height="0dp"
                 android:background="@android:color/darker_gray"
                 app:layout_constraintEnd_toStartOf="@+id/tvColumnOne"
-                app:layout_constraintStart_toEndOf="@+id/cbLineItem"
+                app:layout_constraintStart_toEndOf="@+id/edGDPONo"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
-
-
             <TextView
                 android:id="@+id/tvColumnOne"
                 android:layout_width="0dp"
@@ -48,7 +67,7 @@
                 android:text="@string/po_sap_line_item"
                 app:layout_constraintHorizontal_weight="0.20"
                 app:layout_constraintEnd_toStartOf="@+id/tvColumnTwo"
-                app:layout_constraintStart_toEndOf="@+id/cbLineItem"
+                app:layout_constraintStart_toEndOf="@+id/edGDPONo"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 

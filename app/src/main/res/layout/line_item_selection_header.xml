@@ -28,7 +28,7 @@
                 android:padding="5dp"
                 app:layout_constraintHorizontal_weight="0.05"
                 android:src="@drawable/ic_selection_black"
-                app:layout_constraintEnd_toStartOf="@+id/tvColumnOne"
+                app:layout_constraintEnd_toStartOf="@+id/tvColumnGDPO"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
@@ -38,10 +38,35 @@
                 android:layout_width="1dp"
                 android:layout_height="0dp"
                 android:background="@android:color/darker_gray"
-                app:layout_constraintEnd_toStartOf="@+id/tvColumnOne"
+                app:layout_constraintEnd_toStartOf="@+id/tvColumnGDPO"
                 app:layout_constraintStart_toEndOf="@+id/ivSelection"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="@+id/ivSelection"/>
+
+
+            <TextView
+                android:id="@+id/tvColumnGDPO"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="GDPO NO"
+                android:textStyle="bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintHorizontal_weight="0.15"
+                app:layout_constraintStart_toEndOf="@+id/ivSelection"
+                app:layout_constraintEnd_toStartOf="@+id/tvColumnOne"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:background="@android:color/darker_gray"
+                app:layout_constraintEnd_toStartOf="@+id/tvColumnOne"
+                app:layout_constraintStart_toEndOf="@+id/tvColumnGDPO"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
 
             <TextView
@@ -54,7 +79,7 @@
                 android:textStyle="bold"
                 app:layout_constraintHorizontal_weight="0.20"
                 app:layout_constraintEnd_toStartOf="@+id/tvColumnTwo"
-                app:layout_constraintStart_toEndOf="@+id/ivSelection"
+                app:layout_constraintStart_toEndOf="@+id/tvColumnGDPO"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 

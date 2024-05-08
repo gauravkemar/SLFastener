@@ -327,12 +327,12 @@ class GRNAddNewActivity : AppCompatActivity() {
             if (currentTime - lastUpdateTime >= DEBOUNCE_PERIOD) {
                 lastUpdateTime = currentTime
                 // Check if the current data is different from the previous one
-                if (data != null && data != previousData) {
+               /* if (data != null && data != previousData) {
                     // Update the previous data value
                     previousData = data
                     selectPoLineAdapter?.updateWeightValue(data)
                 }
-                print("weightfromgrnadd: $data")
+                print("weightfromgrnadd: $data")*/
             }
         }
     }

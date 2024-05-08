@@ -197,6 +197,7 @@
             android:id="@+id/ivAdd"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
+            android:visibility="gone"
             android:src="@drawable/ic_add_black"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -212,7 +213,6 @@
             app:layout_constraintEnd_toStartOf="@+id/ivDelete"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-
             />
         <ImageButton
             android:id="@+id/ivDelete"

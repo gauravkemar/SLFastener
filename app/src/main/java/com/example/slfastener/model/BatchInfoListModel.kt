@@ -14,7 +14,7 @@ data class BatchInfoListModel(
     var poId: Int,
     var poLineItemId: Int,
     var poNumber:  String,
-    var poQuantity: Int,
+    var poQuantity: Double,
     var poUnitPrice: Any?,
     var posapLineItemNumber: String,
     var pouom: String,

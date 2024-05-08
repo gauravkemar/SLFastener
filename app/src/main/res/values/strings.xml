@@ -8,7 +8,7 @@
 
 
     <!--HOME PAGE -->
-    <string name="tv_grn">Goods Received Note (GRN)</string>
+    <string name="tv_grn">Goods Receipt Note (GRN)</string>
     <string name="re_print_barcode">Re-Print Barcode</string>
     <string name="my_transaction">My Transaction</string>
     <string name="title_activity_login">LoginActivity</string>

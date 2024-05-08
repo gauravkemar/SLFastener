@@ -12,10 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.slfastener.R
 import com.example.slfastener.helper.CustomKeyboard
-import com.example.slfastener.model.BatchInfoListModel
 import com.example.slfastener.model.offlinebatchsave.GrnLineItemUnitStore
-import com.example.slfastener.view.GRNAddActivity
-import com.google.android.material.card.MaterialCardView
 
 class CreateBatchesNewSingleList(
     private val batches: MutableList<GrnLineItemUnitStore>,
@@ -49,7 +46,7 @@ class CreateBatchesNewSingleList(
         }*/
         holder.tvWeight.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                focusedTextView = holder.edWeight
+                focusedTextView = holder.tvWeight
             }
         }
         holder.edWeight.showSoftInputOnFocus = false
@@ -58,7 +55,9 @@ class CreateBatchesNewSingleList(
             customKeyboard!!.setTargetEditText(holder.edWeight)
             customKeyboard!!.showAt(holder.itemView)
         }
+
         holder.ivAdd.setOnClickListener {
+
             addItem(
                 GrnLineItemUnitStore(
                     grnLineItemUnit.UOM,
@@ -78,11 +77,23 @@ class CreateBatchesNewSingleList(
 
         updateView(holder, grnLineItemUnit)
         holder.ivSave.setOnClickListener {
-            grnLineItemUnit.recevedQty =holder.edWeight.getText().toString()
-            grnLineItemUnit.isUpdate = true
-            //updateView(holder, grnLineItemUnit)
-            onSave(position, grnLineItemUnit)
-            holder.edWeight.clearFocus()
+            if(grnLineItemUnit.UOM.equals("KGS"))
+            {
+                grnLineItemUnit.recevedQty =holder.tvWeight.getText().toString()
+                grnLineItemUnit.isUpdate = true
+                //updateView(holder, grnLineItemUnit)
+                onSave(position, grnLineItemUnit)
+                holder.tvWeight.clearFocus()
+            }
+            else
+            {
+                grnLineItemUnit.recevedQty =holder.edWeight.getText().toString()
+                grnLineItemUnit.isUpdate = true
+                //updateView(holder, grnLineItemUnit)
+                onSave(position, grnLineItemUnit)
+                holder.edWeight.clearFocus()
+            }
+
         }
         holder.ivDelete.setOnClickListener {
             onDelete(position)
@@ -91,7 +102,7 @@ class CreateBatchesNewSingleList(
             notifyItemRangeChanged(position, batches.size) // To update the positions of the remaining items
         }
 
-        if(grnLineItemUnit.UOM.equals("KG"))
+        if(grnLineItemUnit.UOM.equals("KGS"))
         {
             holder.ivAdd.visibility=View.GONE
             holder.tvWeight.visibility=View.VISIBLE
@@ -146,7 +157,7 @@ class CreateBatchesNewSingleList(
     fun updateWeightValue(weightData: String) {
         this.weightData = weightData
         focusedTextView?.setText(weightData)
-        Log.d("weightFromInner",weightData)
+        Log.d("weightFromInnerCreateBatchesNewSingleList",weightData)
     }
     override fun getItemCount(): Int {
         if (batches.size == 0) {

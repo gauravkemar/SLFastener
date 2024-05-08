@@ -4,7 +4,7 @@ data class GrnLineItemUnit(
     val barcode: String,
     val createdBy: String,
     val createdDate: String,
-    val expiryDate: Any,
+    val expiryDate: Any?,
     val internalBatchNo: String,
     val isActive: Boolean,
     val lineItemId: Int,
