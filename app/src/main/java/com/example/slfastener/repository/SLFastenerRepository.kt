@@ -5,6 +5,7 @@ import com.example.demorfidapp.helper.Constants
 import com.example.slfastener.model.GetSuppliersPOsRequest
 import com.example.slfastener.model.grn.GRNSaveToDraftDefaultRequest
 import com.example.slfastener.model.grnmain.GetFilteredGRNRequest
+import com.example.slfastener.model.grnmain.SubmitGRNRequest
 import com.example.slfastener.model.login.LoginRequest
 import com.example.slfastener.model.polineitemnew.GRNUnitLineItemsSaveRequest
 import retrofit2.http.Body
@@ -90,10 +91,34 @@ class SLFastenerRepository {
         @Query("transactionPrefix") transactionPrefix: String?
     ) = RetrofitInstance.api(baseUrl).getBarcodeValueWithPrefixForExisitng(bearerToken,transactionPrefix)
 
+    suspend fun getBarcodeValueWithPrefixForMultipleBatches(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+        @Query("transactionPrefix") transactionPrefix: String?
+    ) = RetrofitInstance.api(baseUrl).getBarcodeValueWithPrefixForMultipleBatches(bearerToken,transactionPrefix)
+
     suspend fun getDraftGRN(
         @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         baseUrl: String,
         @Query("grnId") grnId: Int?
     ) = RetrofitInstance.api(baseUrl).getDraftGRN(bearerToken,grnId)
+
+    suspend fun submitGRN(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+        @Body
+        submitGRNRequest: SubmitGRNRequest
+    ) = RetrofitInstance.api(baseUrl).submitGRN(bearerToken,submitGRNRequest)
+
+    suspend fun deleteGRNLineItemsUnit(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+        @Query("lineLineUnitId") lineLineUnitId: Int?
+    ) = RetrofitInstance.api(baseUrl).deleteGRNLineItemsUnit(bearerToken,lineLineUnitId)
+
+    suspend fun getAllLocations(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+    ) = RetrofitInstance.api(baseUrl).getAllLocations(bearerToken)
 
 }

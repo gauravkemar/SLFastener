@@ -1,6 +1,7 @@
 package com.example.slfastener.model.grn
 
 data class GRNSaveToDraftDefaultRequest(
+    val GRNId:Int,
     val BPCode: String,
     val POIds: String,
     val BPId: Int,

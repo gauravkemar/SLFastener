@@ -29,6 +29,7 @@ data class PoLineItem(
     val itemDescription: String,
     val itemName: String,
     val locationCode: String,
+    val locationId: Int,
     val locationName: String,
     val mhType: String,
     val modifiedBy: String,

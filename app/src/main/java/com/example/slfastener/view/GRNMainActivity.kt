@@ -215,7 +215,7 @@ class GRNMainActivity : AppCompatActivity() {
     private fun setGrnList(grnMainResponse: ArrayList<GetFilteredGRNResponse>) {
         grnMainItemAdapter = GrnMainAdapter{grnId->
             var intent=Intent(this@GRNMainActivity,GRNAddActivity::class.java)
-            intent.putExtra("GRNID",grnId.toString())
+            intent.putExtra("GRNID",grnId)
             startActivity(intent)
         }
         grnMainItemAdapter?.setGrnMainList(grnMainResponse, this@GRNMainActivity)

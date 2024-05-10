@@ -338,7 +338,7 @@
             android:textColor="@color/black"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tvWareHouse"
+            app:layout_constraintEnd_toStartOf="@+id/clWareHouse"
             app:layout_constraintHorizontal_weight="0.06"
             app:layout_constraintStart_toEndOf="@+id/tvRate"
             app:layout_constraintTop_toTopOf="parent">
@@ -350,12 +350,12 @@
             android:layout_height="0dp"
             android:background="@android:color/darker_gray"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tvWareHouse"
+            app:layout_constraintEnd_toStartOf="@+id/clWareHouse"
             app:layout_constraintStart_toEndOf="@+id/tvGRNQty"
             app:layout_constraintTop_toTopOf="parent" />
 
 
-        <TextView
+       <!-- <TextView
             android:id="@+id/tvWareHouse"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -371,14 +371,61 @@
             app:layout_constraintStart_toEndOf="@+id/tvGRNQty"
             app:layout_constraintTop_toTopOf="parent">
 
-        </TextView>
+        </TextView>-->
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clWareHouse"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:background="@drawable/round_border_grey"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/clAction"
+            app:layout_constraintHorizontal_weight="0.08"
+            app:layout_constraintStart_toEndOf="@+id/tvGRNQty"
+            app:layout_constraintTop_toTopOf="parent"
+        >
+
+            <Spinner
+                android:id="@+id/tvWareHouse"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:drawableEnd="@drawable/ic_spinner_arrow_blue"
+                android:gravity="center"
+                android:padding="10dp"
+                android:spinnerMode="dropdown"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/img_spinner_arrow"
+                app:layout_constraintHorizontal_weight="0.90"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/img_spinner_arrow"
+                android:layout_width="20dp"
+                android:layout_height="40dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_spinner_arrow_blue"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_weight="0.10"
+                app:layout_constraintStart_toEndOf="@+id/tvWareHouse"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
         <View
             android:layout_width="1dp"
             android:layout_height="0dp"
             android:background="@android:color/darker_gray"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/clAction"
-            app:layout_constraintStart_toEndOf="@+id/tvWareHouse"
+            app:layout_constraintStart_toEndOf="@+id/clWareHouse"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -389,7 +436,7 @@
             app:layout_constraintHorizontal_weight="0.10"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tvWareHouse"
+            app:layout_constraintStart_toEndOf="@+id/clWareHouse"
             >
             <TextView
                 android:id="@+id/tvBatchCount"

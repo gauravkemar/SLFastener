@@ -21,7 +21,7 @@ val internalBatchNo: String,
 val isdisabled: Boolean,
 val isqtyExceeded: Boolean,
 val previousValue: Int,
-val qty: Int,
+val qty: Double,
 val supplierBatchNo: String,
 val uom: String,
 val weight: String

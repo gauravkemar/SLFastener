@@ -46,4 +46,7 @@ object Constants {
     const val PROCESS_SINGLE_GRN_GRN_ITEM_BATCHES = "GRN/processGRNLineItems"
     const val BARCODE_GENERATE_WITH_PREFIX = "BarcdeGenerator/GetBarcodeValueWithPrefix"
     const val GET_DRAFT_GRN = "GRN/getDraftGrn"
+    const val DELETE_GRN_LINE_ITEM_UNIT = "GRN/deleteGRNLineItemsUnit"
+    const val SUBMIT_GRN = "GRN/submitGRN"
+    const val GET_ALL_LOCATION = "Location/getAllLocations"
 }

@@ -681,7 +681,7 @@
 
 
                             <com.google.android.material.card.MaterialCardView
-                                android:id="@+id/mcvSubmit"
+                                android:id="@+id/mcvSubmitGRN"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="15dp"

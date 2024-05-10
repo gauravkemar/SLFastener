@@ -55,7 +55,7 @@ class SelectPoLineAdapter(
             }*/
         }
 
-        setGDPO(holder,item)
+    /*    setGDPO(holder,item)
         if(   holder.binding.edGDPONo.visibility== View.VISIBLE)
         {
             holder.binding.edGDPONo.addTextChangedListener(object : TextWatcher {
@@ -71,7 +71,7 @@ class SelectPoLineAdapter(
                     updateTheGdpoNoForSamePoNumber(s,item)
                 }
             })
-        }
+        }*/
     }
 
     private fun updateTheGdpoNoForSamePoNumber(s: Editable?, item: PoLineItemSelectionModelNewStore) {
@@ -87,8 +87,6 @@ class SelectPoLineAdapter(
         {
             holder.binding.edGDPONo.visibility= View.VISIBLE
         }
-
-
 
     }
 

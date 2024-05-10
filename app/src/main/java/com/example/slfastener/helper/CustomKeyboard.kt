@@ -74,8 +74,14 @@ class CustomKeyboard(private val context: Context, private val keyboardView: Vie
     }
 
     fun showAt(anchor: View) {
-        if (!popupWindow.isShowing) {
+        /*if (!popupWindow.isShowing) {
             val xOffset = anchor.width / 2 - popupWindow.contentView.measuredWidth / 2
+            val yOffset = -anchor.height
+            popupWindow.showAsDropDown(anchor, xOffset, yOffset)
+        }*/
+        if (!popupWindow.isShowing) {
+            // Calculate xOffset to display the popup window further to the right
+            val xOffset = anchor.width / 2 - popupWindow.contentView.measuredWidth / 2 + anchor.width / 2
             val yOffset = -anchor.height
             popupWindow.showAsDropDown(anchor, xOffset, yOffset)
         }

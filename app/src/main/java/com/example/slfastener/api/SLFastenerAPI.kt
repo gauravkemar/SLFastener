@@ -4,7 +4,9 @@ package  com.example.demorfidapp.api
 
 import com.example.demorfidapp.helper.Constants
 import com.example.demorfidapp.helper.Constants.BARCODE_GENERATE_WITH_PREFIX
+import com.example.demorfidapp.helper.Constants.DELETE_GRN_LINE_ITEM_UNIT
 import com.example.demorfidapp.helper.Constants.GET_ACTIVE_SUPPLIERS_DDL
+import com.example.demorfidapp.helper.Constants.GET_ALL_LOCATION
 import com.example.demorfidapp.helper.Constants.GET_DRAFT_GRN
 import com.example.demorfidapp.helper.Constants.GET_GRN_FILTERED_GRN
 import com.example.demorfidapp.helper.Constants.GET_POS_LINE_ITEMS_ON_POIDS
@@ -17,6 +19,8 @@ import com.example.slfastener.model.GetPOsAndLineItemsOnPOIdsResponse
 import com.example.slfastener.model.GetSuppliersPOsDDLResponse
 import com.example.slfastener.model.GetSuppliersPOsRequest
 import com.example.slfastener.model.generalrequest.GeneralResponse
+import com.example.slfastener.model.generalrequest.GrnBatchDeleteResponse
+import com.example.slfastener.model.getalllocation.GetAllWareHouseLocationResponse
 import com.example.slfastener.model.grn.GRNSaveToDraftDefaultRequest
 import com.example.slfastener.model.grn.GRNSaveToDraftDefaultResponse
 import com.example.slfastener.model.grn.ProcessGRNLineItemsResponse
@@ -24,6 +28,7 @@ import com.example.slfastener.model.grndraftdata.GetDraftGrnResponse
 import com.example.slfastener.model.grnlineitemmain.GrnLineItemResponse
 import com.example.slfastener.model.grnmain.GetFilteredGRNRequest
 import com.example.slfastener.model.grnmain.GetFilteredGRNResponse
+import com.example.slfastener.model.grnmain.SubmitGRNRequest
 import com.example.slfastener.model.login.LoginRequest
 import com.example.slfastener.model.login.LoginResponse
 import com.example.slfastener.model.polineitemnew.GRNUnitLineItemsSaveRequest
@@ -125,6 +130,12 @@ interface SLFastenerAPI {
         @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         @Query("transactionPrefix") transactionPrefix: String?
     ): Response<GeneralResponse>
+    @GET(BARCODE_GENERATE_WITH_PREFIX)
+    suspend fun getBarcodeValueWithPrefixForMultipleBatches
+    (
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Query("transactionPrefix") transactionPrefix: String?
+    ): Response<GeneralResponse>
 
 
     @GET(GET_DRAFT_GRN)
@@ -133,5 +144,25 @@ interface SLFastenerAPI {
         @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         @Query("grnId") grnId: Int?
     ): Response<GetDraftGrnResponse>
+
+    @POST(Constants.SUBMIT_GRN)
+    suspend fun submitGRN
+    (
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Body
+        submitGRNRequest: SubmitGRNRequest
+    ): Response<GeneralResponse>
+
+    @GET(DELETE_GRN_LINE_ITEM_UNIT)
+    suspend fun deleteGRNLineItemsUnit
+                (
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Query("lineLineUnitId") lineLineUnitId: Int?
+    ): Response<GrnBatchDeleteResponse>
+
+    @GET(GET_ALL_LOCATION)
+    suspend fun getAllLocations(
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+    ): Response<ArrayList<GetAllWareHouseLocationResponse>>
 
 }

@@ -77,36 +77,52 @@
             app:layout_constraintStart_toEndOf="@+id/tvInternalBatchNo"
             app:layout_constraintEnd_toStartOf="@+id/tvUOM">
 
-            <EditText
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clQty"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:padding="5dp"
-                android:id="@+id/edWeight"
-                android:textSize="14sp"
-                android:textColor="@color/black"
-                android:background="@android:color/transparent"
-                android:visibility="gone"
-                android:textAlignment="center"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/mcvWeight"
-                />
-            <TextView
-                android:id="@+id/tvWeight"
-                android:layout_margin="2dp"
-                android:padding="5dp"
-                android:hint=""
-                android:focusable="true"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:focusableInTouchMode="true"
-                android:textAlignment="center"
-                android:textSize="14sp"
-                android:background="@android:color/transparent"
-                android:textColor="@color/black"
+                >
+                <EditText
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:padding="5dp"
+                    android:id="@+id/edWeight"
+                    android:textSize="14sp"
+                    android:textColor="@color/black"
+                    android:background="@android:color/transparent"
+                    android:visibility="gone"
+                    android:textAlignment="center"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    />
+                <TextView
+                    android:id="@+id/tvWeight"
+                    android:layout_margin="2dp"
+                    android:padding="5dp"
+                    android:hint=""
+                    android:focusable="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:focusableInTouchMode="true"
+                    android:textAlignment="center"
+                    android:textSize="14sp"
+                    android:background="@android:color/transparent"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
 
-                />
+                    />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/mcvWeight"
                 android:layout_width="wrap_content"
@@ -114,7 +130,7 @@
                 app:cardBackgroundColor="@color/lighter_grey"
                 app:cardCornerRadius="5dp"
                 android:visibility="gone"
-                app:layout_constraintStart_toEndOf="@+id/edWeight"
+                app:layout_constraintStart_toEndOf="@+id/clQty"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -210,7 +226,21 @@
                 app:layout_constraintHorizontal_weight="0.10"
                 app:layout_constraintStart_toEndOf="@+id/ivAdd"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/ivMultiAdd"
+                />
+
+            <ImageButton
+                android:id="@+id/ivMultiAdd"
+                android:layout_width="0dp"
+                android:padding="5dp"
+                android:layout_margin="2dp"
+                android:src="@drawable/ic_multiple_add_black"
+                android:layout_height="wrap_content"
+                app:layout_constraintHorizontal_weight="0.10"
+                app:layout_constraintStart_toEndOf="@+id/ivSave"
                 app:layout_constraintEnd_toStartOf="@+id/ivDelete"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 />
 
             <ImageButton
@@ -221,11 +251,13 @@
                 android:src="@drawable/ic_delete_black"
                 android:layout_height="wrap_content"
                 app:layout_constraintHorizontal_weight="0.10"
-                app:layout_constraintStart_toEndOf="@+id/ivSave"
+                app:layout_constraintStart_toEndOf="@+id/ivMultiAdd"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 />
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

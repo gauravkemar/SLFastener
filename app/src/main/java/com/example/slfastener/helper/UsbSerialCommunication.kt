@@ -48,6 +48,7 @@ class UsbSerialCommunication(private val context: Context) {
             }
         }
     }
+
     fun requestPermission() {
         try {
             if (usbDevice != null && !isPermissionRequested) {
