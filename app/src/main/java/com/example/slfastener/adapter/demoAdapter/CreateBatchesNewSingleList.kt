@@ -78,6 +78,7 @@ class CreateBatchesNewSingleList(
             addItem(
                 GrnLineItemUnitStore(
                     grnLineItemUnit.UOM,
+                    grnLineItemUnit.mhType,
                     grnLineItemUnit.barcode,
                     grnLineItemUnit.expiryDate,
                     grnLineItemUnit.internalBatchNo,
@@ -95,6 +96,7 @@ class CreateBatchesNewSingleList(
             addItem(
                 GrnLineItemUnitStore(
                     grnLineItemUnit.UOM,
+                    grnLineItemUnit.mhType,
                     grnLineItemUnit.barcode,
                     grnLineItemUnit.expiryDate,
                     grnLineItemUnit.internalBatchNo,
@@ -139,14 +141,20 @@ class CreateBatchesNewSingleList(
 
         if (grnLineItemUnit.UOM.equals("KGS")) {
             holder.ivAdd.visibility = View.GONE
-            holder.ivMultiAdd.visibility = View.GONE
             holder.tvWeight.visibility = View.VISIBLE
             holder.edWeight.visibility = View.GONE
         } else {
             holder.ivAdd.visibility = View.VISIBLE
-            holder.ivMultiAdd.visibility = View.VISIBLE
             holder.tvWeight.visibility = View.GONE
             holder.edWeight.visibility = View.VISIBLE
+        }
+
+        if(grnLineItemUnit.mhType.lowercase().equals("batches") && grnLineItemUnit.UOM.lowercase().equals("number"))
+        {
+            holder.ivMultiAdd.visibility = View.VISIBLE
+        }
+        else{
+            holder.ivMultiAdd.visibility = View.GONE
         }
 
         /* if (batchModel.isUpdate) {

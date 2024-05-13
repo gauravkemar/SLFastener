@@ -131,11 +131,14 @@ interface SLFastenerAPI {
         @Query("transactionPrefix") transactionPrefix: String?
     ): Response<GeneralResponse>
     @GET(BARCODE_GENERATE_WITH_PREFIX)
-    suspend fun getBarcodeValueWithPrefixForMultipleBatches
+    suspend fun getBarcodeForMultipleBatches
     (
         @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         @Query("transactionPrefix") transactionPrefix: String?
     ): Response<GeneralResponse>
+
+
+
 
 
     @GET(GET_DRAFT_GRN)
@@ -164,5 +167,7 @@ interface SLFastenerAPI {
     suspend fun getAllLocations(
         @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
     ): Response<ArrayList<GetAllWareHouseLocationResponse>>
+
+
 
 }

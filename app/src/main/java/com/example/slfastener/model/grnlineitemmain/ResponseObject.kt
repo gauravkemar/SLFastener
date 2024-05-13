@@ -24,6 +24,6 @@ data class ResponseObject(
     val poNumber: String,
     val poQty: Int,
     val pouom: String,
-    val retBalQty: Int,
+    val retBalQty: Double,
     val unitPrice: Any
 )

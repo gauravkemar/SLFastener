@@ -151,6 +151,7 @@ class GRNAddActivity : AppCompatActivity() {
         multipleBatchesDialog = Dialog(this)
 
         setCreateBatchesDialog()
+        setCreateBatchesMultipleDialog()
         selectLineItemDialog = AppCompatDialog(this).apply {
             setContentView(selectLineItemBinding.root)
             window?.setLayout(
@@ -191,7 +192,7 @@ class GRNAddActivity : AppCompatActivity() {
         {
             callDefaultData()
         }
-
+        getAllLocations()
         getSupplierList()
 
         binding.mcvAddGrn.setOnClickListener {
@@ -254,6 +255,7 @@ class GRNAddActivity : AppCompatActivity() {
                     for(grnLineUnit in poline.grnLineItemUnit!!)
                     {
                         createBatchesList.add(GrnLineItemUnitStore(grnLineUnit.UOM,
+                            poline.mhType,
                             grnLineUnit.barcode,
                             grnLineUnit.expiryDate,
                             grnLineUnit.internalBatchNo,
@@ -402,6 +404,7 @@ class GRNAddActivity : AppCompatActivity() {
                                             i.grnLineItemUnit.map { grnLineItemUnit ->
                                                 GrnLineItemUnitStore(
                                                     grnLineItemUnit.uom,
+                                                    i.mhType,
                                                     grnLineItemUnit.barcode,
                                                     grnLineItemUnit.expiryDate,
                                                     grnLineItemUnit.internalBatchNo,
@@ -484,7 +487,6 @@ class GRNAddActivity : AppCompatActivity() {
                                             }
                                         }
                                     }
-
                                 } else {
                                     for (r in resultResponse) {
                                         for (e in r.poLineItems) {
@@ -661,7 +663,7 @@ class GRNAddActivity : AppCompatActivity() {
                             {
                                 lineItemUnitId = resultResponse.responseObject.grnLineItemUnit.get(0).lineItemUnitId
                             }
-
+                            balanceQty = resultResponse.responseObject.retBalQty.toString()
                             val receivedGrnLineItem =
                                 resultResponse.responseObject.grnLineItemUnit.getOrNull(0)
 
@@ -871,13 +873,8 @@ class GRNAddActivity : AppCompatActivity() {
                     )
                 },
                 addMultiItem = { newItem ->
-                    generateBarcodeForBatchesForExisitng()
-                    addExisitngNewItem(
-                        newItem.supplierBatchNo,
-                        currentPoLineItemPosition.toInt(),
-                        selectedPoLineItem.get(currentPoLineItemPosition.toInt())
-                    )
-                    addMultipleBatches(newItem,2)
+                    addMultipleBatches(newItem)
+
 
                 },
 
@@ -961,11 +958,37 @@ class GRNAddActivity : AppCompatActivity() {
             ).show()
         }
     }
-    private fun addMultipleBatches(newItem: GrnLineItemUnitStore,times:Int) {
-        var currentItemMultipleList=(newItem.recevedQty.toDouble() * times)
-        var totalQtyAfterMultipleEntry= createBatchesList.sumByDouble { it.recevedQty.toDouble() } + currentItemMultipleList
 
+    private fun getBarcodeForMultipleBatches()
+    {
+        try{
+            viewModel.getBarcodeForMultipleBatches(token,Constants.BASE_URL,"G")
+        }
+        catch (e:Exception)
+        {
 
+        }
+    }
+
+    private fun updateAfterMultipleEntries(
+        newItem: GrnLineItemUnitStore,
+        newBatch: GrnLineItemUnitStore
+    )
+    {
+        val newBalanceQty = balanceQty.toDouble() - newItem.recevedQty.toDouble()
+        val balQtyFormat = String.format("%.3f", newBalanceQty)
+        selectedPoLineItem[currentPoLineItemPosition.toInt()].balQTY = balQtyFormat.toDouble()
+        createBatchesDialogBinding.grnAddHeader.tvBalanceQuantity.setText(
+            selectedPoLineItem[currentPoLineItemPosition.toInt()].balQTY.toString()
+        )
+        val sumOfReceivedQtyIncludingUpdatedItem =
+            createBatchesList.sumByDouble { it.recevedQty.toDouble() }
+        selectedPoLineItem[currentPoLineItemPosition.toInt()].quantityReceived =
+            sumOfReceivedQtyIncludingUpdatedItem.toString()
+        createBatchesDialogBinding.grnAddHeader.tvQtyValue.setText( sumOfReceivedQtyIncludingUpdatedItem.toString())
+        addSingleGrnLineUnitItemApiCall(newBatch)
+        createBatchesMainRcAdapter?.notifyItemInserted(createBatchesList.size - 1)
+        grnMainItemAdapter?.notifyItemChanged(currentPoLineItemPosition.toInt())
     }
 
     ///can default addSame for numbers as 0.000
@@ -1013,7 +1036,7 @@ class GRNAddActivity : AppCompatActivity() {
                                 selectedPoLineItem[currentPoLineItemPosition.toInt()].balQTY.toString()
                             )
                             createBatchesList[position] = updatedItem.copy()
-                            balanceQty = balQtyFormat
+
                             // Update total received quantity for the PO line item
                             val sumOfReceivedQtyIncludingUpdatedItem =
                                 createBatchesList.sumByDouble { it.recevedQty.toDouble() }
@@ -1192,6 +1215,130 @@ class GRNAddActivity : AppCompatActivity() {
         }*/
 
     }
+    private fun addMultipleBatches(
+        newItem: GrnLineItemUnitStore,
+
+    ) {
+        multipleBatchesDialog!!.show()
+
+        var edMultiTextNum=createBatchesMultipleDialogBinding.edMultipleBatch.text.toString().trim()
+
+        createBatchesMultipleDialogBinding.btnSubmit.setOnClickListener {
+            submitMultipleBatches(newItem,edMultiTextNum.toInt())
+        }
+    }
+
+    private fun submitMultipleBatches(newItem: GrnLineItemUnitStore, edMultiTextNum: Int)
+    {
+        if(edMultiTextNum>20)
+        {
+            var currentItemMultipleList=(newItem.recevedQty.toDouble() * edMultiTextNum.toInt())
+            var totalQtyAfterMultipleEntry= createBatchesList.sumByDouble { it.recevedQty.toDouble() } + currentItemMultipleList
+
+            if(currentItemMultipleList>balanceQty.toDouble())
+            {
+                Toast.makeText(
+                    this,
+                    "Value must not exceed the Balance Qty.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            else
+            {
+                val hasItemWithZeroReceivedQuantity = selectedPoLineItem.any {
+                    it.grnLineItemUnit?.any { it.recevedQty == "0.000" }
+                        ?: false
+                }
+
+                if (hasItemWithZeroReceivedQuantity) {
+                    Toasty.warning(
+                        this@GRNAddActivity,
+                        "Please complete current transaction!!"
+                    ).show()
+                    Log.d("edBatchNo.isNotEmpty()", "sad")
+                }
+                else
+                {
+                    repeat(edMultiTextNum){
+                        getBarcodeForMultipleBatches()
+                    }
+
+                }
+            }
+            viewModel.getBarcodeForMultipleBatchesResponse.observe(this)
+            { response ->
+                when (response) {
+                    is Resource.Success -> {
+                        hideProgressBar()
+                        response.data?.let { resultResponse ->
+                            try {
+                                val newBarcode = resultResponse.responseMessage.toString()
+                                Log.e("generatedBarcode", newBarcode)
+                                if (newItem.supplierBatchNo.isNotEmpty()) {
+                                    val newBatch = createMultipleBatches(currentSelectedPoModel, newItem, newBarcode)
+                                    if (currentPoLineItemPosition.toInt() != RecyclerView.NO_POSITION) {
+                                        val model = selectedPoLineItem[currentPoLineItemPosition.toInt()]
+                                        // Initialize batchInfoListModel if it's null
+                                        if (model.grnLineItemUnit == null) {
+                                            model.grnLineItemUnit = mutableListOf()
+                                        }
+                                        // Add new batch to batchInfoListModel
+                                        model.grnLineItemUnit!!.add(newBatch)
+                                        createBatchesList.add(newBatch)
+                                        updateAfterMultipleEntries(newItem,newBatch)
+                                        Log.d("edBatchNo.isNotEmpty()", selectedPoLineItem.toString())
+                                    }
+                                    else
+                                    {
+                                        Log.d("edBatchNoElse.isNotEmpty()", selectedPoLineItem.toString())
+                                    }
+                                } else {
+                                    Toast.makeText(
+                                        this@GRNAddActivity,
+                                        "Please enter batch no!!",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                        .show()
+                                }
+                            }
+                            catch (e: Exception) {
+                                Toasty.warning(
+                                    this@GRNAddActivity,
+                                    e.printStackTrace().toString(),
+                                    Toasty.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+                    is Resource.Error -> {
+                        hideProgressBar()
+                        binding.clSelectPo.visibility = View.GONE
+                        response.message?.let { errorMessage ->
+                            Toasty.error(
+                                this@GRNAddActivity,
+                                "Login failed - \nError Message: $errorMessage"
+                            ).show()
+                        }
+                    }
+
+                    is Resource.Loading -> {
+                        showProgressBar()
+                    }
+                }
+            }
+        }
+        else
+        {
+            Toasty.error(
+                this@GRNAddActivity,
+                "Must not exceed 20 times"
+            ).show()
+        }
+
+
+    }
+
+
 
     private fun calculateWeightUpdate(
         tempList: MutableList<GrnLineItemUnitStore>,
@@ -1822,6 +1969,23 @@ class GRNAddActivity : AppCompatActivity() {
             selectPoDialog!!.dismiss()
         }
     }
+   private fun setCreateBatchesMultipleDialog() {
+       multipleBatchesDialog!!.setContentView(enterBatchesDialogBinding.root)
+       multipleBatchesDialog!!.getWindow()?.setBackgroundDrawable(
+            AppCompatResources.getDrawable(
+                this@GRNAddActivity,
+                android.R.color.transparent
+            )
+        )
+       multipleBatchesDialog!!.getWindow()?.setLayout(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+       multipleBatchesDialog!!.setCancelable(true)
+       createBatchesMultipleDialogBinding.closeDialogueTopButton.setOnClickListener {
+            selectPoDialog!!.dismiss()
+        }
+    }
 
     private fun setPoLineItemList() {
         /*grnMainItemAdapter?.setOnItemCheckClickListener { position, poline ->
@@ -2284,6 +2448,7 @@ class GRNAddActivity : AppCompatActivity() {
         // Create and return the BatchInfoListModel
         return GrnLineItemUnitStore(
             poModel.pouom,
+            poModel.mhType,
             newBarcode,
             "",
             "$edBatchNo/$selectedKGRN",
@@ -2315,21 +2480,20 @@ class GRNAddActivity : AppCompatActivity() {
 
     }
 private fun createMultipleBatches(
-        poModel: PoLineItemSelectionModelNewStore,
-        edBatchNo: String,
-        newBarcode: String
+    poModel: PoLineItemSelectionModelNewStore,
+    edBatchNo: GrnLineItemUnitStore,
+    newBarcode: String
     ): GrnLineItemUnitStore {
-
-        val additionalValue = if (poModel.pouom != "KGS") "0" else "0.000"
 
         return GrnLineItemUnitStore(
             poModel.pouom,
+            poModel.mhType,
             newBarcode,
             "",
-            "$edBatchNo/$selectedKGRN",
+            "${edBatchNo.supplierBatchNo}/$selectedKGRN",
             false,
             lineItemId, 0,
-            additionalValue, edBatchNo, true
+            edBatchNo.recevedQty, edBatchNo.supplierBatchNo, true
         )
 
         /*BatchInfoListModel(

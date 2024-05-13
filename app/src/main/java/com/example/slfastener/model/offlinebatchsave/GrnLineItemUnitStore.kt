@@ -2,6 +2,7 @@ package com.example.slfastener.model.offlinebatchsave
 
 data class GrnLineItemUnitStore(
     val UOM: String,
+    val mhType:String,
     val barcode: String,
     val expiryDate: Any?,
     val internalBatchNo: String,

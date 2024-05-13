@@ -91,11 +91,11 @@ class SLFastenerRepository {
         @Query("transactionPrefix") transactionPrefix: String?
     ) = RetrofitInstance.api(baseUrl).getBarcodeValueWithPrefixForExisitng(bearerToken,transactionPrefix)
 
-    suspend fun getBarcodeValueWithPrefixForMultipleBatches(
+    suspend fun getBarcodeForMultipleBatches(
         @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         baseUrl: String,
         @Query("transactionPrefix") transactionPrefix: String?
-    ) = RetrofitInstance.api(baseUrl).getBarcodeValueWithPrefixForMultipleBatches(bearerToken,transactionPrefix)
+    ) = RetrofitInstance.api(baseUrl).getBarcodeForMultipleBatches(bearerToken,transactionPrefix)
 
     suspend fun getDraftGRN(
         @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,

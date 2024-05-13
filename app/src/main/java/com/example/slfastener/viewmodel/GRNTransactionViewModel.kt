@@ -436,32 +436,32 @@ class GRNTransactionViewModel (
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    val getBarcodeValueWithPrefixForMultipleBatchesResponse: MutableLiveData<Resource<GeneralResponse>> = MutableLiveData()
+    val getBarcodeForMultipleBatchesResponse: MutableLiveData<Resource<GeneralResponse>> = MutableLiveData()
 
-    fun getBarcodeValueWithPrefixForMultipleBatches(token: String,baseUrl: String ,transactionPrefix: String ) {
+    fun getBarcodeForMultipleBatches(token: String,baseUrl: String ,transactionPrefix: String ) {
         viewModelScope.launch {
             safeAPICallGetBarcodeValueWithPrefixForMultipleBatches(token,baseUrl,transactionPrefix)
         }
     }
 
     private suspend fun safeAPICallGetBarcodeValueWithPrefixForMultipleBatches(token: String,baseUrl: String,transactionPrefix:  String ) {
-        getBarcodeValueWithPrefixForMultipleBatchesResponse.postValue(Resource.Loading())
+        getBarcodeForMultipleBatchesResponse.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.getBarcodeValueWithPrefixForMultipleBatches(token,baseUrl,transactionPrefix )
-                getBarcodeValueWithPrefixForMultipleBatchesResponse.postValue(getBarcodeValueWithPrefixForMultipleBatches(response))
+                val response = rfidRepository.getBarcodeForMultipleBatches(token,baseUrl,transactionPrefix )
+                getBarcodeForMultipleBatchesResponse.postValue(HandleGetBarcodeForMultipleBatches(response))
             } else {
-                getBarcodeValueWithPrefixForMultipleBatchesResponse.postValue(Resource.Error(Constants.NO_INTERNET))
+                getBarcodeForMultipleBatchesResponse.postValue(Resource.Error(Constants.NO_INTERNET))
             }
         } catch (t: Throwable) {
             when (t) {
-                is IOException -> getBarcodeValueWithPrefixForMultipleBatchesResponse.postValue(Resource.Error(Constants.CONFIG_ERROR))
-                else -> getBarcodeValueWithPrefixForMultipleBatchesResponse.postValue(Resource.Error("${t.message}"))
+                is IOException -> getBarcodeForMultipleBatchesResponse.postValue(Resource.Error(Constants.CONFIG_ERROR))
+                else -> getBarcodeForMultipleBatchesResponse.postValue(Resource.Error("${t.message}"))
             }
         }
     }
 
-    private fun getBarcodeValueWithPrefixForMultipleBatches(response: Response<GeneralResponse>): Resource<GeneralResponse>{
+    private fun HandleGetBarcodeForMultipleBatches(response: Response<GeneralResponse>): Resource<GeneralResponse>{
         var errorMessage = ""
         if (response.isSuccessful) {
             response.body()?.let { appDetailsResponse ->

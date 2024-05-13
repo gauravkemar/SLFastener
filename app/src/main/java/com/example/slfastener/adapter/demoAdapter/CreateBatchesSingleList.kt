@@ -84,10 +84,11 @@ class CreateBatchesSingleList(
             holder.edWeight.clearFocus()
         }
         holder.ivDelete.setOnClickListener {
+
             batches.removeAt(position)
             notifyItemRemoved(position)
-
             notifyItemRangeChanged(position, batches.size) // To update the positions of the remaining items
+
         }
 
        /* if (batchModel.isUpdate) {

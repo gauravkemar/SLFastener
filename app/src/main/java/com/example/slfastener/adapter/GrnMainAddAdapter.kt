@@ -11,6 +11,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.recyclerview.widget.RecyclerView
 import com.example.slfastener.R
 import com.example.slfastener.helper.CustomArrayAdapter
@@ -139,10 +140,6 @@ class GrnMainAddAdapter (
         }
 
     }
-
-
-
-
 
 
 
