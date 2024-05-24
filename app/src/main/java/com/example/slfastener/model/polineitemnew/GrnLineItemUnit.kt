@@ -24,6 +24,10 @@ val previousValue: Int,
 val qty: Double,
 val supplierBatchNo: String,
 val uom: String,
-val weight: String
+val weight: String,
+val expiryDate: String,
+val isExpirable: Boolean,
+
+
 )
 

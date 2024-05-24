@@ -298,7 +298,6 @@
                                     app:layout_constraintTop_toTopOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintEnd_toEndOf="parent"
-
                                     >
                                     <include
                                         app:layout_constraintTop_toTopOf="parent"
@@ -367,7 +366,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:padding="10dp"
-                                android:text="    Cancel   "
+                                android:text="    Back   "
                                 android:textColor="@color/white" />
                         </com.google.android.material.card.MaterialCardView>
 

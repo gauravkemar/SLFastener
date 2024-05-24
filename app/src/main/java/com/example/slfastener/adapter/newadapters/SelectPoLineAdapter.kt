@@ -28,7 +28,8 @@ class SelectPoLineAdapter(
         holder.binding.tvColumnOne.setText(item.posapLineItemNumber)
         holder.binding.tvColumnTwo.setText(item.itemCode)
         holder.binding.tvColumnThree.setText(item.itemName)
-        holder.binding.tvColumnFour.setText(item.itemDescription)
+
+        holder.binding.tvColumnSeven.setText(item.balQTY.toString())
         if(item.poqty.toString()!=null)
         {
             holder.binding.tvColumnFive.setText(item.poqty.toString())

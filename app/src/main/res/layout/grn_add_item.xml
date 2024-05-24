@@ -53,7 +53,6 @@
             android:text="PO No"
             android:textAlignment="center"
             android:textColor="@color/black"
-
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/edGDPO"
             app:layout_constraintHorizontal_weight="0.07"
@@ -175,7 +174,7 @@
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvPuom"
-            app:layout_constraintHorizontal_weight="0.15"
+            app:layout_constraintHorizontal_weight="0.12"
             app:layout_constraintStart_toEndOf="@+id/tvItemCode"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -254,7 +253,6 @@
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="12sp"
-
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvBalQty"
             app:layout_constraintHorizontal_weight="0.06"
@@ -377,43 +375,70 @@
             android:id="@+id/clWareHouse"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:background="@drawable/round_border_grey"
+            android:layout_margin="5dp"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/clAction"
-            app:layout_constraintHorizontal_weight="0.08"
+            app:layout_constraintHorizontal_weight="0.10"
             app:layout_constraintStart_toEndOf="@+id/tvGRNQty"
             app:layout_constraintTop_toTopOf="parent"
         >
-
-            <Spinner
-                android:id="@+id/tvWareHouse"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center"
-                android:background="@android:color/transparent"
-                android:drawableEnd="@drawable/ic_spinner_arrow_blue"
-                android:gravity="center"
-                android:padding="10dp"
-                android:spinnerMode="dropdown"
+            <TextView
+                android:id="@+id/tvQc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="QC =>"
+                android:textSize="12sp"
+                android:layout_marginEnd="2dp"
+                android:visibility="gone"
+                android:textStyle="bold"
+                android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/img_spinner_arrow"
-                app:layout_constraintHorizontal_weight="0.90"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/clWareHouseSpinner"
+                />
 
-            <ImageView
-                android:id="@+id/img_spinner_arrow"
-                android:layout_width="20dp"
-                android:layout_height="40dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_spinner_arrow_blue"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clWareHouseSpinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/round_border_grey"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tvQc"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_weight="0.10"
-                app:layout_constraintStart_toEndOf="@+id/tvWareHouse"
-                app:layout_constraintTop_toTopOf="parent" />
+                >
+                <Spinner
+                    android:id="@+id/tvWareHouse"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:background="@android:color/transparent"
+                    android:drawableEnd="@drawable/ic_spinner_arrow_blue"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:spinnerMode="dropdown"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/img_spinner_arrow"
+                    app:layout_constraintHorizontal_weight="0.90"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/img_spinner_arrow"
+                    android:layout_width="20dp"
+                    android:layout_height="40dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_spinner_arrow_blue"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_weight="0.10"
+                    app:layout_constraintStart_toEndOf="@+id/tvWareHouse"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

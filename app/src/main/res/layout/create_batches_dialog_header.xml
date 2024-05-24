@@ -37,7 +37,7 @@
             android:paddingEnd="4dp"
             android:paddingBottom="5dp"
             android:text="asd"
-            android:textSize="10sp"
+            android:textSize="12sp"
             android:textStyle="bold" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -105,7 +105,7 @@
             android:paddingEnd="4dp"
             android:paddingBottom="5dp"
             android:text="Item Code"
-            android:textSize="10sp"
+            android:textSize="12sp"
             android:textStyle="bold" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -138,7 +138,7 @@
             android:paddingEnd="4dp"
             android:paddingBottom="5dp"
             android:text="Item Code"
-            android:textSize="10sp"
+            android:textSize="12sp"
             android:textStyle="bold" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -170,7 +170,7 @@
             android:paddingEnd="4dp"
             android:paddingBottom="5dp"
             android:text="PUOM"
-            android:textSize="10sp"
+            android:textSize="12sp"
             android:textStyle="bold" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -202,7 +202,7 @@
             android:paddingEnd="4dp"
             android:paddingBottom="5dp"
             android:text="MH TYPE"
-            android:textSize="10sp"
+            android:textSize="12sp"
             android:textStyle="bold" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -236,7 +236,7 @@
             android:paddingBottom="5dp"
 
             android:text="PO QTY"
-            android:textSize="10sp"
+            android:textSize="12sp"
             android:textStyle="bold" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -270,7 +270,7 @@
             android:paddingBottom="5dp"
 
             android:text="Bal QTY"
-            android:textSize="10sp"
+            android:textSize="12sp"
             android:textStyle="bold" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -304,7 +304,7 @@
             android:paddingEnd="4dp"
             android:paddingBottom="5dp"
             android:text="Rec. QTY"
-            android:textSize="10sp"
+            android:textSize="12sp"
             android:textStyle="bold" />
 
     </com.google.android.material.textfield.TextInputLayout>

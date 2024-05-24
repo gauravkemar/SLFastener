@@ -4,8 +4,10 @@ package  com.example.demorfidapp.api
 
 import com.example.demorfidapp.helper.Constants
 import com.example.demorfidapp.helper.Constants.BARCODE_GENERATE_WITH_PREFIX
+import com.example.demorfidapp.helper.Constants.DELETE_GRN_LINE_ITEM_ID
 import com.example.demorfidapp.helper.Constants.DELETE_GRN_LINE_ITEM_UNIT
 import com.example.demorfidapp.helper.Constants.GET_ACTIVE_SUPPLIERS_DDL
+import com.example.demorfidapp.helper.Constants.GET_ALL_ITEM_MASTER
 import com.example.demorfidapp.helper.Constants.GET_ALL_LOCATION
 import com.example.demorfidapp.helper.Constants.GET_DRAFT_GRN
 import com.example.demorfidapp.helper.Constants.GET_GRN_FILTERED_GRN
@@ -14,13 +16,21 @@ import com.example.demorfidapp.helper.Constants.GET_SUPPLIERS_POS
 import com.example.demorfidapp.helper.Constants.GET_SUPPLIERS_POS_DDL
 import com.example.demorfidapp.helper.Constants.HTTP_HEADER_AUTHORIZATION
 import com.example.demorfidapp.helper.Constants.LOGIN_URL
+import com.example.demorfidapp.helper.Constants.PROCESS_GR_LINE_ITEM
+import com.example.demorfidapp.helper.Constants.PROCESS_GR_TRANSACTION
 import com.example.slfastener.model.GetActiveSuppliersDDLResponse
 import com.example.slfastener.model.GetPOsAndLineItemsOnPOIdsResponse
+import com.example.slfastener.model.GetSupllierPOsDDLOriginalResponse
 import com.example.slfastener.model.GetSuppliersPOsDDLResponse
 import com.example.slfastener.model.GetSuppliersPOsRequest
+import com.example.slfastener.model.generalrequest.GRNLineItemDeleteResponse
 import com.example.slfastener.model.generalrequest.GeneralResponse
 import com.example.slfastener.model.generalrequest.GrnBatchDeleteResponse
 import com.example.slfastener.model.getalllocation.GetAllWareHouseLocationResponse
+import com.example.slfastener.model.goodsreceipt.GetAllItemMasterResponse
+import com.example.slfastener.model.goodsreceipt.PostProcessGRTransactionRequest
+import com.example.slfastener.model.goodsreceipt.PostProcessGRTransactionResponse
+import com.example.slfastener.model.goodsreceipt.ProcessGRLineItemRequest
 import com.example.slfastener.model.grn.GRNSaveToDraftDefaultRequest
 import com.example.slfastener.model.grn.GRNSaveToDraftDefaultResponse
 import com.example.slfastener.model.grn.ProcessGRNLineItemsResponse
@@ -53,7 +63,7 @@ interface SLFastenerAPI {
     suspend fun getSuppliersPosDDLL(
         @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         @Query("bpCode") bpCode: String?
-    ): Response<ArrayList<GetSuppliersPOsDDLResponse>>
+    ): Response<ArrayList<GetSupllierPOsDDLOriginalResponse>>
 
     @POST(GET_SUPPLIERS_POS)
     suspend fun getSuppliersPOs(
@@ -116,6 +126,13 @@ interface SLFastenerAPI {
         grnUnitLineItemsSaveRequest: GRNUnitLineItemsSaveRequest
     ): Response<GrnLineItemResponse>
 
+    @POST(Constants.PROCESS_SINGLE_GRN_GRN_ITEM_BATCHES)
+    suspend fun processSingleGRNGRNItemBatchesForMultiple(
+      @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Body
+        grnUnitLineItemsSaveRequest: GRNUnitLineItemsSaveRequest
+    ): Response<GrnLineItemResponse>
+
 
     @GET(BARCODE_GENERATE_WITH_PREFIX)
     suspend fun getBarcodeValueWithPrefix
@@ -163,11 +180,51 @@ interface SLFastenerAPI {
         @Query("lineLineUnitId") lineLineUnitId: Int?
     ): Response<GrnBatchDeleteResponse>
 
+    @GET(DELETE_GRN_LINE_ITEM_ID)
+    suspend fun deleteGRNLineUnit
+                (
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Query("lineItemId") lineLineUnitId: Int?
+    ): Response<GRNLineItemDeleteResponse>
+
     @GET(GET_ALL_LOCATION)
     suspend fun getAllLocations(
         @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
     ): Response<ArrayList<GetAllWareHouseLocationResponse>>
 
+
+    ////gr all
+
+    @GET(GET_ALL_ITEM_MASTER)
+    suspend fun getAllItemMaster(
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+    ): Response<ArrayList<GetAllItemMasterResponse>>
+
+    @GET(GET_ACTIVE_SUPPLIERS_DDL)
+    suspend fun getActiveSupplierForGR(
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+    ): Response<ArrayList<GetActiveSuppliersDDLResponse>>
+
+    @POST(PROCESS_GR_TRANSACTION)
+    suspend fun processGR(
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Body
+        postProcessGRTransactionRequest: PostProcessGRTransactionRequest
+    ): Response<PostProcessGRTransactionResponse>
+
+    @POST(PROCESS_GR_LINE_ITEM)
+    suspend fun processSingleGRItemBatches(
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Body
+        processGRLineItemRequest: ProcessGRLineItemRequest
+    ): Response<ProcessGRLineItemRequest>
+
+    @POST(PROCESS_GR_LINE_ITEM)
+    suspend fun processSingleGRItemForMultiple(
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Body
+        processGRLineItemRequest: ProcessGRLineItemRequest
+    ): Response<ProcessGRLineItemRequest>
 
 
 }

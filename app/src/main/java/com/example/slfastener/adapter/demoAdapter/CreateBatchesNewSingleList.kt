@@ -1,11 +1,13 @@
 package com.example.slfastener.adapter.demoAdapter
 
+import android.app.DatePickerDialog
 import android.content.Context
 import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
@@ -16,6 +18,10 @@ import com.example.slfastener.R
 import com.example.slfastener.helper.CustomKeyboard
 import com.example.slfastener.model.offlinebatchsave.GrnLineItemUnitStore
 import com.google.android.material.card.MaterialCardView
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class CreateBatchesNewSingleList(
     private val context: Context,
@@ -23,7 +29,7 @@ class CreateBatchesNewSingleList(
     private val onSave: (Int, GrnLineItemUnitStore) -> Unit,
     private val addItem: (GrnLineItemUnitStore) -> Unit,
     private val addMultiItem: (GrnLineItemUnitStore) -> Unit,
-    private val onDelete: (Int,GrnLineItemUnitStore) -> Unit,
+    private val onDelete: (Int, GrnLineItemUnitStore) -> Unit,
     private var customKeyboard: CustomKeyboard? = null
 ) :
     RecyclerView.Adapter<CreateBatchesNewSingleList.ViewHolder>() {
@@ -44,10 +50,17 @@ class CreateBatchesNewSingleList(
         holder.tvInternalBatchNo.setText(grnLineItemUnit.internalBatchNo)
         holder.tvUOM.setText(grnLineItemUnit.UOM)
         holder.tvBarcodeLableValue.setText(grnLineItemUnit.barcode)
-        holder.tvWeight.setText(grnLineItemUnit.recevedQty)
-        holder.edWeight.setText(grnLineItemUnit.recevedQty)
+
+        if (grnLineItemUnit.recevedQty == "0.000" || grnLineItemUnit.recevedQty == "0") {
+            holder.tvWeight.setText("")
+            holder.edWeight.setText("")
+        } else {
+            holder.tvWeight.setText(grnLineItemUnit.recevedQty)
+            holder.edWeight.setText(grnLineItemUnit.recevedQty)
+        }
 
         val conditionMatches = batches.any { it.recevedQty == "0.000" || it.recevedQty == "0" }
+
         holder.mcvWeight.setOnClickListener {
             if (conditionMatches) {
                 Toast.makeText(context, "Please complete current transaction", Toast.LENGTH_SHORT)
@@ -75,68 +88,160 @@ class CreateBatchesNewSingleList(
         }
 
         holder.ivAdd.setOnClickListener {
-            addItem(
-                GrnLineItemUnitStore(
-                    grnLineItemUnit.UOM,
-                    grnLineItemUnit.mhType,
-                    grnLineItemUnit.barcode,
-                    grnLineItemUnit.expiryDate,
-                    grnLineItemUnit.internalBatchNo,
-                    grnLineItemUnit.isChecked,
-                    grnLineItemUnit.lineItemId,
-                    grnLineItemUnit.lineItemUnitId,
-                    holder.edWeight.text.toString(),
-                    grnLineItemUnit.supplierBatchNo,
-                    false
-                )
-            )
-            holder.edWeight.clearFocus()
+            if (conditionMatches) {
+                Toast.makeText(context, "Please complete current transaction", Toast.LENGTH_SHORT)
+                    .show()
+            } else {
+                if (grnLineItemUnit.isExpirable) {
+                    if (holder.tvExpiryDate.text.toString() != "" && holder.tvExpiryDate.text.toString() != "null") {
+                        addItem(
+                            GrnLineItemUnitStore(
+                                grnLineItemUnit.UOM,
+                                grnLineItemUnit.mhType,
+                                grnLineItemUnit.barcode,
+                                holder.tvExpiryDate.text.toString(),
+                                grnLineItemUnit.isExpirable,
+                                grnLineItemUnit.internalBatchNo,
+                                grnLineItemUnit.isChecked,
+                                grnLineItemUnit.lineItemId,
+                                grnLineItemUnit.lineItemUnitId,
+                                holder.edWeight.text.toString(),
+                                grnLineItemUnit.supplierBatchNo,
+                                false
+                            )
+                        )
+                        holder.edWeight.clearFocus()
+                    } else {
+                        Toast.makeText(context, "Please select Date!!", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    addItem(
+                        GrnLineItemUnitStore(
+                            grnLineItemUnit.UOM,
+                            grnLineItemUnit.mhType,
+                            grnLineItemUnit.barcode,
+                            grnLineItemUnit.expiryDate,
+                            grnLineItemUnit.isExpirable,
+                            grnLineItemUnit.internalBatchNo,
+                            grnLineItemUnit.isChecked,
+                            grnLineItemUnit.lineItemId,
+                            grnLineItemUnit.lineItemUnitId,
+                            holder.edWeight.text.toString(),
+                            grnLineItemUnit.supplierBatchNo,
+                            false
+                        )
+                    )
+                    holder.edWeight.clearFocus()
+                }
+            }
+
         }
         holder.ivMultiAdd.setOnClickListener {
-            addItem(
-                GrnLineItemUnitStore(
-                    grnLineItemUnit.UOM,
-                    grnLineItemUnit.mhType,
-                    grnLineItemUnit.barcode,
-                    grnLineItemUnit.expiryDate,
-                    grnLineItemUnit.internalBatchNo,
-                    grnLineItemUnit.isChecked,
-                    grnLineItemUnit.lineItemId,
-                    grnLineItemUnit.lineItemUnitId,
-                    holder.edWeight.text.toString(),
-                    grnLineItemUnit.supplierBatchNo,
-                    false
-                )
-            )
-            holder.edWeight.clearFocus()
-        }
+            if (conditionMatches) {
+                Toast.makeText(context, "Please complete current transaction", Toast.LENGTH_SHORT)
+                    .show()
+            }
+            else {
+                if (grnLineItemUnit.isExpirable) {
+                    if (holder.tvExpiryDate.text.toString() != "") {
+                        addMultiItem(
+                            GrnLineItemUnitStore(
+                                grnLineItemUnit.UOM,
+                                grnLineItemUnit.mhType,
+                                grnLineItemUnit.barcode,
+                                grnLineItemUnit.expiryDate,
+                                grnLineItemUnit.isExpirable,
+                                grnLineItemUnit.internalBatchNo,
+                                grnLineItemUnit.isChecked,
+                                grnLineItemUnit.lineItemId,
+                                grnLineItemUnit.lineItemUnitId,
+                                holder.edWeight.text.toString(),
+                                grnLineItemUnit.supplierBatchNo,
+                                false
+                            )
+                        )
+                        holder.edWeight.clearFocus()
+                    } else {
+                        Toast.makeText(context, "Please select Date!!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                else {
+                    addMultiItem(
+                        GrnLineItemUnitStore(
+                            grnLineItemUnit.UOM,
+                            grnLineItemUnit.mhType,
+                            grnLineItemUnit.barcode,
+                            grnLineItemUnit.expiryDate,
+                            grnLineItemUnit.isExpirable,
+                            grnLineItemUnit.internalBatchNo,
+                            grnLineItemUnit.isChecked,
+                            grnLineItemUnit.lineItemId,
+                            grnLineItemUnit.lineItemUnitId,
+                            holder.edWeight.text.toString(),
+                            grnLineItemUnit.supplierBatchNo,
+                            false
+                        )
+                    )
 
+                    holder.edWeight.clearFocus()
+                }
+            }
+        }
         updateView(holder, grnLineItemUnit)
         holder.ivSave.setOnClickListener {
-            if (grnLineItemUnit.UOM.equals("KGS")) {
-                grnLineItemUnit.recevedQty = holder.tvWeight.getText().toString()
-                grnLineItemUnit.isUpdate = true
-                //updateView(holder, grnLineItemUnit)
-                //updateView(holder, grnLineItemUnit)
-                onSave(position, grnLineItemUnit)
-                holder.tvWeight.clearFocus()
+            if (grnLineItemUnit.isExpirable) {
+                if (holder.tvExpiryDate.text.toString() != "" && holder.tvExpiryDate.text.toString() != "null") {
+                    if (grnLineItemUnit.UOM.equals("KGS")) {
+                        grnLineItemUnit.recevedQty = holder.tvWeight.getText().toString()
+                        grnLineItemUnit.expiryDate = holder.tvExpiryDate.getText().toString()
+                        grnLineItemUnit.isUpdate = true
+                        //updateView(holder, grnLineItemUnit)
+                        //updateView(holder, grnLineItemUnit)
+                        onSave(position, grnLineItemUnit)
+                        holder.tvWeight.clearFocus()
+                    } else {
+                        grnLineItemUnit.recevedQty = holder.edWeight.getText().toString()
+                        grnLineItemUnit.expiryDate = holder.tvExpiryDate.getText().toString()
+                        grnLineItemUnit.isUpdate = true
+                        //updateView(holder, grnLineItemUnit)
+                        onSave(position, grnLineItemUnit)
+                        holder.edWeight.clearFocus()
+                    }
+                } else {
+                    Toast.makeText(context, "Please select Date!!", Toast.LENGTH_SHORT).show()
+                }
             } else {
-                grnLineItemUnit.recevedQty = holder.edWeight.getText().toString()
-                grnLineItemUnit.isUpdate = true
-                //updateView(holder, grnLineItemUnit)
-                onSave(position, grnLineItemUnit)
-                holder.edWeight.clearFocus()
+                if (grnLineItemUnit.UOM.equals("KGS")) {
+                    if (holder.tvWeight.getText().toString() != "") {
+                        grnLineItemUnit.recevedQty = holder.tvWeight.getText().toString()
+                        grnLineItemUnit.isUpdate = true
+                        //updateView(holder, grnLineItemUnit)
+                        //updateView(holder, grnLineItemUnit)
+                        onSave(position, grnLineItemUnit)
+                        holder.tvWeight.clearFocus()
+                    } else {
+                        Toast.makeText(context, "Please Fill the QTY!!", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+
+                } else {
+                    if (holder.edWeight.getText().toString() != "") {
+                        grnLineItemUnit.recevedQty = holder.edWeight.getText().toString()
+                        grnLineItemUnit.isUpdate = true
+                        //updateView(holder, grnLineItemUnit)
+                        onSave(position, grnLineItemUnit)
+                        holder.edWeight.clearFocus()
+                    } else {
+                        Toast.makeText(context, "Please Fill the QTY!!", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+
+                }
             }
 
         }
         holder.ivDelete.setOnClickListener {
-            onDelete(position,grnLineItemUnit)
-            batches.removeAt(position)
-            notifyItemRemoved(position)
-            notifyItemRangeChanged(
-                position,
-                batches.size
-            ) // To update the positions of the remaining items
+            onDelete(position, grnLineItemUnit)
         }
 
         if (grnLineItemUnit.UOM.equals("KGS")) {
@@ -144,47 +249,67 @@ class CreateBatchesNewSingleList(
             holder.tvWeight.visibility = View.VISIBLE
             holder.edWeight.visibility = View.GONE
         } else {
-            holder.ivAdd.visibility = View.VISIBLE
+            if(grnLineItemUnit.mhType.lowercase().equals("serial"))
+            {
+                holder.ivAdd.visibility = View.GONE
+            }
+            else{
+                holder.ivAdd.visibility = View.VISIBLE
+            }
             holder.tvWeight.visibility = View.GONE
             holder.edWeight.visibility = View.VISIBLE
         }
 
-        if(grnLineItemUnit.mhType.lowercase().equals("batches") && grnLineItemUnit.UOM.lowercase().equals("number"))
-        {
+        if (grnLineItemUnit.mhType.lowercase().equals("batch") && grnLineItemUnit.UOM.lowercase()
+                .equals("number")
+        ) {
             holder.ivMultiAdd.visibility = View.VISIBLE
-        }
-        else{
+        } else {
             holder.ivMultiAdd.visibility = View.GONE
         }
 
-        /* if (batchModel.isUpdate) {
-             Log.d("MyTag", "Setting visibility and colors")
-             holder.ivAdd.setImageResource(R.drawable.ic_save_black)
-             holder.mcvWeight.visibility = View.VISIBLE
-             holder.clCardMain.setBackgroundColor(Color.RED)
-
-            *//* holder.clCardMain.setBackgroundColor(
-                ContextCompat.getColor(
-                    context!!,
-                    R.color.header_bg
-                )
-            )
-            holder.mcvGenerateBarcode.setCardBackgroundColor(
-                ContextCompat.getColor(
-                    context!!,
-                    R.color.light_grey
-                )
-            )*//*
-        } else {
-            Log.d("MyTag", "Setting visibility and colors False $list")
-        }*/
 
         if (holder.tvWeight.text.toString().trim() == "0.000") {
             holder.tvWeight.requestFocus()
             holder.mcvWeight.visibility = View.GONE
         }
 
+        if (grnLineItemUnit.isExpirable) {
+            holder.tvExpiryDate.visibility = View.VISIBLE
 
+
+            Log.e("inputDateelse","grnLineItemUnit.expiryDate.toString()")
+            if (grnLineItemUnit.expiryDate.toString() != "" && grnLineItemUnit.expiryDate.toString() !="null") {
+                val inputDate = grnLineItemUnit.expiryDate.toString()
+                val inputFormat: SimpleDateFormat
+                val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+
+                if (inputDate.length == "yyyy-MM-dd'T'HH:mm:ss".length) {
+                    Log.e("inputDate.length ",inputDate.length.toString())
+                    inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+                    val parsedDate = inputFormat.parse(inputDate)
+                    val formattedDate = outputFormat.format(parsedDate)
+                    holder.tvExpiryDate.setText(formattedDate)
+                } else {
+                    Log.e("inputDateelse",inputDate.length.toString())
+                    inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    val parsedDate = inputFormat.parse(inputDate)
+                    val formattedDate = outputFormat.format(parsedDate)
+                    holder.tvExpiryDate.setText(formattedDate)
+                }
+            } else {
+                Log.e("inputDateelse","outerelse")
+                holder.tvExpiryDate.setText("")
+            }
+
+        } else {
+            holder.tvExpiryDate.visibility = View.GONE
+        }
+
+        holder.tvExpiryDate.setOnClickListener {
+            showDatePickerDialog(holder)
+        }
     }
 
     private fun updateView(holder: ViewHolder, batchInfoItem: GrnLineItemUnitStore) {
@@ -210,7 +335,6 @@ class CreateBatchesNewSingleList(
         focusedTextView?.setText(weightData)
         Log.d("weightFromInnerCreateBatchesNewSingleList", weightData)
     }
-
     override fun getItemCount(): Int {
         if (batches.size == 0) {
             //Toast.makeText(context,"List is empty", Toast.LENGTH_LONG).show()
@@ -219,7 +343,6 @@ class CreateBatchesNewSingleList(
         }
         return batches.size
     }
-
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
         val tvSrnNo: TextView = itemView.findViewById(R.id.tvSrnNo)
         val tvBatchNo: TextView = itemView.findViewById(R.id.tvBatchNo)
@@ -235,25 +358,33 @@ class CreateBatchesNewSingleList(
         val ivMultiAdd: ImageButton = itemView.findViewById(R.id.ivMultiAdd)
         val clCardMain: ConstraintLayout = itemView.findViewById(R.id.clCardMain)
         val mcvWeight: MaterialCardView = itemView.findViewById(R.id.mcvWeight)
+    }
 
-
+    private fun showDatePickerDialog(holder: ViewHolder) {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
+        val datePickerDialog = DatePickerDialog(
+            context,
+            DatePickerDialog.OnDateSetListener { _: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDay: Int ->
+                // Do something with the selected date
+                val selectedDateCal = Calendar.getInstance()
+                selectedDateCal.set(selectedYear, selectedMonth, selectedDay)
+                // You can handle the selected date here, for example, set it to a TextView
+                //holder.tvExpiryDate.setText("$selectedDay/${selectedMonth + 1}/$selectedYear")
+                //selectedDate = "$selectedDay-${selectedMonth + 1}-$selectedYear"
+                val dateFormat = SimpleDateFormat("dd-M-yyyy", Locale.getDefault())
+                val selectDt = dateFormat.parse("$selectedDay-${selectedMonth + 1}-$selectedYear")
+                val formattedDate =
+                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(selectDt)
+                holder.tvExpiryDate.setText(formattedDate.toString())
+                //selectedDate = LocalDateTime.of(2024, 4, 20,0,0)
+            }, year, month, dayOfMonth
+        )
+        // Set maximum date
+        datePickerDialog.datePicker.minDate = System.currentTimeMillis() // Optional: Set minimum date to current date
+        datePickerDialog.show()
     }
 
 }
-
-
-/*    private fun listsAreEqual(
-        list1: List<BatchInfoListModel>,
-        list2: List<BatchInfoListModel>
-    ): Boolean {
-        if (list1.size != list2.size) {
-            Log.e("MyTag", "notifyDataSetChanged()")
-            return false
-        }
-        for (i in list1.indices) {
-            if (list1[i] != list2[i]) {
-                return false
-            }
-        }
-        return true
-    }*/

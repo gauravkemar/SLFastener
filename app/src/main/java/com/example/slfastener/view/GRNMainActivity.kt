@@ -51,7 +51,7 @@ class GRNMainActivity : AppCompatActivity() {
         val viewModelProviderFactory = GRNTransactionViewModelProviderFactory(application, slFastenerRepository)
         viewModel = ViewModelProvider(this, viewModelProviderFactory)[GRNTransactionViewModel ::class.java]
         getGrnList("Draft")
-        getFilteredGRNCompleted("Complete")
+        getFilteredGRNCompleted("Submitted")
         binding.rcGrnMainCompleted.visibility=View.GONE
         binding.logoutBtn.setOnClickListener {
             showLogoutDialog()
@@ -83,7 +83,7 @@ class GRNMainActivity : AppCompatActivity() {
             binding.mcvGRNCompleted.setCardBackgroundColor(resources.getColor(R.color.lighter_blue))
             binding.mcvGRNDraft.setCardBackgroundColor(resources.getColor(R.color.white))
             //getGrnList("Complete")
-            getFilteredGRNCompleted("Complete")
+            getFilteredGRNCompleted("Submitted")
             binding.rcGrnMainCompleted.visibility=View.VISIBLE
             binding.rcGrnMain.visibility=View.GONE
         }
@@ -224,7 +224,11 @@ class GRNMainActivity : AppCompatActivity() {
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
     }
     private fun setGrnCompletedList(grnMainResponse: ArrayList<GetFilteredGRNResponse>) {
-        grnMainCompletedAdapter = GRNMainCompletedAdapter()
+        grnMainCompletedAdapter = GRNMainCompletedAdapter{grnId->
+            var intent=Intent(this@GRNMainActivity,CompletedGRNActivity::class.java)
+            intent.putExtra("GRNID",grnId)
+            startActivity(intent)
+        }
         grnMainCompletedAdapter?.setGrnMainList(grnMainResponse, this@GRNMainActivity)
         binding.rcGrnMainCompleted!!.adapter = grnMainCompletedAdapter
         binding.rcGrnMainCompleted.layoutManager =

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.slfastener.R
 import com.example.slfastener.model.GetSuppliersPOsDDLResponse
@@ -34,19 +35,29 @@ class GRNSelectPoAdapter (private val originalList: MutableList<GetSuppliersPOsD
         // Set a tag to prevent checkbox from firing off on bind
         holder.cbPo.tag = position
 
-        holder.cbPo.setOnCheckedChangeListener { _, isChecked ->
-            val pos = holder.adapterPosition
-            if (pos != RecyclerView.NO_POSITION && holder.cbPo.tag == pos) {
-                grnModel.isChecked = isChecked
-                if (isChecked) {
-                    filterListByCode(grnModel.code)
-                } else {
-                    if (dataList.none { it.isChecked }) {
-                        resetFilter()
+        if(grnModel.isUpdatable)
+        {
+            holder.cbPo.isEnabled=false
+        }
+        else{
+            holder.cbPo.setOnCheckedChangeListener { _, isChecked ->
+                val pos = holder.adapterPosition
+                if (pos != RecyclerView.NO_POSITION && holder.cbPo.tag == pos) {
+                    grnModel.isChecked = isChecked
+                    if (isChecked) {
+                        filterListByCode(grnModel.code)
+                    } else {
+
+                        if (dataList.none { it.isChecked }) {
+                            resetFilter()
+                        }
                     }
                 }
             }
+
         }
+
+
     }
 
     override fun getItemCount(): Int = dataList.size

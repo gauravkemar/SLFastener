@@ -21,6 +21,8 @@ data class PoLineItem(
 )*/
 
 data class PoLineItem(
+    val isQCRequired: Boolean,
+    val isExpirable: Boolean,
     val balQTY: Double,
     val createdBy: String,
     val createdDate: String,

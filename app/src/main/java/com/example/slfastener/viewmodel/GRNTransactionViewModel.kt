@@ -10,8 +10,10 @@ import com.example.demorfidapp.helper.Utils
 import com.example.demorfidapp.repository.SLFastenerRepository
 import com.example.slfastener.model.GetActiveSuppliersDDLResponse
 import com.example.slfastener.model.GetPOsAndLineItemsOnPOIdsResponse
+import com.example.slfastener.model.GetSupllierPOsDDLOriginalResponse
 import com.example.slfastener.model.GetSuppliersPOsDDLResponse
 import com.example.slfastener.model.GetSuppliersPOsRequest
+import com.example.slfastener.model.generalrequest.GRNLineItemDeleteResponse
 import com.example.slfastener.model.generalrequest.GeneralResponse
 import com.example.slfastener.model.generalrequest.GrnBatchDeleteResponse
 import com.example.slfastener.model.getalllocation.GetAllWareHouseLocationResponse
@@ -78,7 +80,7 @@ class GRNTransactionViewModel (
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    val getSuppliersPosDDLLMutableResponse: MutableLiveData<Resource<ArrayList<GetSuppliersPOsDDLResponse>>> = MutableLiveData()
+    val getSuppliersPosDDLLMutableResponse: MutableLiveData<Resource<ArrayList<GetSupllierPOsDDLOriginalResponse>>> = MutableLiveData()
 
     fun getSuppliersPosDDLL(token: String,baseUrl: String, bpCode: String?) {
         viewModelScope.launch {
@@ -103,7 +105,7 @@ class GRNTransactionViewModel (
         }
     }
 
-    private fun handleGetSuppliersPosDDLL(response: Response<ArrayList<GetSuppliersPOsDDLResponse>>): Resource<ArrayList<GetSuppliersPOsDDLResponse>> {
+    private fun handleGetSuppliersPosDDLL(response: Response<ArrayList<GetSupllierPOsDDLOriginalResponse>>): Resource<ArrayList<GetSupllierPOsDDLOriginalResponse>> {
         var errorMessage = ""
         if (response.isSuccessful) {
             response.body()?.let { appDetailsResponse ->
@@ -523,6 +525,50 @@ class GRNTransactionViewModel (
         return Resource.Error(errorMessage)
     }
 
+   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    val processSingleGRNGRNItemBatchesForMultipleMutableResponse: MutableLiveData<Resource<GrnLineItemResponse>> = MutableLiveData()
+
+    fun processSingleGRNGRNItemBatchesForMultiple(token: String,baseUrl: String ,  grnUnitLineItemsSaveRequest: GRNUnitLineItemsSaveRequest) {
+        viewModelScope.launch {
+            safeAPICallProcessSingleGRNGRNItemBatchesForMultiple(token,baseUrl,grnUnitLineItemsSaveRequest)
+        }
+    }
+
+    private suspend fun safeAPICallProcessSingleGRNGRNItemBatchesForMultiple(token: String,baseUrl: String, grnUnitLineItemsSaveRequest: GRNUnitLineItemsSaveRequest) {
+        processSingleGRNGRNItemBatchesForMultipleMutableResponse.postValue(Resource.Loading())
+        try {
+            if (Utils.hasInternetConnection(getApplication())) {
+                val response = rfidRepository.processSingleGRNGRNItemBatchesForMultiple(token,baseUrl,grnUnitLineItemsSaveRequest )
+                processSingleGRNGRNItemBatchesForMultipleMutableResponse.postValue(handleProcessSingleGRNGRNItemBatchesForMultiple(response))
+            } else {
+                processSingleGRNGRNItemBatchesForMultipleMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
+            }
+        } catch (t: Throwable) {
+            when (t) {
+                is IOException -> processSingleGRNGRNItemBatchesForMultipleMutableResponse.postValue(Resource.Error(Constants.CONFIG_ERROR))
+                else -> processSingleGRNGRNItemBatchesForMultipleMutableResponse.postValue(Resource.Error("${t.message}"))
+            }
+        }
+    }
+
+    private fun handleProcessSingleGRNGRNItemBatchesForMultiple(response: Response<GrnLineItemResponse>): Resource<GrnLineItemResponse>{
+        var errorMessage = ""
+        if (response.isSuccessful) {
+            response.body()?.let { appDetailsResponse ->
+                return Resource.Success(appDetailsResponse)
+            }
+        } else if (response.errorBody() != null) {
+            val errorObject = response.errorBody()?.let {
+                JSONObject(it.charStream().readText())
+            }
+            errorObject?.let {
+                errorMessage = it.getString(Constants.HTTP_ERROR_MESSAGE)
+            }
+        }
+        return Resource.Error(errorMessage)
+    }
+
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //defaultGRN Data
@@ -642,6 +688,48 @@ class GRNTransactionViewModel (
     }
 
     private fun handleDeleteGRNLineItemsUnit(response: Response<GrnBatchDeleteResponse>): Resource<GrnBatchDeleteResponse>{
+        var errorMessage = ""
+        if (response.isSuccessful) {
+            response.body()?.let { appDetailsResponse ->
+                return Resource.Success(appDetailsResponse)
+            }
+        } else if (response.errorBody() != null) {
+            val errorObject = response.errorBody()?.let {
+                JSONObject(it.charStream().readText())
+            }
+            errorObject?.let {
+                errorMessage = it.getString(Constants.HTTP_ERROR_MESSAGE)
+            }
+        }
+        return Resource.Error(errorMessage)
+    }//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //submitGRN Data
+    val deleteGRNLineUnitMutableResponse: MutableLiveData<Resource<GRNLineItemDeleteResponse>> = MutableLiveData()
+
+    fun deleteGRNLineUnit(token: String,baseUrl: String ,lineLineUnitId: Int) {
+        viewModelScope.launch {
+            safeAPICallDeleteGRNLineUnit(token,baseUrl,lineLineUnitId)
+        }
+    }
+
+    private suspend fun safeAPICallDeleteGRNLineUnit(token: String,baseUrl: String,lineLineUnitId: Int ) {
+        deleteGRNLineUnitMutableResponse.postValue(Resource.Loading())
+        try {
+            if (Utils.hasInternetConnection(getApplication())) {
+                val response = rfidRepository.deleteGRNLineUnit(token,baseUrl,lineLineUnitId )
+                deleteGRNLineUnitMutableResponse.postValue(handleDeleteGRNLineUnit(response))
+            } else {
+                deleteGRNLineUnitMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
+            }
+        } catch (t: Throwable) {
+            when (t) {
+                is IOException -> deleteGRNLineUnitMutableResponse.postValue(Resource.Error(Constants.CONFIG_ERROR))
+                else -> deleteGRNLineUnitMutableResponse.postValue(Resource.Error("${t.message}"))
+            }
+        }
+    }
+
+    private fun handleDeleteGRNLineUnit(response: Response<GRNLineItemDeleteResponse>): Resource<GRNLineItemDeleteResponse>{
         var errorMessage = ""
         if (response.isSuccessful) {
             response.body()?.let { appDetailsResponse ->

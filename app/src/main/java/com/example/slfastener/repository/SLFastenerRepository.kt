@@ -3,6 +3,8 @@ package com.example.demorfidapp.repository
 import com.example.demorfidapp.api.RetrofitInstance
 import com.example.demorfidapp.helper.Constants
 import com.example.slfastener.model.GetSuppliersPOsRequest
+import com.example.slfastener.model.goodsreceipt.PostProcessGRTransactionRequest
+import com.example.slfastener.model.goodsreceipt.ProcessGRLineItemRequest
 import com.example.slfastener.model.grn.GRNSaveToDraftDefaultRequest
 import com.example.slfastener.model.grnmain.GetFilteredGRNRequest
 import com.example.slfastener.model.grnmain.SubmitGRNRequest
@@ -78,6 +80,12 @@ class SLFastenerRepository {
         @Body
         grnUnitLineItemsSaveRequest: GRNUnitLineItemsSaveRequest
     ) = RetrofitInstance.api(baseUrl).processSingleGRNGRNItemBatches(bearerToken,grnUnitLineItemsSaveRequest)
+    suspend fun processSingleGRNGRNItemBatchesForMultiple(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+        @Body
+        grnUnitLineItemsSaveRequest: GRNUnitLineItemsSaveRequest
+    ) = RetrofitInstance.api(baseUrl).processSingleGRNGRNItemBatchesForMultiple(bearerToken,grnUnitLineItemsSaveRequest)
 
     suspend fun getBarcodeValueWithPrefix(
         @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
@@ -116,9 +124,47 @@ class SLFastenerRepository {
         @Query("lineLineUnitId") lineLineUnitId: Int?
     ) = RetrofitInstance.api(baseUrl).deleteGRNLineItemsUnit(bearerToken,lineLineUnitId)
 
+    suspend fun deleteGRNLineUnit(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+        @Query("lineItemId") lineLineUnitId: Int?
+    ) = RetrofitInstance.api(baseUrl).deleteGRNLineUnit(bearerToken,lineLineUnitId)
+
     suspend fun getAllLocations(
         @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         baseUrl: String,
     ) = RetrofitInstance.api(baseUrl).getAllLocations(bearerToken)
+
+
+    suspend fun getAllItemMaster(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+    ) = RetrofitInstance.api(baseUrl).getAllItemMaster(bearerToken)
+
+    suspend fun getActiveSupplierForGR(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+    ) = RetrofitInstance.api(baseUrl).getActiveSupplierForGR(bearerToken)
+
+    suspend fun processGR(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+        @Body
+        postProcessGRTransactionRequest: PostProcessGRTransactionRequest
+    ) = RetrofitInstance.api(baseUrl).processGR(bearerToken,postProcessGRTransactionRequest)
+
+    suspend fun processSingleGRItemBatches(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+        @Body
+        processGRLineItemRequest: ProcessGRLineItemRequest
+    ) = RetrofitInstance.api(baseUrl).processSingleGRItemBatches(bearerToken,processGRLineItemRequest)
+
+    suspend fun processSingleGRItemForMultiple(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+        @Body
+        processGRLineItemRequest: ProcessGRLineItemRequest
+    ) = RetrofitInstance.api(baseUrl).processSingleGRItemForMultiple(bearerToken,processGRLineItemRequest)
 
 }

@@ -70,13 +70,11 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/settingBtn"
                             app:layout_constraintTop_toTopOf="parent">
-
                             <ImageView
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:padding="10dp"
                                 android:src="@drawable/logout"
-
                                 />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -89,16 +87,13 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/tvSupervisor"
                             app:layout_constraintTop_toTopOf="parent">
-
                             <ImageView
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:padding="10dp"
                                 android:src="@drawable/baseline_settings_24"
-
                                 />
                         </androidx.constraintlayout.widget.ConstraintLayout>
-
                         <TextView
                             android:id="@+id/tvSupervisor"
                             android:layout_width="wrap_content"
@@ -112,29 +107,23 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
                 </com.google.android.material.card.MaterialCardView>
-
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/clCenter"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-
                     app:layout_constraintBottom_toTopOf="@id/clFooter"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/cvHeader"
                     app:layout_constraintVertical_weight="0.88">
 
-
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/clContainer"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_margin="20dp"
-
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -158,21 +147,39 @@
                                 android:layout_height="match_parent"
                                 android:padding="5dp"
                                 >
-
-
                                 <androidx.constraintlayout.widget.ConstraintLayout
                                     android:id="@+id/clSelectSupplier"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_margin="15dp"
-                                    android:background="@drawable/round_border_grey"
+
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toStartOf="@+id/clSelectPo"
                                     app:layout_constraintHorizontal_weight="0.16"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toTopOf="parent">
 
-                                    <Spinner
+                                    <com.google.android.material.textfield.TextInputLayout
+                                        android:id="@+id/textInputLayout"
+                                        android:layout_width="match_parent"
+                                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                        android:layout_height="wrap_content"
+                                        android:hint="Select Supplier"
+                                        app:endIconMode="dropdown_menu"
+                                        android:layout_margin="2dp"
+                                        app:layout_constraintTop_toTopOf="parent"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintBottom_toBottomOf="parent">
+                                        <AutoCompleteTextView
+                                            android:id="@+id/tvSpinnerSupplier"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:padding="5dp"
+                                            android:inputType="text"
+                                            android:singleLine="true" />
+                                    </com.google.android.material.textfield.TextInputLayout>
+                                  <!--  <Spinner
                                         android:id="@+id/tvSpinnerSupplier"
                                         android:layout_width="0dp"
                                         android:layout_height="0dp"
@@ -199,7 +206,7 @@
                                         app:layout_constraintEnd_toEndOf="parent"
                                         app:layout_constraintHorizontal_weight="0.10"
                                         app:layout_constraintStart_toEndOf="@+id/tvSpinnerSupplier"
-                                        app:layout_constraintTop_toTopOf="parent" />
+                                        app:layout_constraintTop_toTopOf="parent" />-->
                                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -291,7 +298,7 @@
                                     android:layout_margin="15dp"
                                     android:background="@drawable/round_border_grey"
                                     app:layout_constraintBottom_toBottomOf="parent"
-                                    app:layout_constraintEnd_toStartOf="@+id/mcvAddGrn"
+                                    app:layout_constraintEnd_toStartOf="@+id/clAddGrn"
                                     app:layout_constraintHorizontal_weight="0.16"
                                     app:layout_constraintStart_toEndOf="@+id/clCurrencyType"
                                     app:layout_constraintTop_toTopOf="parent">
@@ -316,27 +323,64 @@
 
 
 
-                                <com.google.android.material.card.MaterialCardView
-                                    android:id="@+id/mcvAddGrn"
+                                <androidx.constraintlayout.widget.ConstraintLayout
+                                    android:id="@+id/clAddGrn"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_margin="15dp"
-                                    app:cardCornerRadius="5dp"
-                                    app:cardBackgroundColor="@color/bg_orange"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintHorizontal_weight="0.16"
                                     app:layout_constraintStart_toEndOf="@+id/clEnterInvDate"
                                     app:layout_constraintTop_toTopOf="parent"
-                                    app:layout_constraintBottom_toBottomOf="parent">
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    >
+                                    <com.google.android.material.card.MaterialCardView
+                                        android:id="@+id/mcvAddGrn"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        app:cardCornerRadius="5dp"
+                                        android:visibility="gone"
+                                        app:cardBackgroundColor="@color/bg_orange"
 
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center"
-                                        android:padding="10dp"
-                                        android:text="Next"
-                                        android:textColor="@color/white" />
-                                </com.google.android.material.card.MaterialCardView>
+                                        >
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:padding="10dp"
+                                            android:text="Next"
+                                            android:textColor="@color/white" />
+                                    </com.google.android.material.card.MaterialCardView>
+
+                                    <androidx.constraintlayout.widget.ConstraintLayout
+                                        android:id="@+id/clKGRNNo"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:visibility="visible"
+                                        android:background="@drawable/round_border_grey"
+
+                                    >
+
+                                        <TextView
+                                            android:id="@+id/tvKGRNNo"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:background="@android:color/transparent"
+                                            android:text="KGRN"
+                                            android:padding="10dp"
+                                            android:textColor="@color/tv_sub_head_color"
+                                            android:textSize="12sp"
+                                            android:textStyle="bold"
+                                            app:layout_constraintBottom_toBottomOf="parent"
+                                            app:layout_constraintEnd_toEndOf="parent"
+                                            app:layout_constraintStart_toStartOf="parent"
+                                            app:layout_constraintTop_toTopOf="parent" />
+
+                                    </androidx.constraintlayout.widget.ConstraintLayout>
+                                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
                             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -548,7 +592,7 @@
                                         android:id="@+id/rcGrnAdd"
                                         android:layout_width="match_parent"
                                         android:layout_height="0dp"
-                                        android:layout_margin="5dp"
+
                                         app:layout_constraintBottom_toBottomOf="parent"
                                         app:layout_constraintEnd_toEndOf="parent"
                                         app:layout_constraintStart_toStartOf="parent"

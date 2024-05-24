@@ -83,9 +83,6 @@ class GRNAddNewActivity : AppCompatActivity() {
 
     private lateinit var usbCommunicationManager: UsbCommunicationManager
 
-
-
-
     private val DEBOUNCE_PERIOD = 1000L
     private var lastUpdateTime: Long = 0
     private var previousData: String? = null
@@ -208,7 +205,7 @@ class GRNAddNewActivity : AppCompatActivity() {
                 }
             }
         }
-        viewModel.getSuppliersPosDDLLMutableResponse.observe(this) { response ->
+     /*   viewModel.getSuppliersPosDDLLMutableResponse.observe(this) { response ->
             when (response) {
                 is Resource.Success -> {
                     hideProgressBar()
@@ -250,7 +247,7 @@ class GRNAddNewActivity : AppCompatActivity() {
                     showProgressBar()
                 }
             }
-        }
+        }*/
         viewModel.getPosLineItemsOnPoIdsMutableResponse.observe(this) { response ->
             when (response) {
                 is Resource.Success -> {

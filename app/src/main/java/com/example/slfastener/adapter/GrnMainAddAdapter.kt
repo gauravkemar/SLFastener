@@ -1,11 +1,13 @@
 package com.example.slfastener.adapter
 
+import android.app.DatePickerDialog
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.DatePicker
 import android.widget.ImageButton
 import android.widget.Spinner
 import android.widget.TextView
@@ -16,16 +18,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.slfastener.R
 import com.example.slfastener.helper.CustomArrayAdapter
 import com.example.slfastener.model.offlinebatchsave.PoLineItemSelectionModelNewStore
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 class GrnMainAddAdapter (
     private val context: Context,
-    private val poLineItemParent: List<PoLineItemSelectionModelNewStore>,
-    private val onItemCheck:(Int,PoLineItemSelectionModelNewStore) -> Unit
+    private val poLineItemParent: MutableList<PoLineItemSelectionModelNewStore>,
+    private val onItemCheck:(Int,PoLineItemSelectionModelNewStore) -> Unit,
+    private val onItemDelete:(Int,PoLineItemSelectionModelNewStore) -> Unit,
+
 
     ) : RecyclerView.Adapter<GrnMainAddAdapter.ViewHolder>() {
 
     lateinit var locationNameList: MutableList<String>
-    val allLocationHashMap = HashMap<Int, String>()
+    var allLocationHashMap = HashMap<Int, String>()
     var selectedLocationID: Int = 0
     private var weightData: String? = null
     private var getAllLocationAdapter: CustomArrayAdapter? = null
@@ -52,7 +59,6 @@ class GrnMainAddAdapter (
         holder.tvPuom.setText(poLineItemModel.pouom)
         selectedLocationID=poLineItemModel.locationId
 
-
         //holder.tvEpiryDt.setText(poLineItemModel)
 
        /* holder.tvQuantityPrice.setText(poLineItemModel.poUnitPrice.toString())
@@ -70,13 +76,37 @@ class GrnMainAddAdapter (
         }*/
 
 
-        if(poLineItemModel.grnLineItemUnit!=null)
-        {
-            holder.tvDeleteLineItem.visibility=View.INVISIBLE
-            holder.tvDeleteLineItem.setEnabled(false);
-            holder.tvSaveLineItem.setImageResource(R.drawable.ic_edit_black)
+
+        holder.tvDeleteLineItem.setOnClickListener {
+            onItemDelete(position,poLineItemModel)
+          /*  poLineItemParent.removeAt(position)
+            notifyItemRemoved(position)
+            notifyItemRangeChanged(
+                position,
+                poLineItemParent.size
+            ) */
         }
-        setWareHouseLocation(holder,poLineItemModel)
+
+        if(poLineItemModel.grnLineItemUnit!=null )
+        {
+            if((poLineItemModel.grnLineItemUnit!!.size > 0))
+            {
+                holder.tvDeleteLineItem.visibility=View.INVISIBLE
+                holder.tvDeleteLineItem.setEnabled(false);
+                holder.tvSaveLineItem.setImageResource(R.drawable.ic_edit_black)
+            }
+            else{
+                holder.tvDeleteLineItem.setEnabled(true);
+                holder.tvDeleteLineItem.visibility=View.VISIBLE
+                holder.tvSaveLineItem.setImageResource(R.drawable.ic_add_blue)
+            }
+
+        }
+        else{
+            holder.tvDeleteLineItem.setEnabled(true);
+            holder.tvDeleteLineItem.visibility=View.VISIBLE
+            holder.tvSaveLineItem.setImageResource(R.drawable.ic_add_blue)
+        }
 
         holder.tvSaveLineItem.setOnClickListener {
             if(poLineItemModel.currency.equals("INR"))
@@ -84,37 +114,46 @@ class GrnMainAddAdapter (
                 poLineItemParent[position].locationId=selectedLocationID
                 onItemCheck(position,poLineItemParent[position])
             }
-            else{
+            else
+            {
                 var edGdpo=holder.edGDPO.text.toString().trim()
                 if(edGdpo.isNotEmpty())
                 {
                     poLineItemParent[position].locationId=selectedLocationID
+                    poLineItemParent[position].GDPONumber=edGdpo
                     onItemCheck(position,poLineItemParent[position])
-                }
+ 0             }
                 else
                 {
                     Toast.makeText(context,"Please enter GDPO number",Toast.LENGTH_SHORT).show()
                 }
             }
-
         }
         setGDPO(holder,poLineItemModel)
         setWareHouseLocation(holder,poLineItemModel)
+        if(poLineItemModel.isQCRequired)
+        {
+            holder.tvQc.visibility=View.VISIBLE
+        }
+        else{
+            holder.tvQc.visibility=View.GONE
+        }
+
     }
     private fun setWareHouseLocation(
         holder: ViewHolder,
         allLocation: PoLineItemSelectionModelNewStore
     )
     {
+        locationNameList = mutableListOf()
+        allLocationHashMap= HashMap()
         for (e in allLocation.getAllLocation) {
             allLocationHashMap[e.locationId] = e.locationName
             (locationNameList).add(e.locationName)
         }
-
         getAllLocationAdapter = CustomArrayAdapter(context, android.R.layout.simple_spinner_item, locationNameList)
         getAllLocationAdapter!!.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         holder.tvWareHouse.adapter = getAllLocationAdapter
-
 
         val defaultLocationName = allLocation.getAllLocation.find { it.locationId == allLocation.locationId }?.locationName
         if (!defaultLocationName.isNullOrEmpty()) {
@@ -133,15 +172,11 @@ class GrnMainAddAdapter (
                             val selectedKey: Int? = allLocationHashMap.entries.find { it.value == selectedItem }?.key
                             selectedLocationID = selectedKey!!
                         }
-
                         override fun onNothingSelected(adapterView: AdapterView<*>?) {}
                     }
             }
         }
-
     }
-
-
 
     private fun setGDPO(holder: ViewHolder, item: PoLineItemSelectionModelNewStore) {
         if (item.currency.equals("INR"))
@@ -186,11 +221,15 @@ class GrnMainAddAdapter (
         val tvDeleteLineItem: ImageButton = itemView.findViewById(R.id.tvDeleteLineItem)
         val clWareHouse: ConstraintLayout = itemView.findViewById(R.id.clWareHouse)
         val tvWareHouse: Spinner = itemView.findViewById(R.id.tvWareHouse)
+        val tvQc: TextView = itemView.findViewById(R.id.tvQc)
     }
 
- /*   private var onItemClickListener: ((Int,PoLineItemSelectionModelNewStore) -> Unit)? = null
-    fun setOnItemCheckClickListener(listener: (Int,PoLineItemSelectionModelNewStore) -> Unit) {
-        onItemClickListener = listener
-    }*/
+
+
+
+    /*   private var onItemClickListener: ((Int,PoLineItemSelectionModelNewStore) -> Unit)? = null
+       fun setOnItemCheckClickListener(listener: (Int,PoLineItemSelectionModelNewStore) -> Unit) {
+           onItemClickListener = listener
+       }*/
 
 }

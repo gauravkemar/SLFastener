@@ -21,6 +21,7 @@ data class GrnLineItem(
     val modifiedDate: Any,
     val poId: Int,
     val poLineItemId: Int,
+    val isExpirable: Boolean,
     val poLineNo: Int,
     val poNumber: String,
     val poQty: Double,

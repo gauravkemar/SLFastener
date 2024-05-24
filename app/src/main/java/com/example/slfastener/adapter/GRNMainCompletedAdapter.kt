@@ -11,9 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.slfastener.R
 import com.example.slfastener.model.grnmain.GetFilteredGRNResponse
 import com.example.slfastener.model.offlinebatchsave.PoLineItemSelectionModelNewStore
+import java.text.SimpleDateFormat
 import java.util.ArrayList
 
-class GRNMainCompletedAdapter  : RecyclerView.Adapter<GRNMainCompletedAdapter.ViewHolder>() {
+class GRNMainCompletedAdapter (private val editItem: (Int) -> Unit) : RecyclerView.Adapter<GRNMainCompletedAdapter.ViewHolder>() {
 
     private var grnMainModel = mutableListOf<GetFilteredGRNResponse>()
     private var context: Context?=null
@@ -27,7 +28,7 @@ class GRNMainCompletedAdapter  : RecyclerView.Adapter<GRNMainCompletedAdapter.Vi
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.grn_main_list_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.completed_grn_main_list_item, parent, false)
         return ViewHolder(view)
     }
 
@@ -36,32 +37,41 @@ class GRNMainCompletedAdapter  : RecyclerView.Adapter<GRNMainCompletedAdapter.Vi
 
         holder.tvSrNo.setText("${position+1}")
         holder.tvKGRNNO.setText(grnMainModel.kgrnNumber)
-        holder.tvKGRNDate.setText(grnMainModel.kgrnDate)
+
         holder.tvInvoiceNo.setText(grnMainModel.invoiceNumber)
-        holder.tvInvoiceDate.setText(grnMainModel.invoiceDate)
+
         holder.tvBPCode.setText(grnMainModel.bpCode)
         holder.tvBPCodeName.setText(grnMainModel.bpName)
         holder.tvType.setText(grnMainModel.transactionType)
         holder.tvCurrency.setText(grnMainModel.currency)
         holder.tvStatus.setText(grnMainModel.grnStatus)
-
-        holder.ivAdd.setOnClickListener {
-
+        if (grnMainModel.kgrnDate != null) {
+            holder.tvKGRNDate.setText(convertDateFormatKgrn(grnMainModel.kgrnDate))
+        }
+        if (grnMainModel.invoiceDate != null) {
+            holder.tvInvoiceDate.setText(convertDateFormatInvoice(grnMainModel.invoiceDate))
         }
         holder.ivEdit.setOnClickListener {
-
+            editItem(grnMainModel.grnId)
         }
-        holder.ivDelete.setOnClickListener {
-
-        }
-        holder.ivPrint.setOnClickListener {
-
-        }
-
 
 
     }
+    fun convertDateFormatKgrn(inputDate: String): String {
 
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS")
+        val date = inputFormat.parse(inputDate)
+        val outputFormat = SimpleDateFormat("dd-MM-yyyy")
+        return outputFormat.format(date)
+    }
+
+    fun convertDateFormatInvoice(inputDate: String): String {
+
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+        val date = inputFormat.parse(inputDate)
+        val outputFormat = SimpleDateFormat("dd-MM-yyyy")
+        return outputFormat.format(date)
+    }
     override fun getItemCount(): Int {
         if(grnMainModel.size==0){
             //Toast.makeText(context,"List is empty", Toast.LENGTH_LONG).show()

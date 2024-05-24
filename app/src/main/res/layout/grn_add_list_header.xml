@@ -46,7 +46,6 @@
             android:textSize="12sp"
             android:textAlignment="center"
             android:textColor="@color/black"
-
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/edGDPO"
             app:layout_constraintHorizontal_weight="0.07"
@@ -56,7 +55,7 @@
         </TextView>
 
 
-        <EditText
+        <TextView
             android:id="@+id/edGDPO"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -68,7 +67,7 @@
             android:layout_marginBottom="5dp"
             android:background="@android:color/transparent"
             android:padding="5dp"
-            android:hint="GDPO NO"
+            android:text="GDPO NO"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="12sp"
@@ -78,7 +77,7 @@
             app:layout_constraintStart_toEndOf="@+id/tvPoNo"
             app:layout_constraintTop_toTopOf="parent">
 
-        </EditText>
+        </TextView>
 
         <TextView
             android:id="@+id/tvPoLineNo"
@@ -147,7 +146,7 @@
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvPuom"
-            app:layout_constraintHorizontal_weight="0.15"
+            app:layout_constraintHorizontal_weight="0.12"
             app:layout_constraintStart_toEndOf="@+id/tvItemCode"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -292,7 +291,7 @@
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/clAction"
-            app:layout_constraintHorizontal_weight="0.07"
+            app:layout_constraintHorizontal_weight="0.10"
             app:layout_constraintStart_toEndOf="@+id/tvGRNQty"
             app:layout_constraintTop_toTopOf="parent">
 

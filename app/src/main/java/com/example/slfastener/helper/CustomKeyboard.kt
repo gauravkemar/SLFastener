@@ -2,6 +2,7 @@ package com.example.slfastener.helper
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.EditText
@@ -81,7 +82,8 @@ class CustomKeyboard(private val context: Context, private val keyboardView: Vie
         }*/
         if (!popupWindow.isShowing) {
             // Calculate xOffset to display the popup window further to the right
-            val xOffset = anchor.width / 2 - popupWindow.contentView.measuredWidth / 2 + anchor.width / 2
+            Log.e("measure","anchor${anchor.width / 2}///${popupWindow.contentView.measuredWidth}}")
+            val xOffset = (anchor.width / 2)+100 - popupWindow.contentView.measuredWidth
             val yOffset = -anchor.height
             popupWindow.showAsDropDown(anchor, xOffset, yOffset)
         }
