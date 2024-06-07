@@ -1,7 +1,12 @@
 package com.example.demorfidapp.helper
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.text.Html
+import androidx.appcompat.app.AlertDialog
+import com.example.demorfidapp.helper.Constants.KEY_HTTP
 import com.example.demorfidapp.helper.Constants.KEY_ISLOGGEDIN
 import com.example.demorfidapp.helper.Constants.KEY_JWT_TOKEN
 import com.example.demorfidapp.helper.Constants.KEY_PORT
@@ -12,6 +17,7 @@ import com.example.demorfidapp.helper.Constants.KEY_USER_LAST_NAME
 import com.example.demorfidapp.helper.Constants.KEY_USER_MOBILE_NUMBER
 import com.example.demorfidapp.helper.Constants.KEY_USER_NAME
 import com.example.demorfidapp.helper.Constants.ROLE_NAME
+import com.example.slfastener.view.LoginActivity
 
 class SessionManager(context: Context) {
     // Shared Preferences
@@ -118,9 +124,10 @@ class SessionManager(context: Context) {
         user[KEY_USER_FIRST_NAME] = sharedPrefer.getString(KEY_USER_FIRST_NAME, null)
         user[KEY_USER_LAST_NAME] = sharedPrefer.getString(KEY_USER_LAST_NAME, null)
         user[KEY_USER_EMAIL] = sharedPrefer.getString(KEY_USER_EMAIL, null)
-        user[KEY_USER_MOBILE_NUMBER] =
-            sharedPrefer.getString(KEY_USER_MOBILE_NUMBER, null)
-
+        user[KEY_USER_MOBILE_NUMBER] = sharedPrefer.getString(KEY_USER_MOBILE_NUMBER, null)
+        user[KEY_SERVER_IP] = sharedPrefer.getString(KEY_SERVER_IP, null)
+        user[KEY_HTTP] = sharedPrefer.getString(KEY_HTTP, null)
+        user[KEY_PORT] = sharedPrefer.getString(KEY_PORT, null)
         return user
     }
 
@@ -133,10 +140,65 @@ class SessionManager(context: Context) {
         val role = sharedPrefer.getString(ROLE_NAME, null)
         return role ?: ""
     }
+    fun showToastAndHandleErrors(resultResponse: String,context: Activity) {
 
-    fun saveAdminDetails(serverIp: String?, portNumber: String?) {
+        when (resultResponse) {
+            "java.net.ConnectException: Failed to connect" -> {
+                // Handle connection failure error
+                // Show a toast message or display a dialog
+            }
+            Constants.SESSION_EXPIRE, "Authentication token expired", Constants.CONFIG_ERROR -> {
+                showCustomDialog(
+                    "Session Expired",
+                    "Please re-login to continue",
+                    context
+                )
+            }
+
+        }
+    }
+    fun showCustomDialog(title: String?, message: String?,context: Activity) {
+        var alertDialog: AlertDialog? = null
+        val builder: AlertDialog.Builder
+        if (title.equals(""))
+            builder = AlertDialog.Builder(context)
+                .setMessage(Html.fromHtml(message))
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton("Okay") { dialogInterface, which ->
+                    alertDialog?.dismiss()
+                }
+        else if (message.equals(""))
+            builder = AlertDialog.Builder(context)
+                .setTitle(title)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton("Okay") { dialogInterface, which ->
+                    alertDialog?.dismiss()
+                }
+        else
+            builder = AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(message)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton("Okay") { dialogInterface, which ->
+                    if (title.equals("Session Expired")) {
+                        logout(context)
+                    } else {
+                        alertDialog?.dismiss()
+                    }
+                }
+        alertDialog = builder.create()
+        alertDialog.setCancelable(false)
+        alertDialog.show()
+    }
+    private fun logout(context: Activity) {
+        logoutUser()
+        val intent = Intent(context, LoginActivity::class.java)
+        context.startActivity(intent)
+        context.finishAfterTransition()
+    }
+    fun saveAdminDetails(serverIp: String?, http:String?) {
         editor.putString(KEY_SERVER_IP, serverIp)
-        editor.putString(KEY_PORT, portNumber)
+        editor.putString(KEY_HTTP, http)
         editor.putBoolean(KEY_ISLOGGEDIN, false)
         editor.commit()
     }

@@ -91,7 +91,7 @@ class CreateBatchesForGRAdapter(
                 Toast.makeText(context, "Please complete current transaction", Toast.LENGTH_SHORT)
                     .show()
             } else {
-                if (grLineItemUnit.isExpirable == 1) {
+                if (grLineItemUnit.isExpirable ) {
                     if (holder.tvExpiryDate.text.toString() != "" && holder.tvExpiryDate.text.toString() != "null") {
                         addItem(
                             GRLineUnitItemSelection(
@@ -143,7 +143,7 @@ class CreateBatchesForGRAdapter(
                 Toast.makeText(context, "Please complete current transaction", Toast.LENGTH_SHORT)
                     .show()
             } else {
-                if (grLineItemUnit.isExpirable==1) {
+                if (grLineItemUnit.isExpirable) {
                     if (holder.tvExpiryDate.text.toString() != "") {
                         addMultiItem(
                             GRLineUnitItemSelection(
@@ -167,11 +167,12 @@ class CreateBatchesForGRAdapter(
                         Toast.makeText(context, "Please select Date!!", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    GRLineUnitItemSelection(
+                    addMultiItem(
+                        GRLineUnitItemSelection(
                         grLineItemUnit.Barcode,
                         grLineItemUnit.BatchNo,
                         grLineItemUnit.isExpirable,
-                        grLineItemUnit.ExpiryDate,
+                        "",
                         grLineItemUnit.InternalBatchNo,
                         grLineItemUnit.IsEdit,
                         grLineItemUnit.Isdisabled,
@@ -181,7 +182,7 @@ class CreateBatchesForGRAdapter(
                         grLineItemUnit.UOM,
                         grLineItemUnit.mhType,
                         false
-                    )
+                    ))
 
                     holder.edWeight.clearFocus()
                 }
@@ -189,7 +190,7 @@ class CreateBatchesForGRAdapter(
         }
         updateView(holder, grLineItemUnit)
         holder.ivSave.setOnClickListener {
-            if (grLineItemUnit.isExpirable==1) {
+            if (grLineItemUnit.isExpirable) {
                 if (holder.tvExpiryDate.text.toString() != "" && holder.tvExpiryDate.text.toString() != "null") {
                     if (grLineItemUnit.UOM.equals("KGS")) {
                         grLineItemUnit.Qty = holder.tvWeight.getText().toString()
@@ -265,7 +266,7 @@ class CreateBatchesForGRAdapter(
         }
 
         if (grLineItemUnit.mhType.lowercase().equals("batch") && grLineItemUnit.UOM.lowercase()
-                .equals("number")
+                .equals("pcs")
         ) {
             holder.ivMultiAdd.visibility = View.VISIBLE
         } else {
@@ -295,14 +296,14 @@ class CreateBatchesForGRAdapter(
             Log.d("MyTag", "Setting visibility and colors False $list")
         }*/
 
-        if (holder.tvWeight.text.toString().trim() == "0.000") {
+        if (holder.tvWeight.text.toString().trim() == "0.000" ||holder.tvWeight.text.toString().trim() == "" ) {
             holder.tvWeight.requestFocus()
             holder.mcvWeight.visibility = View.GONE
+
         }
 
-        if (grLineItemUnit.isExpirable==1) {
+        if (grLineItemUnit.isExpirable) {
             holder.tvExpiryDate.visibility = View.VISIBLE
-
 
             /*if (grnLineItemUnit.expiryDate.toString() == "") {
                 val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())

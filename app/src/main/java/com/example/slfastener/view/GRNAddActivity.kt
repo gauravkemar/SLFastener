@@ -38,6 +38,7 @@ import com.example.slfastener.databinding.ActivityGrnaddBinding
 import com.example.slfastener.databinding.CreateBatchesDialogBinding
 import com.example.slfastener.databinding.CreateBatchesMultipleDialogBinding
 import com.example.slfastener.databinding.CreateBatchesSingleDialogBinding
+import com.example.slfastener.databinding.DescriptionInfoDialogBinding
 import com.example.slfastener.databinding.SelectLineItemDialogBinding
 import com.example.slfastener.databinding.SelectSupplierPoLineItemBinding
 import com.example.slfastener.helper.CustomArrayAdapter
@@ -152,16 +153,23 @@ class GRNAddActivity : AppCompatActivity() {
     private var getDraftGrnResponse: GetDraftGrnResponse? = null
     private lateinit var customKeyboard: CustomKeyboard
 
+    private lateinit var itemDescriptionBinding: DescriptionInfoDialogBinding
+    var itemDescriptionDialog: Dialog? = null
+
+    private var baseUrl: String =""
+    private var serverIpSharedPrefText: String? = null
+    private var serverHttpPrefText: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_grnadd)
         session = SessionManager(this)
         selectPoBinding = SelectSupplierPoLineItemBinding.inflate(getLayoutInflater());
-
         selectPoDialog = Dialog(this)
-
         enterBatchesDialogBinding =
             CreateBatchesSingleDialogBinding.inflate(LayoutInflater.from(this))
+        itemDescriptionBinding = DescriptionInfoDialogBinding.inflate(LayoutInflater.from(this))
+        itemDescriptionDialog = Dialog(this)
         createBatchesMultipleDialogBinding =
             CreateBatchesMultipleDialogBinding.inflate(LayoutInflater.from(this))
         batchesDialog = Dialog(this)
@@ -169,6 +177,8 @@ class GRNAddActivity : AppCompatActivity() {
 
         setCreateBatchesDialog()
         setCreateBatchesMultipleDialog()
+        setItemDescriptionDialog()
+
         selectLineItemBinding = SelectLineItemDialogBinding.inflate(layoutInflater)
         selectLineItemDialog = AppCompatDialog(this).apply {
             setContentView(selectLineItemBinding.root)
@@ -197,6 +207,9 @@ class GRNAddActivity : AppCompatActivity() {
         getPOsAndLineItemsOnPOIdsResponse = ArrayList()
         userDetails = session.getUserDetails()
         token = userDetails["jwtToken"].toString()
+        serverIpSharedPrefText = userDetails!![Constants.KEY_SERVER_IP].toString()
+        serverHttpPrefText = userDetails!![Constants.KEY_HTTP].toString()
+        baseUrl = "$serverHttpPrefText://$serverIpSharedPrefText/service/api/"
         val receivedIntent = intent
         grnId = receivedIntent.getIntExtra("GRNID", 0)
         val SLFastenerRepository = SLFastenerRepository()
@@ -205,6 +218,7 @@ class GRNAddActivity : AppCompatActivity() {
         viewModel =
             ViewModelProvider(this, viewModelProviderFactory)[GRNTransactionViewModel::class.java]
         if (grnId != 0) {
+            currentGrnID = grnId
             callDefaultData()
             binding.clKGRNNo.visibility = View.VISIBLE
             binding.mcvAddGrn.visibility = View.GONE
@@ -212,10 +226,8 @@ class GRNAddActivity : AppCompatActivity() {
             binding.clKGRNNo.visibility = View.GONE
             binding.mcvAddGrn.visibility = View.VISIBLE
         }
-
         getAllLocations()
         getSupplierList()
-
         binding.mcvAddGrn.setOnClickListener {
             processGrn()
         }
@@ -231,9 +243,12 @@ class GRNAddActivity : AppCompatActivity() {
         binding.logoutBtn.setOnClickListener {
             showLogoutDialog()
         }
-
         grnMainItemAdapter = GrnMainAddAdapter(this@GRNAddActivity,
             selectedPoLineItem,
+            itemDescription = {
+
+                setItemDescription(it)
+            },
             onItemCheck = { position, poline ->
                 createBatchesList.clear()
                 if (poline?.grnLineItemUnit != null) {
@@ -256,17 +271,16 @@ class GRNAddActivity : AppCompatActivity() {
                             )
                         )
                     }
-                } else {
+                }
+                else {
                     lineItemId = 0
                 }
                 lineItemUnitId = 0
-
                 if (selectedCurrency.equals("INR")) {
-                    binding.grnAddHeader.edGDPO.visibility = View.INVISIBLE
+                    binding.grnAddHeader.edGDPO.visibility = View.GONE
                 } else {
                     binding.grnAddHeader.edGDPO.visibility = View.VISIBLE
                 }
-
                 if (poline.GDPONumber != null) {
                     selectedPoLineItem.forEach {
                         if (it.poNumber == poline.poNumber && it.GDPONumber == null) {
@@ -274,7 +288,6 @@ class GRNAddActivity : AppCompatActivity() {
                         }
                     }
                 }
-
                 //poline.grnLineItemUnit?.let { createBatchesList.addAll(it) }
                 currentPoLineItemPosition = position.toString()
                 setCreateBatchesDialog(poline)
@@ -286,12 +299,10 @@ class GRNAddActivity : AppCompatActivity() {
                     deleteLineItem = grnitem.lineItemId
                     deleteLineItemPosition = position.toString()
                     deleteLineItem(grnitem)
-                }
-                else {
+                } else {
                     poLineItem.forEachIndexed { index, poLineItemSelectionModelNewStore ->
-                        if(grnitem.posapLineItemNumber==poLineItemSelectionModelNewStore.posapLineItemNumber)
-                        {
-                            poLineItemSelectionModelNewStore.isSelected=false
+                        if (grnitem.posapLineItemNumber == poLineItemSelectionModelNewStore.posapLineItemNumber) {
+                            poLineItemSelectionModelNewStore.isSelected = false
                             selectPoLineAdapter?.notifyItemChanged(index)
                         }
                     }
@@ -317,7 +328,7 @@ class GRNAddActivity : AppCompatActivity() {
                     supplierMap.clear()
                     supplierSpinnerArray.clear()
                     getActiveSuppliersDDLResponse.clear()
-                    (supplierSpinnerArray).add("Select Supplier")
+
                     hideProgressBar()
                     response.data?.let { resultResponse ->
                         try {
@@ -330,7 +341,6 @@ class GRNAddActivity : AppCompatActivity() {
                                 setSupplierSpinner()
                                 supplierSpinnerAdapter?.notifyDataSetChanged()
                             }
-
                         } catch (e: Exception) {
                             Toasty.warning(
                                 this@GRNAddActivity,
@@ -348,6 +358,7 @@ class GRNAddActivity : AppCompatActivity() {
                             this@GRNAddActivity,
                             "Login failed - \nError Message: $errorMessage"
                         ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@GRNAddActivity)
                     }
                 }
 
@@ -356,7 +367,6 @@ class GRNAddActivity : AppCompatActivity() {
                 }
             }
         }
-
         ///get list of suppliers PO
         viewModel.getSuppliersPosDDLLMutableResponse.observe(this) { response ->
             when (response) {
@@ -405,6 +415,7 @@ class GRNAddActivity : AppCompatActivity() {
                             this@GRNAddActivity,
                             "Login failed - \nError Message: $errorMessage"
                         ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@GRNAddActivity)
                     }
                 }
 
@@ -424,10 +435,57 @@ class GRNAddActivity : AppCompatActivity() {
                             //edGdpoNo = binding.edGdpo.text.toString().trim()
                             if (resultResponse.size > 0) {
                                 if (grnId != 0) {
-                                    var findGrnLineItemSize=getDraftGrnResponse!!.grnTransaction.grnLineItems
-                                    if (isGRNUpdate)
-                                    {
+                                    var findGrnLineItemSize =
+                                        getDraftGrnResponse!!.grnTransaction.grnLineItems
+                                    if (isGRNUpdate) {
+                                        for (r in resultResponse) {
+                                            for (e in r.poLineItems) {
+                                                val additionalValue =
+                                                    if (e.pouom != "KGS") "0" else "0.000"
+                                                val unitPrice = e.unitPrice
+                                                    ?: "" // Provide a default value here
+                                                val hasSamePosapline =
+                                                    poLineItem.any { it.posapLineItemNumber == e.posapLineItemNumber }
+                                                if (!hasSamePosapline) {
+                                                    PoLineItemSelectionModelNewStore(
+                                                        e.isQCRequired,
+                                                        e.isExpirable,
+                                                        0,
+                                                        e.balQTY.toDouble(),
+                                                        r.poCurrency,
+                                                        null,
+                                                        e.itemCode,
+                                                        e.itemDescription,
+                                                        e.itemName,
+                                                        e.mhType,
+                                                        e.poId,
+                                                        e.poLineItemId,
+                                                        e.poLineNo,
+                                                        r.poNumber,
+                                                        e.poqty,
+                                                        e.posapLineItemNumber,
+                                                        e.pouom,
+                                                        additionalValue,
+                                                        false,
+                                                        "",
+                                                        unitPrice,
+                                                        getAllLocation,
+                                                        e.locationId,
+                                                        false
+                                                    ).also {
+                                                        poLineItem.add(it)
+                                                    }
+                                                }
 
+                                                Log.e(
+                                                    "selectPolInepoLineItem",
+                                                    poLineItem.toString()
+                                                )
+                                                Log.e("e.locationId", e.locationId.toString())
+                                            }
+                                        }
+                                        selectPoLineAdapter!!.notifyDataSetChanged()
+                                    } else if (findGrnLineItemSize.size == 0) {
                                         for (r in resultResponse) {
                                             for (e in r.poLineItems) {
                                                 val additionalValue =
@@ -475,60 +533,11 @@ class GRNAddActivity : AppCompatActivity() {
                                                 )
                                                 Log.e("e.locationId", e.locationId.toString())
 
-
                                             }
                                         }
                                         selectPoLineAdapter!!.notifyDataSetChanged()
-                                    }
-                                    else if(findGrnLineItemSize.size==0)
-                                    {
-                                        for (r in resultResponse) {
-                                            for (e in r.poLineItems) {
-                                                val additionalValue =
-                                                    if (e.pouom != "KGS") "0" else "0.000"
-                                                val unitPrice =
-                                                    e.unitPrice ?: "" // Provide a default value here
 
-                                                val hasSamePosapline =
-                                                    poLineItem.any { it.posapLineItemNumber == e.posapLineItemNumber }
-                                                if (!hasSamePosapline) {
-                                                    PoLineItemSelectionModelNewStore(
-                                                        e.isQCRequired,
-                                                        e.isExpirable,
-                                                        0,
-                                                        e.balQTY.toDouble(),
-                                                        r.poCurrency,
-                                                        null,
-                                                        e.itemCode,
-                                                        e.itemDescription,
-                                                        e.itemName,
-                                                        e.mhType,
-                                                        e.poId,
-                                                        e.poLineItemId,
-                                                        e.poLineNo,
-                                                        r.poNumber,
-                                                        e.poqty,
-                                                        e.posapLineItemNumber,
-                                                        e.pouom,
-                                                        additionalValue,
-                                                        false,
-                                                        "",
-                                                        unitPrice, getAllLocation, e.locationId, false
-                                                    ).also {
-                                                        poLineItem.add(it)
-                                                    }
-                                                }
-
-                                                Log.e("selectPolInepoLineItem", poLineItem.toString())
-                                                Log.e("e.locationId", e.locationId.toString())
-
-
-                                            }
-                                        }
-                                        selectPoLineAdapter!!.notifyDataSetChanged()
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         getPOsAndLineItemsOnPOIdsResponse.addAll(resultResponse)
                                         var d = getDraftGrnResponse!!.grnTransaction
                                         var df = getDraftGrnResponse!!.grnTransaction.grnLineItems
@@ -636,7 +645,6 @@ class GRNAddActivity : AppCompatActivity() {
                                                 if (e.pouom != "KGS") "0" else "0.000"
                                             val unitPrice =
                                                 e.unitPrice ?: "" // Provide a default value here
-
                                             val hasSamePosapline =
                                                 poLineItem.any { it.posapLineItemNumber == e.posapLineItemNumber }
                                             if (!hasSamePosapline) {
@@ -676,7 +684,8 @@ class GRNAddActivity : AppCompatActivity() {
                                     selectPoLineAdapter!!.notifyDataSetChanged()
                                 }
 
-                            } else {
+                            }
+                            else {
                                 Toast.makeText(this, "List is Empty!!", Toast.LENGTH_SHORT).show()
                             }
 
@@ -698,6 +707,7 @@ class GRNAddActivity : AppCompatActivity() {
                             this@GRNAddActivity,
                             "Login failed - \nError Message: $errorMessage"
                         ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@GRNAddActivity)
                     }
                 }
 
@@ -741,6 +751,7 @@ class GRNAddActivity : AppCompatActivity() {
                             this@GRNAddActivity,
                             "Login failed - \nError Message: $errorMessage"
                         ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@GRNAddActivity)
                     }
                 }
 
@@ -777,12 +788,13 @@ class GRNAddActivity : AppCompatActivity() {
 
                 is Resource.Error -> {
                     hideProgressBar()
-                    binding.clSelectPo.visibility = View.GONE
+
                     response.message?.let { errorMessage ->
                         Toasty.error(
                             this@GRNAddActivity,
                             "Login failed - \nError Message: $errorMessage"
                         ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@GRNAddActivity)
                     }
                 }
 
@@ -821,9 +833,9 @@ class GRNAddActivity : AppCompatActivity() {
                                     }
                                 }
 
-                                if(selectedPoLineItem[currentPoLineItemPosition.toInt()].lineItemId!=lineItemId)
-                                {
-                                    selectedPoLineItem[currentPoLineItemPosition.toInt()].lineItemId=lineItemId
+                                if (selectedPoLineItem[currentPoLineItemPosition.toInt()].lineItemId != lineItemId) {
+                                    selectedPoLineItem[currentPoLineItemPosition.toInt()].lineItemId =
+                                        lineItemId
                                 }
 
                                 createBatchesList.forEach { grnLineItem ->
@@ -846,12 +858,12 @@ class GRNAddActivity : AppCompatActivity() {
 
                 is Resource.Error -> {
                     hideProgressBar()
-                    binding.clSelectPo.visibility = View.GONE
                     response.message?.let { errorMessage ->
                         Toasty.error(
                             this@GRNAddActivity,
                             "Login failed - \nError Message: $errorMessage"
                         ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@GRNAddActivity)
                     }
                 }
 
@@ -884,12 +896,12 @@ class GRNAddActivity : AppCompatActivity() {
 
                 is Resource.Error -> {
                     hideProgressBar()
-                    binding.clSelectPo.visibility = View.GONE
                     response.message?.let { errorMessage ->
                         Toasty.error(
                             this@GRNAddActivity,
                             "failed - \nError Message: $errorMessage"
                         ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@GRNAddActivity)
                     }
                 }
 
@@ -952,12 +964,13 @@ class GRNAddActivity : AppCompatActivity() {
 
                 is Resource.Error -> {
                     hideProgressBar()
-                    binding.clSelectPo.visibility = View.GONE
+
                     response.message?.let { errorMessage ->
                         Toasty.error(
                             this@GRNAddActivity,
                             "failed - \nError Message: $errorMessage"
                         ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@GRNAddActivity)
                     }
                 }
 
@@ -992,18 +1005,19 @@ class GRNAddActivity : AppCompatActivity() {
                                 e.printStackTrace().toString(),
                                 Toasty.LENGTH_SHORT
                             ).show()
+
                         }
                     }
                 }
 
                 is Resource.Error -> {
                     hideProgressBar()
-                    binding.clSelectPo.visibility = View.GONE
                     response.message?.let { errorMessage ->
                         Toasty.error(
                             this@GRNAddActivity,
                             "failed - \nError Message: $errorMessage"
                         ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@GRNAddActivity)
                     }
                 }
 
@@ -1031,12 +1045,12 @@ class GRNAddActivity : AppCompatActivity() {
 
                 is Resource.Error -> {
                     hideProgressBar()
-                    binding.clSelectPo.visibility = View.GONE
                     response.message?.let { errorMessage ->
                         Toasty.error(
                             this@GRNAddActivity,
                             "failed - \nError Message: $errorMessage"
                         ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@GRNAddActivity)
                     }
                 }
 
@@ -1148,12 +1162,12 @@ class GRNAddActivity : AppCompatActivity() {
                 print("usbCommunicationManager: $data")
             }
         }
-
+/*
         if (selectedCurrency.equals("INR")) {
             selectLineItemBinding.lineItemHeader.tvColumnGDPO.visibility = View.GONE
         } else {
             selectLineItemBinding.lineItemHeader.tvColumnGDPO.visibility = View.VISIBLE
-        }
+        }*/
 
         selectPoLineAdapter = SelectPoLineAdapter(
             poLineItem,
@@ -1170,7 +1184,7 @@ class GRNAddActivity : AppCompatActivity() {
             onGdpoAdded = { updatedItem ->
                 updateTheGDPOForSamePoNumber(updatedItem)
             }
-            )
+        )
         selectLineItemBinding.rcLineItem.adapter = selectPoLineAdapter
         selectLineItemBinding.rcLineItem.layoutManager = LinearLayoutManager(this)
         selectLineItemBinding.rcLineItem!!.setHasFixedSize(true)
@@ -1179,7 +1193,7 @@ class GRNAddActivity : AppCompatActivity() {
         }
         selectLineItemBinding.lineItemHeader.ivSelection.setOnClickListener {
             poLineItem.forEachIndexed { index, it ->
-                it.isSelected=true
+                it.isSelected = true
                 selectedPoLineItem.add(it)
                 selectPoLineAdapter!!.notifyItemChanged(index)
             }
@@ -1254,12 +1268,12 @@ class GRNAddActivity : AppCompatActivity() {
 
                 is Resource.Error -> {
                     hideProgressBar()
-                    binding.clSelectPo.visibility = View.GONE
                     response.message?.let { errorMessage ->
                         Toasty.error(
                             this@GRNAddActivity,
                             "Login failed - \nError Message: $errorMessage"
                         ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@GRNAddActivity)
                     }
                 }
 
@@ -1330,6 +1344,7 @@ class GRNAddActivity : AppCompatActivity() {
                             this@GRNAddActivity,
                             "Login failed - \nError Message: $errorMessage"
                         ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@GRNAddActivity)
                     }
                 }
 
@@ -1380,16 +1395,18 @@ class GRNAddActivity : AppCompatActivity() {
                         }
                     }
                 }
+
                 is Resource.Error -> {
                     hideProgressBar()
-                    binding.clSelectPo.visibility = View.GONE
                     response.message?.let { errorMessage ->
                         Toasty.error(
                             this@GRNAddActivity,
                             "Login failed - \nError Message: $errorMessage"
                         ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@GRNAddActivity)
                     }
                 }
+
                 is Resource.Loading -> {
                     showProgressBar()
                 }
@@ -1401,7 +1418,7 @@ class GRNAddActivity : AppCompatActivity() {
 
     private fun deleteBatches(grnitem: GrnLineItemUnitStore) {
         try {
-            viewModel.deleteGRNLineItemsUnit(token, Constants.BASE_URL, grnitem.lineItemUnitId)
+            viewModel.deleteGRNLineItemsUnit(token, baseUrl, grnitem.lineItemUnitId)
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -1413,7 +1430,7 @@ class GRNAddActivity : AppCompatActivity() {
 
     private fun deleteLineItem(poLineItem: PoLineItemSelectionModelNewStore) {
         try {
-            viewModel.deleteGRNLineUnit(token, Constants.BASE_URL, poLineItem.lineItemId)
+            viewModel.deleteGRNLineUnit(token, baseUrl, poLineItem.lineItemId)
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -1425,7 +1442,7 @@ class GRNAddActivity : AppCompatActivity() {
 
     private fun getAllLocations() {
         try {
-            viewModel.getAllLocations(token, Constants.BASE_URL)
+            viewModel.getAllLocations(token, baseUrl)
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -1437,7 +1454,7 @@ class GRNAddActivity : AppCompatActivity() {
 
     private fun getBarcodeForMultipleBatches() {
         try {
-            viewModel.getBarcodeForMultipleBatches(token, Constants.BASE_URL, "G")
+            viewModel.getBarcodeForMultipleBatches(token, baseUrl, "G")
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -1450,7 +1467,7 @@ class GRNAddActivity : AppCompatActivity() {
     private fun updateAfterMultipleEntries(
         newItem: GrnLineItemUnitStore,
         newBatch: GrnLineItemUnitStore,
-        ) {
+    ) {
         val newBalanceQty = balanceQty.toDouble() - newItem.recevedQty.toDouble()
         val balQtyFormat = String.format("%.3f", newBalanceQty)
         selectedPoLineItem[currentPoLineItemPosition.toInt()].balQTY = balQtyFormat.toDouble()
@@ -1527,9 +1544,7 @@ class GRNAddActivity : AppCompatActivity() {
                             createBatchesMainRcAdapter!!.notifyItemChanged(position)
                             grnMainItemAdapter!!.notifyItemChanged(currentPoLineItemPosition.toInt())
                         }
-                    }
-                    else
-                    { // Received quantity decreased
+                    } else { // Received quantity decreased
                         // Add the difference to the balance quantity
                         val newBalanceQty = balanceQty.toDouble() + (-receivedQtyDifference)
                         val balQtyFormat = String.format("%.3f", newBalanceQty)
@@ -1578,96 +1593,96 @@ class GRNAddActivity : AppCompatActivity() {
         }
 
 
-     /*   if (updatedItem.recevedQty != "0.000") {
-            val sumOfReceivedQtyIncludingUpdatedItem =
-                tempList.sumByDouble { it.recevedQty.toDouble() }
-            Log.e(
-                "receivedQty",
-                "sum" + sumOfReceivedQtyIncludingUpdatedItem.toString() + "  ////   ${tempList.toString()}" + "  ${balanceQty.toDouble()}  "
-            )
-            if (sumOfReceivedQtyIncludingUpdatedItem > totalQty.toDouble()) {
-                Toast.makeText(
-                    this,
-                    "Value must not exceed the Balance Qty.",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {
-                val previousReceivedQty =
-                    selectedPoLineItem[currentPoLineItemPosition.toInt()].grnLineItemUnit!![position].recevedQty.toDouble()
-                val updatedReceivedQty = updatedItem.recevedQty.toDouble()
-                if (updatedReceivedQty != previousReceivedQty) { // Only proceed if received quantity has changed
-                    val receivedQtyDifference = updatedReceivedQty - previousReceivedQty
-                    if (receivedQtyDifference > 0) { // Received quantity increased
-                        if (receivedQtyDifference > balanceQty.toDouble()) {
-                            // Show error message, quantity must not exceed the balance quantity
-                        } else {
-                            // Subtract the difference from the balance quantity
-                            val newBalanceQty = balanceQty.toDouble() - receivedQtyDifference
-                            val balQtyFormat = String.format("%.3f", newBalanceQty)
+        /*   if (updatedItem.recevedQty != "0.000") {
+               val sumOfReceivedQtyIncludingUpdatedItem =
+                   tempList.sumByDouble { it.recevedQty.toDouble() }
+               Log.e(
+                   "receivedQty",
+                   "sum" + sumOfReceivedQtyIncludingUpdatedItem.toString() + "  ////   ${tempList.toString()}" + "  ${balanceQty.toDouble()}  "
+               )
+               if (sumOfReceivedQtyIncludingUpdatedItem > totalQty.toDouble()) {
+                   Toast.makeText(
+                       this,
+                       "Value must not exceed the Balance Qty.",
+                       Toast.LENGTH_SHORT
+                   ).show()
+               } else {
+                   val previousReceivedQty =
+                       selectedPoLineItem[currentPoLineItemPosition.toInt()].grnLineItemUnit!![position].recevedQty.toDouble()
+                   val updatedReceivedQty = updatedItem.recevedQty.toDouble()
+                   if (updatedReceivedQty != previousReceivedQty) { // Only proceed if received quantity has changed
+                       val receivedQtyDifference = updatedReceivedQty - previousReceivedQty
+                       if (receivedQtyDifference > 0) { // Received quantity increased
+                           if (receivedQtyDifference > balanceQty.toDouble()) {
+                               // Show error message, quantity must not exceed the balance quantity
+                           } else {
+                               // Subtract the difference from the balance quantity
+                               val newBalanceQty = balanceQty.toDouble() - receivedQtyDifference
+                               val balQtyFormat = String.format("%.3f", newBalanceQty)
 
-                            selectedPoLineItem[currentPoLineItemPosition.toInt()].balQTY =
-                                balQtyFormat.toDouble()
+                               selectedPoLineItem[currentPoLineItemPosition.toInt()].balQTY =
+                                   balQtyFormat.toDouble()
 
-                            // Update received quantity for the item being modified
-                            selectedPoLineItem[currentPoLineItemPosition.toInt()].grnLineItemUnit!![position] =
-                                updatedItem.copy()
-                            createBatchesDialogBinding.grnAddHeader.tvBalanceQuantity.setText(
-                                selectedPoLineItem[currentPoLineItemPosition.toInt()].balQTY.toString()
-                            )
-                            createBatchesList[position] = updatedItem.copy()
-                            balanceQty = balQtyFormat
-                            // Update total received quantity for the PO line item
-                            val sumOfReceivedQtyIncludingUpdatedItem =
-                                createBatchesList.sumByDouble { it.recevedQty.toDouble() }
-                            selectedPoLineItem[currentPoLineItemPosition.toInt()].quantityReceived =
-                                sumOfReceivedQtyIncludingUpdatedItem.toString()
-                            createBatchesDialogBinding.grnAddHeader.tvQtyValue.setText(
-                                sumOfReceivedQtyIncludingUpdatedItem.toString()
-                            )
-                            addSingleGrnLineUnitItemApiCall(updatedItem)
-                            createBatchesMainRcAdapter!!.notifyItemChanged(position)
-                            grnMainItemAdapter!!.notifyItemChanged(currentPoLineItemPosition.toInt())
-                        }
-                    } else { // Received quantity decreased
-                        // Add the difference to the balance quantity
-                        val newBalanceQty = balanceQty.toDouble() + (-receivedQtyDifference)
-                        val balQtyFormat = String.format("%.3f", newBalanceQty)
+                               // Update received quantity for the item being modified
+                               selectedPoLineItem[currentPoLineItemPosition.toInt()].grnLineItemUnit!![position] =
+                                   updatedItem.copy()
+                               createBatchesDialogBinding.grnAddHeader.tvBalanceQuantity.setText(
+                                   selectedPoLineItem[currentPoLineItemPosition.toInt()].balQTY.toString()
+                               )
+                               createBatchesList[position] = updatedItem.copy()
+                               balanceQty = balQtyFormat
+                               // Update total received quantity for the PO line item
+                               val sumOfReceivedQtyIncludingUpdatedItem =
+                                   createBatchesList.sumByDouble { it.recevedQty.toDouble() }
+                               selectedPoLineItem[currentPoLineItemPosition.toInt()].quantityReceived =
+                                   sumOfReceivedQtyIncludingUpdatedItem.toString()
+                               createBatchesDialogBinding.grnAddHeader.tvQtyValue.setText(
+                                   sumOfReceivedQtyIncludingUpdatedItem.toString()
+                               )
+                               addSingleGrnLineUnitItemApiCall(updatedItem)
+                               createBatchesMainRcAdapter!!.notifyItemChanged(position)
+                               grnMainItemAdapter!!.notifyItemChanged(currentPoLineItemPosition.toInt())
+                           }
+                       } else { // Received quantity decreased
+                           // Add the difference to the balance quantity
+                           val newBalanceQty = balanceQty.toDouble() + (-receivedQtyDifference)
+                           val balQtyFormat = String.format("%.3f", newBalanceQty)
 
-                        selectedPoLineItem[currentPoLineItemPosition.toInt()].balQTY =
-                            balQtyFormat.toDouble()
-                        // Update received quantity for the item being modified
-                        selectedPoLineItem[currentPoLineItemPosition.toInt()].grnLineItemUnit!![position] =
-                            updatedItem.copy()
-                        createBatchesDialogBinding.grnAddHeader.tvBalanceQuantity.setText(
-                            selectedPoLineItem[currentPoLineItemPosition.toInt()].balQTY.toString()
-                        )
-                        balanceQty = balQtyFormat
-                        createBatchesList[position] = updatedItem.copy()
-                        // Update total received quantity for the PO line item
-                        val sumOfReceivedQtyIncludingUpdatedItem =
-                            createBatchesList.sumByDouble { it.recevedQty.toDouble() }
+                           selectedPoLineItem[currentPoLineItemPosition.toInt()].balQTY =
+                               balQtyFormat.toDouble()
+                           // Update received quantity for the item being modified
+                           selectedPoLineItem[currentPoLineItemPosition.toInt()].grnLineItemUnit!![position] =
+                               updatedItem.copy()
+                           createBatchesDialogBinding.grnAddHeader.tvBalanceQuantity.setText(
+                               selectedPoLineItem[currentPoLineItemPosition.toInt()].balQTY.toString()
+                           )
+                           balanceQty = balQtyFormat
+                           createBatchesList[position] = updatedItem.copy()
+                           // Update total received quantity for the PO line item
+                           val sumOfReceivedQtyIncludingUpdatedItem =
+                               createBatchesList.sumByDouble { it.recevedQty.toDouble() }
 
-                        selectedPoLineItem[currentPoLineItemPosition.toInt()].quantityReceived =
-                            sumOfReceivedQtyIncludingUpdatedItem.toString()
+                           selectedPoLineItem[currentPoLineItemPosition.toInt()].quantityReceived =
+                               sumOfReceivedQtyIncludingUpdatedItem.toString()
 
-                        createBatchesDialogBinding.grnAddHeader.tvQtyValue.setText(
-                            sumOfReceivedQtyIncludingUpdatedItem.toString()
-                        )
-                        addSingleGrnLineUnitItemApiCall(updatedItem)
-                        createBatchesMainRcAdapter!!.notifyItemChanged(position)
-                        grnMainItemAdapter!!.notifyItemChanged(currentPoLineItemPosition.toInt())
-                    }
-                } else {
-                    // Show message indicating that quantity hasn't changed
-                }
-            }
-        } else {
-            Toast.makeText(
-                this,
-                "Value must not be 0.",
-                Toast.LENGTH_SHORT
-            ).show()
-        }*/
+                           createBatchesDialogBinding.grnAddHeader.tvQtyValue.setText(
+                               sumOfReceivedQtyIncludingUpdatedItem.toString()
+                           )
+                           addSingleGrnLineUnitItemApiCall(updatedItem)
+                           createBatchesMainRcAdapter!!.notifyItemChanged(position)
+                           grnMainItemAdapter!!.notifyItemChanged(currentPoLineItemPosition.toInt())
+                       }
+                   } else {
+                       // Show message indicating that quantity hasn't changed
+                   }
+               }
+           } else {
+               Toast.makeText(
+                   this,
+                   "Value must not be 0.",
+                   Toast.LENGTH_SHORT
+               ).show()
+           }*/
 
         /*  if (updatedItem.recevedQty != "0.000") {
               val sumOfReceivedQtyIncludingUpdatedItem =
@@ -1732,7 +1747,6 @@ class GRNAddActivity : AppCompatActivity() {
     }
 
 
-
     private fun calculateForNumbers(
         tempList: MutableList<GrnLineItemUnitStore>,
         position: Int,
@@ -1761,8 +1775,7 @@ class GRNAddActivity : AppCompatActivity() {
                     if (receivedQtyDifference > 0) { // Received quantity increased
                         if (receivedQtyDifference > balanceQty.toDouble()) {
                             // Show error message, quantity must not exceed the balance quantity
-                        }
-                        else {
+                        } else {
                             // Subtract the difference from the balance quantity
                             val newBalanceQty = balanceQty.toDouble() - receivedQtyDifference
                             val balQtyFormat = String.format("%.3f", newBalanceQty)
@@ -1790,9 +1803,7 @@ class GRNAddActivity : AppCompatActivity() {
                             createBatchesMainRcAdapter!!.notifyItemChanged(position)
                             grnMainItemAdapter!!.notifyItemChanged(currentPoLineItemPosition.toInt())
                         }
-                    }
-                    else
-                    { // Received quantity decreased
+                    } else { // Received quantity decreased
                         // Add the difference to the balance quantity
                         val newBalanceQty = balanceQty.toDouble() + (-receivedQtyDifference)
                         val balQtyFormat = String.format("%.3f", newBalanceQty)
@@ -1819,8 +1830,7 @@ class GRNAddActivity : AppCompatActivity() {
                         createBatchesMainRcAdapter!!.notifyItemChanged(position)
                         grnMainItemAdapter!!.notifyItemChanged(currentPoLineItemPosition.toInt())
                     }
-                }
-                else {
+                } else {
                     val previousExpiryDate =
                         selectedPoLineItem[currentPoLineItemPosition.toInt()].grnLineItemUnit!![position].expiryDate
                     if (!updatedItem?.expiryDate!!.equals(previousExpiryDate)) {
@@ -1975,7 +1985,6 @@ class GRNAddActivity : AppCompatActivity() {
 
         ) {
         multipleBatchesDialog!!.show()
-
         createBatchesMultipleDialogBinding.btnSubmit.setOnClickListener {
             var edMultiTextNum =
                 createBatchesMultipleDialogBinding.edMultipleBatch.text.toString().trim()
@@ -2024,7 +2033,6 @@ class GRNAddActivity : AppCompatActivity() {
             ).show()
         }
     }
-
 
 
     fun convertToGrams(amount: Double, unit: String): Double {
@@ -2155,142 +2163,143 @@ class GRNAddActivity : AppCompatActivity() {
         datePickerDialog.show()
     }
 
-/*    private fun setSupplierSpinner() {
+    /*    private fun setSupplierSpinner() {
 
-        //supplierSpinnerAdapter = ArrayAdapter<String>(this, R.layout.spinner_layout, supplierSpinnerArray)
+            //supplierSpinnerAdapter = ArrayAdapter<String>(this, R.layout.spinner_layout, supplierSpinnerArray)
 
-        supplierSpinnerAdapter =
-            CustomArrayAdapter(this, android.R.layout.simple_spinner_item, supplierSpinnerArray)
-        supplierSpinnerAdapter!!.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.tvSpinnerSupplier.adapter = supplierSpinnerAdapter
+            supplierSpinnerAdapter =
+                CustomArrayAdapter(this, android.R.layout.simple_spinner_item, supplierSpinnerArray)
+            supplierSpinnerAdapter!!.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.tvSpinnerSupplier.adapter = supplierSpinnerAdapter
 
-        if (grnId != 0) {
-            val defaultBpName = getDraftGrnResponse?.grnTransaction?.bpName
-            if (!defaultBpName.isNullOrEmpty()) {
+            if (grnId != 0) {
+                val defaultBpName = getDraftGrnResponse?.grnTransaction?.bpName
+                if (!defaultBpName.isNullOrEmpty()) {
 
-                val defaultPosition = supplierSpinnerArray.indexOf(defaultBpName)
-                binding.tvSpinnerSupplier.setSelection(defaultPosition)
-                binding.tvSpinnerSupplier.isEnabled = false
-                callParentLocationApi(getDraftGrnResponse?.grnTransaction?.bpCode.toString())
-                if (defaultPosition != -1) {
-                    binding.tvSpinnerSupplier.onItemSelectedListener =
-                        object : AdapterView.OnItemSelectedListener {
-                            override fun onItemSelected(
-                                adapterView: AdapterView<*>,
-                                view: View?,
-                                i: Int,
-                                l: Long
-                            ) {
-                                val selectedItem = adapterView.selectedItem.toString()
-                                if (view != null && view is TextView) {
-                                    // Set the text color of the selected view
-                                    view.setTextColor(Color.BLACK)
-                                }
-                                if (!isIntialSelectSupplier) {
-                                    if (supplierSpinnerArray[i] != "Select Supplier") {
-                                        val selectedKey: String? =
-                                            supplierMap.entries.find { it.value == selectedItem }?.key
-                                        selectedSupplierCode = selectedKey!!
-                                        selectedBpId =
-                                            getActiveSuppliersDDLResponse.find { it.code == selectedSupplierCode }!!.value.toString()
-                                        callParentLocationApi(selectedKey)
-                                    } else {
-                                        selectedSupplierCode = ""
-                                    }
-                                }
-                                isIntialSelectSupplier = false
-                            }
-
-                            override fun onNothingSelected(adapterView: AdapterView<*>?) {}
-                        }
-                }
-            }
-
-        } else {
-            binding.tvSpinnerSupplier.onItemSelectedListener =
-                object : AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(
-                        adapterView: AdapterView<*>?,
-                        view: View?,
-                        i: Int,
-                        l: Long
-                    ) {
-                        val selectedItem = adapterView?.selectedItem.toString()
-                        // val selectedItemPosi = adapterView?.selectedItemPosition
-
-                        if (!isIntialSelectSupplier) {
-                            if (supplierSpinnerArray[i] != "Select Supplier") {
-                                val selectedKey: String? =
-                                    supplierMap.entries.find { it.value == selectedItem }?.key
-                                selectedSupplierCode = selectedKey!!
-                                selectedBpId =
-                                    getActiveSuppliersDDLResponse.find { it.code == selectedSupplierCode }!!.value.toString()
-                                // callParentLocationApi(selectedKey)
-                                callParentLocationApi(selectedKey)
-                            } else {
-                                selectedSupplierCode = ""
-                            }
-                        }
-                        isIntialSelectSupplier = false
-                    }
-
-                    override fun onNothingSelected(adapterView: AdapterView<*>?) {}
-                }
-        }
-    }*/
-
-   /* private fun setSupplierSpinner() {
-        val autoCompleteTextView = binding.tvSpinnerSupplier
-
-        supplierSpinnerAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, supplierSpinnerArray)
-        autoCompleteTextView.setAdapter(supplierSpinnerAdapter)
-
-        if (grnId != 0) {
-            val defaultBpName = getDraftGrnResponse?.grnTransaction?.bpName
-            if (!defaultBpName.isNullOrEmpty()) {
-                val defaultPosition = supplierSpinnerArray.indexOf(defaultBpName)
-                if (defaultPosition != -1) {
-                    autoCompleteTextView.setText(defaultBpName, false)
-                    autoCompleteTextView.isEnabled = false
+                    val defaultPosition = supplierSpinnerArray.indexOf(defaultBpName)
+                    binding.tvSpinnerSupplier.setSelection(defaultPosition)
+                    binding.tvSpinnerSupplier.isEnabled = false
                     callParentLocationApi(getDraftGrnResponse?.grnTransaction?.bpCode.toString())
-                    autoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
-                        handleSupplierSelection(position)
+                    if (defaultPosition != -1) {
+                        binding.tvSpinnerSupplier.onItemSelectedListener =
+                            object : AdapterView.OnItemSelectedListener {
+                                override fun onItemSelected(
+                                    adapterView: AdapterView<*>,
+                                    view: View?,
+                                    i: Int,
+                                    l: Long
+                                ) {
+                                    val selectedItem = adapterView.selectedItem.toString()
+                                    if (view != null && view is TextView) {
+                                        // Set the text color of the selected view
+                                        view.setTextColor(Color.BLACK)
+                                    }
+                                    if (!isIntialSelectSupplier) {
+                                        if (supplierSpinnerArray[i] != "Select Supplier") {
+                                            val selectedKey: String? =
+                                                supplierMap.entries.find { it.value == selectedItem }?.key
+                                            selectedSupplierCode = selectedKey!!
+                                            selectedBpId =
+                                                getActiveSuppliersDDLResponse.find { it.code == selectedSupplierCode }!!.value.toString()
+                                            callParentLocationApi(selectedKey)
+                                        } else {
+                                            selectedSupplierCode = ""
+                                        }
+                                    }
+                                    isIntialSelectSupplier = false
+                                }
+
+                                override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+                            }
                     }
                 }
-            }
-        } else {
-            autoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
-                handleSupplierSelection(position)
-            }
-        }
-    }
 
-    private fun handleSupplierSelection(position: Int) {
-        val selectedItem = supplierSpinnerArray[position]
-
-        if (!isIntialSelectSupplier) {
-            if (selectedItem != "Select Supplier") {
-                val selectedKey = supplierMap.entries.find { it.value == selectedItem }?.key
-                if (selectedKey != null) {
-                    selectedSupplierCode = selectedKey
-                    val supplier = getActiveSuppliersDDLResponse.find { it.code == selectedSupplierCode }
-                    if (supplier != null) {
-                        selectedBpId = supplier.value.toString()
-                        callParentLocationApi(selectedKey)
-                    }
-                }
             } else {
-                selectedSupplierCode = ""
+                binding.tvSpinnerSupplier.onItemSelectedListener =
+                    object : AdapterView.OnItemSelectedListener {
+                        override fun onItemSelected(
+                            adapterView: AdapterView<*>?,
+                            view: View?,
+                            i: Int,
+                            l: Long
+                        ) {
+                            val selectedItem = adapterView?.selectedItem.toString()
+                            // val selectedItemPosi = adapterView?.selectedItemPosition
+
+                            if (!isIntialSelectSupplier) {
+                                if (supplierSpinnerArray[i] != "Select Supplier") {
+                                    val selectedKey: String? =
+                                        supplierMap.entries.find { it.value == selectedItem }?.key
+                                    selectedSupplierCode = selectedKey!!
+                                    selectedBpId =
+                                        getActiveSuppliersDDLResponse.find { it.code == selectedSupplierCode }!!.value.toString()
+                                    // callParentLocationApi(selectedKey)
+                                    callParentLocationApi(selectedKey)
+                                } else {
+                                    selectedSupplierCode = ""
+                                }
+                            }
+                            isIntialSelectSupplier = false
+                        }
+
+                        override fun onNothingSelected(adapterView: AdapterView<*>?) {}
+                    }
             }
-        }
-        isIntialSelectSupplier = false
-    }*/
+        }*/
+
+    /* private fun setSupplierSpinner() {
+         val autoCompleteTextView = binding.tvSpinnerSupplier
+
+         supplierSpinnerAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, supplierSpinnerArray)
+         autoCompleteTextView.setAdapter(supplierSpinnerAdapter)
+
+         if (grnId != 0) {
+             val defaultBpName = getDraftGrnResponse?.grnTransaction?.bpName
+             if (!defaultBpName.isNullOrEmpty()) {
+                 val defaultPosition = supplierSpinnerArray.indexOf(defaultBpName)
+                 if (defaultPosition != -1) {
+                     autoCompleteTextView.setText(defaultBpName, false)
+                     autoCompleteTextView.isEnabled = false
+                     callParentLocationApi(getDraftGrnResponse?.grnTransaction?.bpCode.toString())
+                     autoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
+                         handleSupplierSelection(position)
+                     }
+                 }
+             }
+         } else {
+             autoCompleteTextView.setOnItemClickListener { parent, view, position, id ->
+                 handleSupplierSelection(position)
+             }
+         }
+     }
+
+     private fun handleSupplierSelection(position: Int) {
+         val selectedItem = supplierSpinnerArray[position]
+
+         if (!isIntialSelectSupplier) {
+             if (selectedItem != "Select Supplier") {
+                 val selectedKey = supplierMap.entries.find { it.value == selectedItem }?.key
+                 if (selectedKey != null) {
+                     selectedSupplierCode = selectedKey
+                     val supplier = getActiveSuppliersDDLResponse.find { it.code == selectedSupplierCode }
+                     if (supplier != null) {
+                         selectedBpId = supplier.value.toString()
+                         callParentLocationApi(selectedKey)
+                     }
+                 }
+             } else {
+                 selectedSupplierCode = ""
+             }
+         }
+         isIntialSelectSupplier = false
+     }*/
 
     private fun setSupplierSpinner() {
         val autoCompleteTextView = binding.tvSpinnerSupplier
 
         // Initialize ArrayAdapter and set it to the AutoCompleteTextView
-        supplierSpinnerAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, supplierSpinnerArray)
+        supplierSpinnerAdapter =
+            ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, supplierSpinnerArray)
         autoCompleteTextView.setAdapter(supplierSpinnerAdapter)
 
         // Set threshold to 1 so that suggestions appear as soon as the user starts typing
@@ -2304,6 +2313,7 @@ class GRNAddActivity : AppCompatActivity() {
                 if (defaultPosition != -1) {
                     autoCompleteTextView.setText(defaultBpName, false)
                     autoCompleteTextView.isEnabled = false
+                    autoCompleteTextView.setTextColor(Color.BLACK)
                     callParentLocationApi(getDraftGrnResponse?.grnTransaction?.bpCode.toString())
                 }
             }
@@ -2324,24 +2334,18 @@ class GRNAddActivity : AppCompatActivity() {
 
     private fun handleSupplierSelection(position: Int) {
         val selectedItem = supplierSpinnerArray[position]
-
-        if (!isIntialSelectSupplier) {
-            if (selectedItem != "Select Supplier") {
-                val selectedKey = supplierMap.entries.find { it.value == selectedItem }?.key
-                if (selectedKey != null) {
-                    selectedSupplierCode = selectedKey
-                    val supplier = getActiveSuppliersDDLResponse.find { it.code == selectedSupplierCode }
-                    if (supplier != null) {
-                        selectedBpId = supplier.value.toString()
-                        callParentLocationApi(selectedKey)
-                    }
-                }
-            } else {
-                selectedSupplierCode = ""
+        val selectedKey = supplierMap.entries.find { it.value == selectedItem }?.key
+        if (selectedKey != null) {
+            selectedSupplierCode = selectedKey
+            val supplier =
+                getActiveSuppliersDDLResponse.find { it.code == selectedSupplierCode }
+            if (supplier != null) {
+                selectedBpId = supplier.value.toString()
+                callParentLocationApi(selectedKey)
             }
         }
-        isIntialSelectSupplier = false
     }
+
     private fun setSelectLineItemDialog() {
         selectLineItemDialog!!.show()
         setLineItemRc()
@@ -2358,7 +2362,6 @@ class GRNAddActivity : AppCompatActivity() {
     private fun setLineItemRc() {
 
     }
-
     private fun updateTheGDPOForSamePoNumber(updatedItem: PoLineItemSelectionModelNewStore) {
         poLineItem.forEachIndexed { index, item ->
             if (item.poNumber == updatedItem.poNumber) {
@@ -2369,7 +2372,6 @@ class GRNAddActivity : AppCompatActivity() {
 
         // Update selectedPoLineItem
         selectedPoLineItem.forEachIndexed { index, item ->
-
             if (item.poNumber == updatedItem.poNumber) {
                 item.GDPONumber = updatedItem.GDPONumber
                 grnMainItemAdapter?.notifyItemChanged(index, item)
@@ -2379,7 +2381,7 @@ class GRNAddActivity : AppCompatActivity() {
 
     private fun callParentLocationApi(selectedKey: String) {
         try {
-            viewModel.getSuppliersPosDDLL(token, Constants.BASE_URL, selectedKey)
+            viewModel.getSuppliersPosDDLL(token, baseUrl, selectedKey)
         } catch (e: Exception) {
             Toasty.error(
                 this,
@@ -2401,7 +2403,7 @@ class GRNAddActivity : AppCompatActivity() {
             if (selectedPoFilteredList.size > 0) {
                 binding.tvCurrencyType.setText(getCommonCode().toString())
                 selectedCurrency = getCommonCode().toString()
-                viewModel.getPosLineItemsOnPoIds(token, Constants.BASE_URL, selectedPoFilteredList)
+                viewModel.getPosLineItemsOnPoIds(token, baseUrl, selectedPoFilteredList)
                 selectPoDialog!!.dismiss()
             } else {
                 Toasty.warning(
@@ -2446,7 +2448,7 @@ class GRNAddActivity : AppCompatActivity() {
                 if (polist.isNotEmpty()) {
                     if (selectedCurrency != "" && selectedCurrency.equals("INR")) {
                         viewModel.processGRN(
-                            token, Constants.BASE_URL, GRNSaveToDraftDefaultRequest(
+                            token, baseUrl, GRNSaveToDraftDefaultRequest(
                                 currentGrnID,
                                 selectedSupplierCode,
                                 polist,
@@ -2461,7 +2463,7 @@ class GRNAddActivity : AppCompatActivity() {
                         )
                     } else {
                         viewModel.processGRN(
-                            token, Constants.BASE_URL, GRNSaveToDraftDefaultRequest(
+                            token, baseUrl, GRNSaveToDraftDefaultRequest(
                                 currentGrnID,
                                 selectedSupplierCode,
                                 polist,
@@ -2514,7 +2516,7 @@ class GRNAddActivity : AppCompatActivity() {
 
     private fun generateBarcodeForBatches() {
         try {
-            viewModel.getBarcodeValueWithPrefix(token, Constants.BASE_URL, "G")
+            viewModel.getBarcodeValueWithPrefix(token, baseUrl, "G")
         } catch (e: Exception) {
             Toasty.error(
                 this,
@@ -2527,7 +2529,7 @@ class GRNAddActivity : AppCompatActivity() {
 
     private fun generateBarcodeForBatchesForExisitng() {
         try {
-            viewModel.getBarcodeValueWithPrefixForExisitng(token, Constants.BASE_URL, "G")
+            viewModel.getBarcodeValueWithPrefixForExisitng(token, baseUrl, "G")
         } catch (e: Exception) {
             Toasty.error(
                 this,
@@ -2540,7 +2542,7 @@ class GRNAddActivity : AppCompatActivity() {
 
     private fun getSupplierList() {
         try {
-            viewModel.getActiveSuppliersDDL(token, Constants.BASE_URL)
+            viewModel.getActiveSuppliersDDL(token, baseUrl)
         } catch (e: Exception) {
             Toasty.error(
                 this,
@@ -2564,7 +2566,7 @@ class GRNAddActivity : AppCompatActivity() {
         )
         batchesDialog!!.setCancelable(true)
         enterBatchesDialogBinding.closeDialogueTopButton.setOnClickListener {
-            selectPoDialog!!.dismiss()
+            batchesDialog!!.dismiss()
         }
     }
 
@@ -2584,6 +2586,29 @@ class GRNAddActivity : AppCompatActivity() {
         createBatchesMultipleDialogBinding.closeDialogueTopButton.setOnClickListener {
             multipleBatchesDialog!!.dismiss()
         }
+    }
+
+    private fun setItemDescriptionDialog() {
+        itemDescriptionDialog!!.setContentView(itemDescriptionBinding.root)
+        itemDescriptionDialog!!.getWindow()?.setBackgroundDrawable(
+            AppCompatResources.getDrawable(
+                this@GRNAddActivity,
+                android.R.color.transparent
+            )
+        )
+        itemDescriptionDialog!!.getWindow()?.setLayout(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        itemDescriptionDialog!!.setCancelable(true)
+        itemDescriptionBinding.closeDialogueTopButton.setOnClickListener {
+            itemDescriptionDialog!!.dismiss()
+        }
+    }
+
+    private fun setItemDescription(itemDesc: String) {
+        itemDescriptionDialog?.show()
+        itemDescriptionBinding.tvItemDescription.setText(itemDesc)
     }
 
     private fun setPoLineItemList() {
@@ -2721,7 +2746,7 @@ class GRNAddActivity : AppCompatActivity() {
     private fun addSingleGrnLineUnitItemApiCall(u: GrnLineItemUnitStore) {
         try {
             viewModel.processSingleGRNGRNItemBatches(
-                token, Constants.BASE_URL,
+                token, baseUrl,
                 /*  GRNUnitLineItemsSaveRequest(
                       lineItemId,
                       currentGrnID.toInt(),
@@ -2810,7 +2835,7 @@ class GRNAddActivity : AppCompatActivity() {
     private fun processSingleGRNGRNItemBatchesForMultiple(u: GrnLineItemUnitStore) {
         try {
             viewModel.processSingleGRNGRNItemBatchesForMultiple(
-                token, Constants.BASE_URL,
+                token, baseUrl,
                 GRNUnitLineItemsSaveRequest(
                     selectedPoLineItem[currentPoLineItemPosition.toInt()].balQTY,
                     selectedPoLineItem[currentPoLineItemPosition.toInt()].currency ?: "",
@@ -3079,6 +3104,7 @@ class GRNAddActivity : AppCompatActivity() {
                             this@GRNAddActivity,
                             "Login failed - \nError Message: $errorMessage"
                         ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@GRNAddActivity)
                     }
                 }
 
@@ -3207,7 +3233,7 @@ class GRNAddActivity : AppCompatActivity() {
 
     private fun getDraftGrn() {
         try {
-            viewModel.getDraftGRN(token, Constants.BASE_URL, grnId!!.toInt())
+            viewModel.getDraftGRN(token, baseUrl, currentGrnID!!.toInt())
         } catch (e: Exception) {
             Toasty.error(
                 this@GRNAddActivity,
@@ -3257,7 +3283,11 @@ class GRNAddActivity : AppCompatActivity() {
 
     private fun submitGrn() {
         try {
-            viewModel.submitGRN(token!!, Constants.BASE_URL, SubmitGRNRequest(grnId!!.toInt()))
+            viewModel.submitGRN(
+                token!!,
+                baseUrl,
+                SubmitGRNRequest(currentGrnID!!.toInt())
+            )
         } catch (e: Exception) {
             Toasty.error(
                 this@GRNAddActivity,

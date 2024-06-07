@@ -33,7 +33,7 @@
     <color name="button_selected">#2962FF</color>
     <color name="button_text_selected">#FFFFFF</color>
     <color name="button_stroke_selected">#FFFFFF</color>
-
+    <color name="lighter_grey_divider">#8C8B8B</color>
     <color name="radio_normal_color">#10c007</color>
     <color name="radio_excess_color">#358bba</color>
     <color name="radio_shortage_color">#FF0000</color>

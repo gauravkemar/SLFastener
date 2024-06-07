@@ -44,14 +44,9 @@ class LineItemAdapter  : RecyclerView.Adapter<LineItemAdapter.ViewHolder>() {
         holder.tvColumnSix.setText(poLineItemModel.pouom)
 
         holder.cbPcbLineItem.setOnCheckedChangeListener(null) // Reset listener to avoid unwanted calls
-
-
-
         holder.cbPcbLineItem.isChecked = poLineItemModel.isSelected ?: false
-
         holder.cbPcbLineItem.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
-
                 onItemClickListener?.invoke(PoLineItemSelectionModel(
                     poLineItemModel.itemCode,poLineItemModel.itemDescription,
                     poLineItemModel.itemName,poLineItemModel.lineNumber,poLineItemModel.poId,poLineItemModel.poLineItemId,poLineItemModel.poQuantity,
@@ -59,7 +54,6 @@ class LineItemAdapter  : RecyclerView.Adapter<LineItemAdapter.ViewHolder>() {
                     poLineItemModel.ExpiryDate,poLineItemModel.ReceivedQty,true,poLineItemModel.materialType,null))
                 Log.d("fromclick", poLineItemMainModel[position].toString())
             } else {
-
                 onItemUncheckClickListener?.invoke(PoLineItemSelectionModel(
                     poLineItemModel.itemCode,poLineItemModel.itemDescription,
                     poLineItemModel.itemName,poLineItemModel.lineNumber,poLineItemModel.poId,poLineItemModel.poLineItemId,poLineItemModel.poQuantity,

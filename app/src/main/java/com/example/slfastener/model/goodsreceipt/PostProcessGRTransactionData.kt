@@ -5,7 +5,7 @@ data class PostProcessGRTransactionData(
     val bpId: Int,
     val bpName: String,
     val createdBy: String,
-    val createdDate: String,
+    val createdDate: String?,
     val grId: Int,
     val grLineItemUnit: List<Any>,
     val grStatus: String,
@@ -16,8 +16,8 @@ data class PostProcessGRTransactionData(
     val modifiedBy: String,
     val modifiedDate: Any,
     val remark: String,
-    val sapResponseMessage: String,
+    val sapResponseMessage: String?,
     val sapSubmittedDate: Any,
-    val sgrDate: Any,
-    val sgrNumber: Int
+    val sgrDate: Any?,
+    val sgrNumber: Any?
 )

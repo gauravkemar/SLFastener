@@ -7,7 +7,7 @@ data class ResponseObject(
     val gdpoNumber: Any,
     val grnId: Int,
     val grnLineItemUnit: List<GrnLineItemUnit>,
-    val grnQty: Int,
+    val grnQty: Double,
     val isActive: Boolean,
     val isQCRequired: Boolean,
     val itemCode: String,

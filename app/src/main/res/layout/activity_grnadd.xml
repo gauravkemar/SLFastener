@@ -29,9 +29,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_weight="0.10"
-
                     >
-
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
@@ -119,14 +117,86 @@
                     app:layout_constraintTop_toBottomOf="@+id/cvHeader"
                     app:layout_constraintVertical_weight="0.88">
 
+                    <TextView
+                        android:id="@+id/tvGRNName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Goods Receipt Note"
+                        android:textSize="25sp"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginTop="10dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/validatePrinter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/validateWeightMachine"
+                        app:layout_constraintBottom_toTopOf="@+id/clContainer"
+                        >
+                        <ImageView
+                            android:id="@+id/ivPrinter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="15dp"
+                            android:src="@drawable/printer_check_if_connected"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            />
+                        <ImageView
+                            android:id="@+id/ivPrinterIndicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_circl_green"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/validateWeightMachine"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="20dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toTopOf="@+id/clContainer"
+                        >
+                        <ImageView
+                            android:id="@+id/ivWeight"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="15dp"
+                            android:src="@drawable/weighing_machine_if_connected"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            />
+                        <ImageView
+                            android:id="@+id/ivWeightIndicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_circl_green"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/clContainer"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_margin="20dp"
+                        android:layout_margin="5dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tvGRNName"
                         app:layout_constraintBottom_toTopOf="@+id/clContainer2">
 
                         <com.google.android.material.card.MaterialCardView
@@ -151,7 +221,7 @@
                                     android:id="@+id/clSelectSupplier"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_margin="15dp"
+                                    android:layout_margin="5dp"
 
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toStartOf="@+id/clSelectPo"
@@ -214,7 +284,10 @@
                                     android:id="@+id/clSelectPo"
                                     android:layout_width="0dp"
                                     android:layout_height="0dp"
-                                    android:layout_margin="15dp"
+                                    android:layout_marginTop="15dp"
+                                    android:layout_marginBottom="15dp"
+                                    android:layout_marginStart="5dp"
+                                    android:layout_marginEnd="5dp"
                                     android:visibility="gone"
                                     app:cardBackgroundColor="@color/blue"
                                     app:cardCornerRadius="5dp"
@@ -228,7 +301,7 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center"
-                                        android:padding="10dp"
+                                        android:padding="5dp"
                                         android:text="Select PO"
                                         android:textColor="@color/white" />
                                 </com.google.android.material.card.MaterialCardView>
@@ -237,7 +310,7 @@
                                     android:id="@+id/clEnterInvNo"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_margin="15dp"
+                                    android:layout_margin="5dp"
                                     android:background="@drawable/round_border_grey"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toStartOf="@+id/clCurrencyType"
@@ -251,7 +324,7 @@
                                         android:layout_height="match_parent"
                                         android:background="@android:color/transparent"
                                         android:hint="Enter Inv NO"
-                                        android:padding="10dp"
+                                        android:padding="15dp"
                                         android:textColor="@color/tv_sub_head_color"
                                         android:textSize="12sp"
                                         android:textStyle="bold"
@@ -266,7 +339,7 @@
                                     android:id="@+id/clCurrencyType"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_margin="15dp"
+                                    android:layout_margin="5dp"
                                     android:background="@drawable/round_border_grey"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toStartOf="@+id/clEnterInvDate"
@@ -280,7 +353,7 @@
                                         android:layout_height="match_parent"
                                         android:background="@android:color/transparent"
                                         android:text=""
-                                        android:padding="10dp"
+                                        android:padding="15dp"
                                         android:textColor="@color/tv_sub_head_color"
                                         android:textSize="12sp"
                                         android:textStyle="bold"
@@ -295,7 +368,7 @@
                                     android:id="@+id/clEnterInvDate"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_margin="15dp"
+                                    android:layout_margin="5dp"
                                     android:background="@drawable/round_border_grey"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toStartOf="@+id/clAddGrn"
@@ -310,7 +383,7 @@
                                         android:background="@android:color/transparent"
                                         android:hint="Select Inv Date"
 
-                                        android:padding="10dp"
+                                        android:padding="15dp"
                                         android:textColor="@color/tv_sub_head_color"
                                         android:textSize="12sp"
                                         android:textStyle="bold"
@@ -327,7 +400,7 @@
                                     android:id="@+id/clAddGrn"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_margin="15dp"
+                                    android:layout_margin="5dp"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintHorizontal_weight="0.16"
                                     app:layout_constraintStart_toEndOf="@+id/clEnterInvDate"
@@ -348,7 +421,7 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_gravity="center"
-                                            android:padding="10dp"
+                                            android:padding="15dp"
                                             android:text="Next"
                                             android:textColor="@color/white" />
                                     </com.google.android.material.card.MaterialCardView>
@@ -368,7 +441,7 @@
                                             android:layout_height="match_parent"
                                             android:background="@android:color/transparent"
                                             android:text="KGRN"
-                                            android:padding="10dp"
+                                            android:padding="15dp"
                                             android:textColor="@color/tv_sub_head_color"
                                             android:textSize="12sp"
                                             android:textStyle="bold"
@@ -592,7 +665,6 @@
                                         android:id="@+id/rcGrnAdd"
                                         android:layout_width="match_parent"
                                         android:layout_height="0dp"
-
                                         app:layout_constraintBottom_toBottomOf="parent"
                                         app:layout_constraintEnd_toEndOf="parent"
                                         app:layout_constraintStart_toStartOf="parent"
@@ -776,6 +848,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:clickable="true"
+                                android:visibility="gone"
                                 android:layout_margin="15dp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -795,6 +868,7 @@
                                         android:paddingStart="20dp"
                                         android:paddingEnd="20dp"
                                         android:text="Save to Draft"
+
                                         android:textColor="@color/tv_sub_head_color"
                                         android:textSize="12sp"
                                         android:textStyle="bold"

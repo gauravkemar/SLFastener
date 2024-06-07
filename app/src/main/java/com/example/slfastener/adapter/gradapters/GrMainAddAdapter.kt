@@ -1,6 +1,7 @@
 package com.example.slfastener.adapter.gradapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import com.example.slfastener.model.goodsreceipt.GetAllItemMasterSelection
 class GrMainAddAdapter (
     private val context: Context,
     private val poLineItemParent: MutableList<GetAllItemMasterSelection>,
+    private val itemDescription:(itemDesc:String)->Unit,
     private val onItemCheck:(Int, GetAllItemMasterSelection) -> Unit,
     private val onItemDelete:(Int, GetAllItemMasterSelection) -> Unit,
 
@@ -24,6 +26,7 @@ class GrMainAddAdapter (
     lateinit var locationNameList: MutableList<String>
     var allLocationHashMap = HashMap<Int, String>()
     var selectedLocationID: Int = 0
+    var defaultLocationCode:String=""
     private var weightData: String? = null
     private var getAllLocationAdapter: CustomArrayAdapter? = null
 
@@ -41,7 +44,15 @@ class GrMainAddAdapter (
         holder.tvBalQty.setText(poLineItemModel.balQty.toString())
         holder.tvBatchCount.setText("${poLineItemModel.grLineItemUnit?.size ?: 0}")
         holder.tvPuom.setText(poLineItemModel.uom)
-        selectedLocationID=poLineItemModel.defaultLocationCode.toInt()
+        if(poLineItemModel.isQCRequired)
+        {
+            holder.tvQc.setText("QC")
+        }
+
+        defaultLocationCode=poLineItemModel.defaultLocationCode
+        holder.tvItemDesc.setOnClickListener {
+            itemDescription(poLineItemModel.description)
+        }
 
         holder.tvDeleteLineItem.setOnClickListener {
             onItemDelete(position,poLineItemModel)
@@ -73,18 +84,12 @@ class GrMainAddAdapter (
             holder.tvSaveLineItem.setImageResource(R.drawable.ic_add_blue)
         }
 
+        setWareHouseLocation(holder,poLineItemModel)
         holder.tvSaveLineItem.setOnClickListener {
                poLineItemParent[position].LocationId=selectedLocationID
                 onItemCheck(position,poLineItemParent[position])
         }
-        setWareHouseLocation(holder,poLineItemModel)
-        if(poLineItemModel.isQCRequired)
-        {
-            holder.tvQc.visibility= View.VISIBLE
-        }
-        else{
-            holder.tvQc.visibility= View.GONE
-        }
+
 
     }
     private fun setWareHouseLocation(
@@ -103,6 +108,7 @@ class GrMainAddAdapter (
         holder.tvWareHouse.adapter = getAllLocationAdapter
 
         val defaultLocationName = allLocation.getAllLocation.find { it.locationId == allLocation.defaultLocationCode.toInt() }?.locationName
+        Log.e("defaultLocationName",defaultLocationName.toString()+"//default${allLocation.defaultLocationCode}"+"// allLocation.defaultLocationCode")
         if (!defaultLocationName.isNullOrEmpty()) {
             val defaultPosition = locationNameList.indexOf(defaultLocationName)
             holder.tvWareHouse.setSelection(defaultPosition)

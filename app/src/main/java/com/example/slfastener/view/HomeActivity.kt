@@ -22,6 +22,10 @@ class HomeActivity : AppCompatActivity() {
             var intent= Intent(this@HomeActivity,GRNMainActivity::class.java)
             startActivity(intent)
         }
+        binding.midCl3.setOnClickListener {
+            var intent= Intent(this@HomeActivity,GRMainActivity::class.java)
+            startActivity(intent)
+        }
         binding.logoutBtn.setOnClickListener {
             showLogoutDialog()
         }

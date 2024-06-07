@@ -13,12 +13,20 @@ import com.example.slfastener.model.generalrequest.GRNLineItemDeleteResponse
 import com.example.slfastener.model.generalrequest.GeneralResponse
 import com.example.slfastener.model.generalrequest.GrnBatchDeleteResponse
 import com.example.slfastener.model.getalllocation.GetAllWareHouseLocationResponse
+import com.example.slfastener.model.goodsreceipt.GetAllGRResponse
 import com.example.slfastener.model.goodsreceipt.GetAllItemMasterResponse
 import com.example.slfastener.model.goodsreceipt.PostProcessGRTransactionRequest
 import com.example.slfastener.model.goodsreceipt.PostProcessGRTransactionResponse
 import com.example.slfastener.model.goodsreceipt.ProcessGRLineItemRequest
+import com.example.slfastener.model.goodsreceipt.ProcessGRLineItemResponse
+import com.example.slfastener.model.goodsreceipt.SubmitGRRequest
+import com.example.slfastener.model.goodsreceipt.grdraft.GetSingleGRByGRIdResponse
 import com.example.slfastener.model.grn.ProcessGRNLineItemsResponse
+import com.example.slfastener.model.grndraftdata.GetDraftGrnResponse
 import com.example.slfastener.model.grnlineitemmain.GrnLineItemResponse
+import com.example.slfastener.model.grnmain.GetFilteredGRNRequest
+import com.example.slfastener.model.grnmain.GetFilteredGRNResponse
+import com.example.slfastener.model.grnmain.SubmitGRNRequest
 import com.example.slfastener.model.polineitemnew.GRNUnitLineItemsSaveRequest
 import kotlinx.coroutines.launch
 import org.json.JSONObject
@@ -28,20 +36,118 @@ import java.io.IOException
 class GRViewModel(
     application: Application,
     private val rfidRepository: SLFastenerRepository
-) : AndroidViewModel(application)  {
-    val getAllItemMasterMutable: MutableLiveData<Resource<ArrayList<GetAllItemMasterResponse>>> = MutableLiveData()
+) : AndroidViewModel(application) {
 
-    fun getAllItemMaster(token: String,baseUrl: String, ) {
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    val getAllGRResponseMutableList: MutableLiveData<Resource<ArrayList<GetAllGRResponse>>> =
+        MutableLiveData()
+
+    fun getAllGRResponse(token: String, baseUrl: String, status: String) {
         viewModelScope.launch {
-            safeAPICallGetAllItemMaster(token,baseUrl)
+            safeAPICallGetFilteredGRN(token, baseUrl, status)
         }
     }
 
-    private suspend fun safeAPICallGetAllItemMaster(token: String,baseUrl: String) {
+    private suspend fun safeAPICallGetFilteredGRN(token: String, baseUrl: String, status: String) {
+        getAllGRResponseMutableList.postValue(Resource.Loading())
+        try {
+            if (Utils.hasInternetConnection(getApplication())) {
+                val response = rfidRepository.getAllGRResponse(token, baseUrl, status)
+                getAllGRResponseMutableList.postValue(handleGetFilteredGR(response))
+            } else {
+                getAllGRResponseMutableList.postValue(Resource.Error(Constants.NO_INTERNET))
+            }
+        } catch (t: Throwable) {
+            when (t) {
+                is IOException -> getAllGRResponseMutableList.postValue(Resource.Error(Constants.CONFIG_ERROR))
+                else -> getAllGRResponseMutableList.postValue(Resource.Error("${t.message}"))
+            }
+        }
+    }
+
+    private fun handleGetFilteredGR(response: Response<ArrayList<GetAllGRResponse>>): Resource<ArrayList<GetAllGRResponse>> {
+        var errorMessage = ""
+        if (response.isSuccessful) {
+            response.body()?.let { appDetailsResponse ->
+                return Resource.Success(appDetailsResponse)
+            }
+        } else if (response.errorBody() != null) {
+            val errorObject = response.errorBody()?.let {
+                JSONObject(it.charStream().readText())
+            }
+            errorObject?.let {
+                errorMessage = it.getString(Constants.HTTP_ERROR_MESSAGE)
+            }
+        }
+        return Resource.Error(errorMessage)
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    val getAllGRCompleteResponse: MutableLiveData<Resource<ArrayList<GetAllGRResponse>>> =
+        MutableLiveData()
+
+    fun getAllGRCompleteResponse(token: String, baseUrl: String, status: String) {
+        viewModelScope.launch {
+            safeAPICallGetFilteredGRNCompleted(token, baseUrl, status)
+        }
+    }
+
+    private suspend fun safeAPICallGetFilteredGRNCompleted(
+        token: String,
+        baseUrl: String,
+        status: String
+    ) {
+        getAllGRCompleteResponse.postValue(Resource.Loading())
+        try {
+            if (Utils.hasInternetConnection(getApplication())) {
+                val response = rfidRepository.getAllGRCompleteResponse(token, baseUrl, status)
+                getAllGRCompleteResponse.postValue(handleGetFilteredGRCompleted(response))
+            } else {
+                getAllGRCompleteResponse.postValue(Resource.Error(Constants.NO_INTERNET))
+            }
+        } catch (t: Throwable) {
+            when (t) {
+                is IOException -> getAllGRCompleteResponse.postValue(Resource.Error(Constants.CONFIG_ERROR))
+                else -> getAllGRCompleteResponse.postValue(Resource.Error("${t.message}"))
+            }
+        }
+    }
+
+    private fun handleGetFilteredGRCompleted(response: Response<ArrayList<GetAllGRResponse>>): Resource<ArrayList<GetAllGRResponse>> {
+        var errorMessage = ""
+        if (response.isSuccessful) {
+            response.body()?.let { appDetailsResponse ->
+                return Resource.Success(appDetailsResponse)
+            }
+        } else if (response.errorBody() != null) {
+            val errorObject = response.errorBody()?.let {
+                JSONObject(it.charStream().readText())
+            }
+            errorObject?.let {
+                errorMessage = it.getString(Constants.HTTP_ERROR_MESSAGE)
+            }
+        }
+        return Resource.Error(errorMessage)
+    }
+
+
+    ////////
+    val getAllItemMasterMutable: MutableLiveData<Resource<ArrayList<GetAllItemMasterResponse>>> =
+        MutableLiveData()
+
+    fun getAllItemMaster(token: String, baseUrl: String) {
+        viewModelScope.launch {
+            safeAPICallGetAllItemMaster(token, baseUrl)
+        }
+    }
+
+    private suspend fun safeAPICallGetAllItemMaster(token: String, baseUrl: String) {
         getAllItemMasterMutable.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.getAllItemMaster(token,baseUrl )
+                val response = rfidRepository.getAllItemMaster(token, baseUrl)
                 getAllItemMasterMutable.postValue(handleGetAllItemMaster(response))
             } else {
                 getAllItemMasterMutable.postValue(Resource.Error(Constants.NO_INTERNET))
@@ -73,19 +179,20 @@ class GRViewModel(
 
 
     ///getAll Suppliers
-    val getActiveSupplierForGRMutable: MutableLiveData<Resource<ArrayList<GetActiveSuppliersDDLResponse>>> = MutableLiveData()
+    val getActiveSupplierForGRMutable: MutableLiveData<Resource<ArrayList<GetActiveSuppliersDDLResponse>>> =
+        MutableLiveData()
 
-    fun getActiveSupplierForGR(token: String,baseUrl: String, ) {
+    fun getActiveSupplierForGR(token: String, baseUrl: String) {
         viewModelScope.launch {
-            safeAPICallGetActiveSupplierForGR(token,baseUrl)
+            safeAPICallGetActiveSupplierForGR(token, baseUrl)
         }
     }
 
-    private suspend fun safeAPICallGetActiveSupplierForGR(token: String,baseUrl: String) {
+    private suspend fun safeAPICallGetActiveSupplierForGR(token: String, baseUrl: String) {
         getActiveSupplierForGRMutable.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.getActiveSupplierForGR(token,baseUrl )
+                val response = rfidRepository.getActiveSupplierForGR(token, baseUrl)
                 getActiveSupplierForGRMutable.postValue(handleGetActiveSupplierForGR(response))
             } else {
                 getActiveSupplierForGRMutable.postValue(Resource.Error(Constants.NO_INTERNET))
@@ -116,20 +223,30 @@ class GRViewModel(
     }
 
 
-
     // process gr transaction
-    val processGRMutable: MutableLiveData<Resource<PostProcessGRTransactionResponse>> = MutableLiveData()
+    val processGRMutable: MutableLiveData<Resource<PostProcessGRTransactionResponse>> =
+        MutableLiveData()
 
-    fun processGR(token: String,baseUrl: String,   postProcessGRTransactionRequest: PostProcessGRTransactionRequest) {
+    fun processGR(
+        token: String,
+        baseUrl: String,
+        postProcessGRTransactionRequest: PostProcessGRTransactionRequest
+    ) {
         viewModelScope.launch {
-            safeAPICallProcessGR(token,baseUrl ,postProcessGRTransactionRequest)
+            safeAPICallProcessGR(token, baseUrl, postProcessGRTransactionRequest)
         }
     }
-    private suspend fun safeAPICallProcessGR(token: String,baseUrl: String,postProcessGRTransactionRequest: PostProcessGRTransactionRequest) {
+
+    private suspend fun safeAPICallProcessGR(
+        token: String,
+        baseUrl: String,
+        postProcessGRTransactionRequest: PostProcessGRTransactionRequest
+    ) {
         processGRMutable.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.processGR(token,baseUrl,postProcessGRTransactionRequest )
+                val response =
+                    rfidRepository.processGR(token, baseUrl, postProcessGRTransactionRequest)
                 processGRMutable.postValue(handleProcessGR(response))
             } else {
                 processGRMutable.postValue(Resource.Error(Constants.NO_INTERNET))
@@ -141,6 +258,7 @@ class GRViewModel(
             }
         }
     }
+
     private fun handleProcessGR(response: Response<PostProcessGRTransactionResponse>): Resource<PostProcessGRTransactionResponse> {
         var errorMessage = ""
         if (response.isSuccessful) {
@@ -158,77 +276,8 @@ class GRViewModel(
         return Resource.Error(errorMessage)
     }
 
-    //////////process for single
-    val processSingleGRItemBatchesMutable: MutableLiveData<Resource<ProcessGRLineItemRequest>> = MutableLiveData()
 
-    fun processSingleGRItemBatches(token: String,baseUrl: String, processGRLineItemRequest: ProcessGRLineItemRequest) {
-        viewModelScope.launch {
-            safeAPICallProcessSingleGRItemBatches(token,baseUrl,processGRLineItemRequest)
-        }
-    }
-
-    private suspend fun safeAPICallProcessSingleGRItemBatches(token: String,baseUrl: String, processGRLineItemRequest: ProcessGRLineItemRequest) {
-        processSingleGRItemBatchesMutable.postValue(Resource.Loading())
-        try {
-            if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.processSingleGRItemBatches(token,baseUrl,processGRLineItemRequest )
-                processSingleGRItemBatchesMutable.postValue(handleProcessSingleGRItemBatches(response))
-            } else {
-                processSingleGRItemBatchesMutable.postValue(Resource.Error(Constants.NO_INTERNET))
-            }
-        } catch (t: Throwable) {
-            when (t) {
-                is IOException -> processSingleGRItemBatchesMutable.postValue(Resource.Error(Constants.CONFIG_ERROR))
-                else -> processSingleGRItemBatchesMutable.postValue(Resource.Error("${t.message}"))
-            }
-        }
-    }
-
-    private fun handleProcessSingleGRItemBatches(response: Response<ProcessGRLineItemRequest>): Resource<ProcessGRLineItemRequest> {
-        var errorMessage = ""
-        if (response.isSuccessful) {
-            response.body()?.let { appDetailsResponse ->
-                return Resource.Success(appDetailsResponse)
-            }
-        } else if (response.errorBody() != null) {
-            val errorObject = response.errorBody()?.let {
-                JSONObject(it.charStream().readText())
-            }
-            errorObject?.let {
-                errorMessage = it.getString(Constants.HTTP_ERROR_MESSAGE)
-            }
-        }
-        return Resource.Error(errorMessage)
-    }
-
-
-
-    /////// process for multiple
-    val processSingleGRItemMultipleBatchesMutable: MutableLiveData<Resource<ProcessGRLineItemRequest>> = MutableLiveData()
-
-    fun processSingleGRItemMultipleBatches(token: String,baseUrl: String,processGRLineItemRequest: ProcessGRLineItemRequest ) {
-        viewModelScope.launch {
-            safeAPICallProcessSingleGRItemMultipleBatches(token,baseUrl,processGRLineItemRequest)
-        }
-    }
-    private suspend fun safeAPICallProcessSingleGRItemMultipleBatches(token: String,baseUrl: String,processGRLineItemRequest: ProcessGRLineItemRequest ) {
-        processSingleGRItemMultipleBatchesMutable.postValue(Resource.Loading())
-        try {
-            if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.processSingleGRItemForMultiple(token,baseUrl,processGRLineItemRequest)
-                processSingleGRItemMultipleBatchesMutable.postValue(handleProcessSingleGRItemMultipleBatches(response))
-            } else {
-                processSingleGRItemMultipleBatchesMutable.postValue(Resource.Error(Constants.NO_INTERNET))
-            }
-        } catch (t: Throwable) {
-            when (t) {
-                is IOException -> processSingleGRItemMultipleBatchesMutable.postValue(Resource.Error(Constants.CONFIG_ERROR))
-                else -> processSingleGRItemMultipleBatchesMutable.postValue(Resource.Error("${t.message}"))
-            }
-        }
-    }
-
-    private fun handleProcessSingleGRItemMultipleBatches(response: Response<ProcessGRLineItemRequest>): Resource<ProcessGRLineItemRequest> {
+    private fun handleProcessSingleGRItemMultipleBatches(response: Response<ProcessGRLineItemResponse>): Resource<ProcessGRLineItemResponse> {
         var errorMessage = ""
         if (response.isSuccessful) {
             response.body()?.let { appDetailsResponse ->
@@ -247,19 +296,20 @@ class GRViewModel(
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
-    val getAllLocationsMutableResponse: MutableLiveData<Resource<ArrayList<GetAllWareHouseLocationResponse>>> = MutableLiveData()
+    val getAllLocationsMutableResponse: MutableLiveData<Resource<ArrayList<GetAllWareHouseLocationResponse>>> =
+        MutableLiveData()
 
-    fun getAllLocations(token: String,baseUrl: String ) {
+    fun getAllLocations(token: String, baseUrl: String) {
         viewModelScope.launch {
-            safeAPICallGetAllLocations(token,baseUrl)
+            safeAPICallGetAllLocations(token, baseUrl)
         }
     }
 
-    private suspend fun safeAPICallGetAllLocations(token: String,baseUrl: String ) {
+    private suspend fun safeAPICallGetAllLocations(token: String, baseUrl: String) {
         getAllLocationsMutableResponse.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.getAllLocations(token,baseUrl )
+                val response = rfidRepository.getAllLocations(token, baseUrl)
                 getAllLocationsMutableResponse.postValue(handleGetAllLocations(response))
             } else {
                 getAllLocationsMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
@@ -272,7 +322,7 @@ class GRViewModel(
         }
     }
 
-    private fun handleGetAllLocations(response: Response<ArrayList<GetAllWareHouseLocationResponse>>): Resource<ArrayList<GetAllWareHouseLocationResponse>>{
+    private fun handleGetAllLocations(response: Response<ArrayList<GetAllWareHouseLocationResponse>>): Resource<ArrayList<GetAllWareHouseLocationResponse>> {
         var errorMessage = ""
         if (response.isSuccessful) {
             response.body()?.let { appDetailsResponse ->
@@ -290,32 +340,58 @@ class GRViewModel(
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    val getBarcodeValueWithPrefixForExisitngMutableResponse: MutableLiveData<Resource<GeneralResponse>> = MutableLiveData()
+    val getBarcodeValueWithPrefixForExisitngMutableResponse: MutableLiveData<Resource<GeneralResponse>> =
+        MutableLiveData()
 
-    fun getBarcodeValueWithPrefixForExisitng(token: String,baseUrl: String ,transactionPrefix: String ) {
+    fun getBarcodeValueWithPrefixForExisitng(
+        token: String,
+        baseUrl: String,
+        transactionPrefix: String
+    ) {
         viewModelScope.launch {
-            safeAPICallGetBarcodeValueWithPrefixForExisitng(token,baseUrl,transactionPrefix)
+            safeAPICallGetBarcodeValueWithPrefixForExisitng(token, baseUrl, transactionPrefix)
         }
     }
 
-    private suspend fun safeAPICallGetBarcodeValueWithPrefixForExisitng(token: String,baseUrl: String,transactionPrefix:  String ) {
+    private suspend fun safeAPICallGetBarcodeValueWithPrefixForExisitng(
+        token: String,
+        baseUrl: String,
+        transactionPrefix: String
+    ) {
         getBarcodeValueWithPrefixForExisitngMutableResponse.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.getBarcodeValueWithPrefixForExisitng(token,baseUrl,transactionPrefix )
-                getBarcodeValueWithPrefixForExisitngMutableResponse.postValue(handleGetBarcodeValueWithPrefixForExisitng(response))
+                val response = rfidRepository.getBarcodeValueWithPrefixForExisitng(
+                    token,
+                    baseUrl,
+                    transactionPrefix
+                )
+                getBarcodeValueWithPrefixForExisitngMutableResponse.postValue(
+                    handleGetBarcodeValueWithPrefixForExisitng(response)
+                )
             } else {
-                getBarcodeValueWithPrefixForExisitngMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
+                getBarcodeValueWithPrefixForExisitngMutableResponse.postValue(
+                    Resource.Error(
+                        Constants.NO_INTERNET
+                    )
+                )
             }
         } catch (t: Throwable) {
             when (t) {
-                is IOException -> getBarcodeValueWithPrefixForExisitngMutableResponse.postValue(Resource.Error(Constants.CONFIG_ERROR))
-                else -> getBarcodeValueWithPrefixForExisitngMutableResponse.postValue(Resource.Error("${t.message}"))
+                is IOException -> getBarcodeValueWithPrefixForExisitngMutableResponse.postValue(
+                    Resource.Error(Constants.CONFIG_ERROR)
+                )
+
+                else -> getBarcodeValueWithPrefixForExisitngMutableResponse.postValue(
+                    Resource.Error(
+                        "${t.message}"
+                    )
+                )
             }
         }
     }
 
-    private fun handleGetBarcodeValueWithPrefixForExisitng(response: Response<GeneralResponse>): Resource<GeneralResponse>{
+    private fun handleGetBarcodeValueWithPrefixForExisitng(response: Response<GeneralResponse>): Resource<GeneralResponse> {
         var errorMessage = ""
         if (response.isSuccessful) {
             response.body()?.let { appDetailsResponse ->
@@ -334,32 +410,47 @@ class GRViewModel(
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    val getBarcodeValueWithPrefixMutableResponse: MutableLiveData<Resource<GeneralResponse>> = MutableLiveData()
+    val getBarcodeValueWithPrefixMutableResponse: MutableLiveData<Resource<GeneralResponse>> =
+        MutableLiveData()
 
-    fun getBarcodeValueWithPrefix(token: String,baseUrl: String ,transactionPrefix: String ) {
+    fun getBarcodeValueWithPrefix(token: String, baseUrl: String, transactionPrefix: String) {
         viewModelScope.launch {
-            safeAPICallGetBarcodeValueWithPrefix(token,baseUrl,transactionPrefix)
+            safeAPICallGetBarcodeValueWithPrefix(token, baseUrl, transactionPrefix)
         }
     }
 
-    private suspend fun safeAPICallGetBarcodeValueWithPrefix(token: String,baseUrl: String,transactionPrefix:  String ) {
+    private suspend fun safeAPICallGetBarcodeValueWithPrefix(
+        token: String,
+        baseUrl: String,
+        transactionPrefix: String
+    ) {
         getBarcodeValueWithPrefixMutableResponse.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.getBarcodeValueWithPrefix(token,baseUrl,transactionPrefix )
-                getBarcodeValueWithPrefixMutableResponse.postValue(handleGetBarcodeValueWithPrefix(response))
+                val response =
+                    rfidRepository.getBarcodeValueWithPrefix(token, baseUrl, transactionPrefix)
+                getBarcodeValueWithPrefixMutableResponse.postValue(
+                    handleGetBarcodeValueWithPrefix(
+                        response
+                    )
+                )
             } else {
                 getBarcodeValueWithPrefixMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
             }
         } catch (t: Throwable) {
             when (t) {
-                is IOException -> getBarcodeValueWithPrefixMutableResponse.postValue(Resource.Error(Constants.CONFIG_ERROR))
+                is IOException -> getBarcodeValueWithPrefixMutableResponse.postValue(
+                    Resource.Error(
+                        Constants.CONFIG_ERROR
+                    )
+                )
+
                 else -> getBarcodeValueWithPrefixMutableResponse.postValue(Resource.Error("${t.message}"))
             }
         }
     }
 
-    private fun handleGetBarcodeValueWithPrefix(response: Response<GeneralResponse>): Resource<GeneralResponse>{
+    private fun handleGetBarcodeValueWithPrefix(response: Response<GeneralResponse>): Resource<GeneralResponse> {
         var errorMessage = ""
         if (response.isSuccessful) {
             response.body()?.let { appDetailsResponse ->
@@ -378,32 +469,51 @@ class GRViewModel(
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    val getBarcodeForMultipleBatchesResponse: MutableLiveData<Resource<GeneralResponse>> = MutableLiveData()
+    val getBarcodeForMultipleBatchesResponse: MutableLiveData<Resource<GeneralResponse>> =
+        MutableLiveData()
 
-    fun getBarcodeForMultipleBatches(token: String,baseUrl: String ,transactionPrefix: String ) {
+    fun getBarcodeForMultipleBatches(token: String, baseUrl: String, transactionPrefix: String) {
         viewModelScope.launch {
-            safeAPICallGetBarcodeValueWithPrefixForMultipleBatches(token,baseUrl,transactionPrefix)
+            safeAPICallGetBarcodeValueWithPrefixForMultipleBatches(
+                token,
+                baseUrl,
+                transactionPrefix
+            )
         }
     }
 
-    private suspend fun safeAPICallGetBarcodeValueWithPrefixForMultipleBatches(token: String,baseUrl: String,transactionPrefix:  String ) {
+    private suspend fun safeAPICallGetBarcodeValueWithPrefixForMultipleBatches(
+        token: String,
+        baseUrl: String,
+        transactionPrefix: String
+    ) {
         getBarcodeForMultipleBatchesResponse.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.getBarcodeForMultipleBatches(token,baseUrl,transactionPrefix )
-                getBarcodeForMultipleBatchesResponse.postValue(HandleGetBarcodeForMultipleBatches(response))
+                val response =
+                    rfidRepository.getBarcodeForMultipleBatches(token, baseUrl, transactionPrefix)
+                getBarcodeForMultipleBatchesResponse.postValue(
+                    HandleGetBarcodeForMultipleBatches(
+                        response
+                    )
+                )
             } else {
                 getBarcodeForMultipleBatchesResponse.postValue(Resource.Error(Constants.NO_INTERNET))
             }
         } catch (t: Throwable) {
             when (t) {
-                is IOException -> getBarcodeForMultipleBatchesResponse.postValue(Resource.Error(Constants.CONFIG_ERROR))
+                is IOException -> getBarcodeForMultipleBatchesResponse.postValue(
+                    Resource.Error(
+                        Constants.CONFIG_ERROR
+                    )
+                )
+
                 else -> getBarcodeForMultipleBatchesResponse.postValue(Resource.Error("${t.message}"))
             }
         }
     }
 
-    private fun HandleGetBarcodeForMultipleBatches(response: Response<GeneralResponse>): Resource<GeneralResponse>{
+    private fun HandleGetBarcodeForMultipleBatches(response: Response<GeneralResponse>): Resource<GeneralResponse> {
         var errorMessage = ""
         if (response.isSuccessful) {
             response.body()?.let { appDetailsResponse ->
@@ -420,33 +530,38 @@ class GRViewModel(
         return Resource.Error(errorMessage)
     }
 
-///////
-    val deleteGRNLineUnitMutableResponse: MutableLiveData<Resource<GRNLineItemDeleteResponse>> = MutableLiveData()
+    ///////
+    val deleteGRLineUnitMutableResponse: MutableLiveData<Resource<GeneralResponse>> =
+        MutableLiveData()
 
-    fun deleteGRNLineUnit(token: String,baseUrl: String ,lineLineUnitId: Int) {
+    fun deleteGRLineUnit(token: String, baseUrl: String, lineLineUnitId: Int) {
         viewModelScope.launch {
-            safeAPICallDeleteGRNLineUnit(token,baseUrl,lineLineUnitId)
+            safeAPICallDeleteGRNLineUnit(token, baseUrl, lineLineUnitId)
         }
     }
 
-    private suspend fun safeAPICallDeleteGRNLineUnit(token: String,baseUrl: String,lineLineUnitId: Int ) {
-        deleteGRNLineUnitMutableResponse.postValue(Resource.Loading())
+    private suspend fun safeAPICallDeleteGRNLineUnit(
+        token: String,
+        baseUrl: String,
+        lineLineUnitId: Int
+    ) {
+        deleteGRLineUnitMutableResponse.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.deleteGRNLineUnit(token,baseUrl,lineLineUnitId )
-                deleteGRNLineUnitMutableResponse.postValue(handleDeleteGRNLineUnit(response))
+                val response = rfidRepository.deleteGRLineUnit(token, baseUrl, lineLineUnitId)
+                deleteGRLineUnitMutableResponse.postValue(handleDeleteGRLineUnit(response))
             } else {
-                deleteGRNLineUnitMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
+                deleteGRLineUnitMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
             }
         } catch (t: Throwable) {
             when (t) {
-                is IOException -> deleteGRNLineUnitMutableResponse.postValue(Resource.Error(Constants.CONFIG_ERROR))
-                else -> deleteGRNLineUnitMutableResponse.postValue(Resource.Error("${t.message}"))
+                is IOException -> deleteGRLineUnitMutableResponse.postValue(Resource.Error(Constants.CONFIG_ERROR))
+                else -> deleteGRLineUnitMutableResponse.postValue(Resource.Error("${t.message}"))
             }
         }
     }
 
-    private fun handleDeleteGRNLineUnit(response: Response<GRNLineItemDeleteResponse>): Resource<GRNLineItemDeleteResponse>{
+    private fun handleDeleteGRLineUnit(response: Response<GeneralResponse>): Resource<GeneralResponse> {
         var errorMessage = ""
         if (response.isSuccessful) {
             response.body()?.let { appDetailsResponse ->
@@ -463,32 +578,42 @@ class GRViewModel(
         return Resource.Error(errorMessage)
     }
 
-    val deleteGRNLineItemsUnitMutableResponse: MutableLiveData<Resource<GrnBatchDeleteResponse>> = MutableLiveData()
+    val deleteGRLineItemsUnitMutableResponse: MutableLiveData<Resource<GrnBatchDeleteResponse>> =
+        MutableLiveData()
 
-    fun deleteGRNLineItemsUnit(token: String,baseUrl: String ,lineLineUnitId: Int) {
+    fun deleteGRLineItemsUnit(token: String, baseUrl: String, lineLineUnitId: Int) {
         viewModelScope.launch {
-            safeAPICallDeleteGRNLineItemsUnit(token,baseUrl,lineLineUnitId)
+            safeAPICallDeleteGRNLineItemsUnit(token, baseUrl, lineLineUnitId)
         }
     }
 
-    private suspend fun safeAPICallDeleteGRNLineItemsUnit(token: String,baseUrl: String,lineLineUnitId: Int ) {
-        deleteGRNLineItemsUnitMutableResponse.postValue(Resource.Loading())
+    private suspend fun safeAPICallDeleteGRNLineItemsUnit(
+        token: String,
+        baseUrl: String,
+        lineLineUnitId: Int
+    ) {
+        deleteGRLineItemsUnitMutableResponse.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.deleteGRNLineItemsUnit(token,baseUrl,lineLineUnitId )
-                deleteGRNLineItemsUnitMutableResponse.postValue(handleDeleteGRNLineItemsUnit(response))
+                val response = rfidRepository.deleteGRLineItemsUnit(token, baseUrl, lineLineUnitId)
+                deleteGRLineItemsUnitMutableResponse.postValue(handleDeleteGRLineItemsUnit(response))
             } else {
-                deleteGRNLineItemsUnitMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
+                deleteGRLineItemsUnitMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
             }
         } catch (t: Throwable) {
             when (t) {
-                is IOException -> deleteGRNLineItemsUnitMutableResponse.postValue(Resource.Error(Constants.CONFIG_ERROR))
-                else -> deleteGRNLineItemsUnitMutableResponse.postValue(Resource.Error("${t.message}"))
+                is IOException -> deleteGRLineItemsUnitMutableResponse.postValue(
+                    Resource.Error(
+                        Constants.CONFIG_ERROR
+                    )
+                )
+
+                else -> deleteGRLineItemsUnitMutableResponse.postValue(Resource.Error("${t.message}"))
             }
         }
     }
 
-    private fun handleDeleteGRNLineItemsUnit(response: Response<GrnBatchDeleteResponse>): Resource<GrnBatchDeleteResponse>{
+    private fun handleDeleteGRLineItemsUnit(response: Response<GrnBatchDeleteResponse>): Resource<GrnBatchDeleteResponse> {
         var errorMessage = ""
         if (response.isSuccessful) {
             response.body()?.let { appDetailsResponse ->
@@ -507,31 +632,96 @@ class GRViewModel(
 
 
     /////// process for multiple
-    val processSingleGRItemSingleBatchesMutable: MutableLiveData<Resource<ProcessGRLineItemRequest>> = MutableLiveData()
+    val processSingleGRItemSingleBatchesMutable: MutableLiveData<Resource<ProcessGRLineItemResponse>> =
+        MutableLiveData()
 
-    fun processSingleGRItemSingleBatches(token: String,baseUrl: String,processGRLineItemRequest: ProcessGRLineItemRequest ) {
+    fun processSingleGRItemSingleBatches(
+        token: String,
+        baseUrl: String,
+        processGRLineItemRequest: ProcessGRLineItemRequest
+    ) {
         viewModelScope.launch {
-            safeAPICallProcessSingleGRItemSingleBatches(token,baseUrl,processGRLineItemRequest)
+            safeAPICallProcessSingleGRItemSingleBatches(token, baseUrl, processGRLineItemRequest)
         }
     }
-    private suspend fun safeAPICallProcessSingleGRItemSingleBatches(token: String,baseUrl: String,processGRLineItemRequest: ProcessGRLineItemRequest ) {
+
+    private suspend fun safeAPICallProcessSingleGRItemMultipleBatches(
+        token: String,
+        baseUrl: String,
+        processGRLineItemRequest: ProcessGRLineItemRequest
+    ) {
+        processSingleGRItemMultipleBatchesMutable.postValue(Resource.Loading())
+        try {
+            if (Utils.hasInternetConnection(getApplication())) {
+                val response = rfidRepository.processSingleGRItemForMultiple(
+                    token,
+                    baseUrl,
+                    processGRLineItemRequest
+                )
+                processSingleGRItemMultipleBatchesMutable.postValue(
+                    handleProcessSingleGRItemMultipleBatches(response)
+                )
+            } else {
+                processSingleGRItemMultipleBatchesMutable.postValue(Resource.Error(Constants.NO_INTERNET))
+            }
+        } catch (t: Throwable) {
+            when (t) {
+                is IOException -> processSingleGRItemMultipleBatchesMutable.postValue(
+                    Resource.Error(
+                        Constants.CONFIG_ERROR
+                    )
+                )
+
+                else -> processSingleGRItemMultipleBatchesMutable.postValue(Resource.Error("${t.message}"))
+            }
+        }
+    }
+
+    /////// process for multiple
+    val processSingleGRItemMultipleBatchesMutable: MutableLiveData<Resource<ProcessGRLineItemResponse>> =
+        MutableLiveData()
+
+    fun processSingleGRItemMultipleBatches(
+        token: String,
+        baseUrl: String,
+        processGRLineItemRequest: ProcessGRLineItemRequest
+    ) {
+        viewModelScope.launch {
+            safeAPICallProcessSingleGRItemMultipleBatches(token, baseUrl, processGRLineItemRequest)
+        }
+    }
+
+
+    private suspend fun safeAPICallProcessSingleGRItemSingleBatches(
+        token: String,
+        baseUrl: String,
+        processGRLineItemRequest: ProcessGRLineItemRequest
+    ) {
         processSingleGRItemSingleBatchesMutable.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.processSingleGRItemForMultiple(token,baseUrl,processGRLineItemRequest)
-                processSingleGRItemSingleBatchesMutable.postValue(handleProcessSingleGRItemSingleBatches(response))
+                val response =
+                    rfidRepository.processSingleGRItem(token, baseUrl, processGRLineItemRequest)
+                processSingleGRItemSingleBatchesMutable.postValue(
+                    handleProcessSingleGRItemSingleBatches(response)
+                )
             } else {
                 processSingleGRItemSingleBatchesMutable.postValue(Resource.Error(Constants.NO_INTERNET))
             }
         } catch (t: Throwable) {
             when (t) {
-                is IOException -> processSingleGRItemSingleBatchesMutable.postValue(Resource.Error(Constants.CONFIG_ERROR))
+                is IOException -> processSingleGRItemSingleBatchesMutable.postValue(
+                    Resource.Error(
+                        Constants.CONFIG_ERROR
+                    )
+                )
+
                 else -> processSingleGRItemSingleBatchesMutable.postValue(Resource.Error("${t.message}"))
             }
         }
     }
 
-    private fun handleProcessSingleGRItemSingleBatches(response: Response<ProcessGRLineItemRequest>): Resource<ProcessGRLineItemRequest> {
+    private fun handleProcessSingleGRItemSingleBatches(response: Response<ProcessGRLineItemResponse>): Resource<ProcessGRLineItemResponse> {
         var errorMessage = ""
         if (response.isSuccessful) {
             response.body()?.let { appDetailsResponse ->
@@ -547,5 +737,104 @@ class GRViewModel(
         }
         return Resource.Error(errorMessage)
     }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //defaultGR Data
+    val getSingleGRByGRIdMutableResponse: MutableLiveData<Resource<GetSingleGRByGRIdResponse>> =
+        MutableLiveData()
+
+    fun getSingleGRByGRId(token: String, baseUrl: String, grId: Int) {
+        viewModelScope.launch {
+            safeAPICallGetSingleGRByGRId(token, baseUrl, grId)
+        }
+    }
+
+    private suspend fun safeAPICallGetSingleGRByGRId(token: String, baseUrl: String, grId: Int) {
+        getSingleGRByGRIdMutableResponse.postValue(Resource.Loading())
+        try {
+            if (Utils.hasInternetConnection(getApplication())) {
+                val response = rfidRepository.getSingleGRByGRId(token, baseUrl, grId)
+                getSingleGRByGRIdMutableResponse.postValue(handleGetDraftGRN(response))
+            } else {
+                getSingleGRByGRIdMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
+            }
+        } catch (t: Throwable) {
+            when (t) {
+                is IOException -> getSingleGRByGRIdMutableResponse.postValue(
+                    Resource.Error(
+                        Constants.CONFIG_ERROR
+                    )
+                )
+
+                else -> getSingleGRByGRIdMutableResponse.postValue(Resource.Error("${t.message}"))
+            }
+        }
+    }
+
+    private fun handleGetDraftGRN(response: Response<GetSingleGRByGRIdResponse>): Resource<GetSingleGRByGRIdResponse> {
+        var errorMessage = ""
+        if (response.isSuccessful) {
+            response.body()?.let { appDetailsResponse ->
+                return Resource.Success(appDetailsResponse)
+            }
+        } else if (response.errorBody() != null) {
+            val errorObject = response.errorBody()?.let {
+                JSONObject(it.charStream().readText())
+            }
+            errorObject?.let {
+                errorMessage = it.getString(Constants.HTTP_ERROR_MESSAGE)
+            }
+        }
+        return Resource.Error(errorMessage)
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //submitGRN Data
+    val submitGRMutableResponse: MutableLiveData<Resource<GeneralResponse>> = MutableLiveData()
+
+    fun submitGR(token: String, baseUrl: String, submitGRRequest: SubmitGRRequest) {
+        viewModelScope.launch {
+            safeAPICallSubmitGR(token, baseUrl, submitGRRequest)
+        }
+    }
+    private suspend fun safeAPICallSubmitGR(
+        token: String,
+        baseUrl: String,
+        submitGRRequest: SubmitGRRequest
+    ) {
+        submitGRMutableResponse.postValue(Resource.Loading())
+        try {
+            if (Utils.hasInternetConnection(getApplication())) {
+                val response = rfidRepository.submitGR(token, baseUrl, submitGRRequest)
+                submitGRMutableResponse.postValue(handleSubmitGR(response))
+            } else {
+                submitGRMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
+            }
+        } catch (t: Throwable) {
+            when (t) {
+                is IOException -> submitGRMutableResponse.postValue(Resource.Error(Constants.CONFIG_ERROR))
+                else -> submitGRMutableResponse.postValue(Resource.Error("${t.message}"))
+            }
+        }
+    }
+
+    private fun handleSubmitGR(response: Response<GeneralResponse>): Resource<GeneralResponse> {
+        var errorMessage = ""
+        if (response.isSuccessful) {
+            response.body()?.let { appDetailsResponse ->
+                return Resource.Success(appDetailsResponse)
+            }
+        } else if (response.errorBody() != null) {
+            val errorObject = response.errorBody()?.let {
+                JSONObject(it.charStream().readText())
+            }
+            errorObject?.let {
+                errorMessage = it.getString(Constants.HTTP_ERROR_MESSAGE)
+            }
+        }
+        return Resource.Error(errorMessage)
+    }
+
 
 }

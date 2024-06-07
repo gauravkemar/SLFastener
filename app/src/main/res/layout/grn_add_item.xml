@@ -55,7 +55,7 @@
             android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/edGDPO"
-            app:layout_constraintHorizontal_weight="0.07"
+            app:layout_constraintHorizontal_weight="0.06"
             app:layout_constraintStart_toEndOf="@+id/tvSrNo"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -168,13 +168,15 @@
             android:layout_marginBottom="5dp"
             android:background="@android:color/transparent"
             android:padding="5dp"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:text="Item Desc"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvPuom"
-            app:layout_constraintHorizontal_weight="0.12"
+            app:layout_constraintHorizontal_weight="0.10"
             app:layout_constraintStart_toEndOf="@+id/tvItemCode"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -226,7 +228,7 @@
             android:padding="5dp"
             android:textSize="12sp"
             android:text="MH TYPE"
-            app:layout_constraintHorizontal_weight="0.06"
+            app:layout_constraintHorizontal_weight="0.05"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tvPuom"
@@ -336,7 +338,7 @@
             android:textColor="@color/black"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/clWareHouse"
+            app:layout_constraintEnd_toStartOf="@+id/tvIsQc"
             app:layout_constraintHorizontal_weight="0.06"
             app:layout_constraintStart_toEndOf="@+id/tvRate"
             app:layout_constraintTop_toTopOf="parent">
@@ -348,8 +350,36 @@
             android:layout_height="0dp"
             android:background="@android:color/darker_gray"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/clWareHouse"
+            app:layout_constraintEnd_toStartOf="@+id/tvIsQc"
             app:layout_constraintStart_toEndOf="@+id/tvGRNQty"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvIsQc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:padding="5dp"
+            android:textStyle="bold"
+            android:text=""
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/clWareHouse"
+            app:layout_constraintHorizontal_weight="0.04"
+            app:layout_constraintStart_toEndOf="@+id/tvGRNQty"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </TextView>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/clWareHouse"
+            app:layout_constraintStart_toEndOf="@+id/tvIsQc"
             app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -380,10 +410,10 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/clAction"
             app:layout_constraintHorizontal_weight="0.10"
-            app:layout_constraintStart_toEndOf="@+id/tvGRNQty"
+            app:layout_constraintStart_toEndOf="@+id/tvIsQc"
             app:layout_constraintTop_toTopOf="parent"
         >
-            <TextView
+           <!-- <TextView
                 android:id="@+id/tvQc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -398,7 +428,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/clWareHouseSpinner"
                 />
-
+-->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/clWareHouseSpinner"
                 android:layout_width="0dp"
@@ -406,7 +436,7 @@
                 android:background="@drawable/round_border_grey"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvQc"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 >
                 <Spinner

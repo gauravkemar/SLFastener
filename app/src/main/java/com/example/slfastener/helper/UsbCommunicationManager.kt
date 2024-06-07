@@ -23,5 +23,4 @@ class UsbCommunicationManager(private val context: Context) {
             }
         })
     }
-
 }

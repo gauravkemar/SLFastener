@@ -61,7 +61,7 @@
                         android:gravity="start"
                         android:padding="10dp"
                         android:layout_marginEnd="20dp"
-                        android:text="Select PO"
+                        android:text="Enter Batch"
                         android:textColor="@color/white"
                         android:textSize="14sp"
                         app:layout_constraintEnd_toStartOf="@+id/close_dialogue_top_button"

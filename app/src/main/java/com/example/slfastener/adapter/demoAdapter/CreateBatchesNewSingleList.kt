@@ -68,6 +68,7 @@ class CreateBatchesNewSingleList(
             } else {
                 if (grnLineItemUnit.UOM.equals("KGS")) {
                     holder.tvWeight.requestFocus()
+
                 } else {
                     holder.edWeight.isFocusable = true
                     holder.edWeight.isEnabled = true
@@ -261,7 +262,7 @@ class CreateBatchesNewSingleList(
         }
 
         if (grnLineItemUnit.mhType.lowercase().equals("batch") && grnLineItemUnit.UOM.lowercase()
-                .equals("number")
+                .equals("pcs")
         ) {
             holder.ivMultiAdd.visibility = View.VISIBLE
         } else {
@@ -269,7 +270,7 @@ class CreateBatchesNewSingleList(
         }
 
 
-        if (holder.tvWeight.text.toString().trim() == "0.000") {
+        if (holder.tvWeight.text.toString().trim() == "0.000" ||holder.tvWeight.text.toString().trim() == "" ) {
             holder.tvWeight.requestFocus()
             holder.mcvWeight.visibility = View.GONE
         }

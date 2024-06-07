@@ -37,6 +37,9 @@ class GRNMainActivity : AppCompatActivity() {
     private lateinit var viewModel: GRNTransactionViewModel
     var token:String=""
     private lateinit var progress: ProgressDialog
+    private var baseUrl: String =""
+    private var serverIpSharedPrefText: String? = null
+    private var serverHttpPrefText: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_grnmain)
@@ -47,6 +50,9 @@ class GRNMainActivity : AppCompatActivity() {
         progress.setMessage("Loading...")
         userDetails = session.getUserDetails()
         token = userDetails["jwtToken"].toString()
+        serverIpSharedPrefText = userDetails!![Constants.KEY_SERVER_IP].toString()
+        serverHttpPrefText = userDetails!![Constants.KEY_HTTP].toString()
+        baseUrl = "$serverHttpPrefText://$serverIpSharedPrefText/service/api/"
         val slFastenerRepository = SLFastenerRepository()
         val viewModelProviderFactory = GRNTransactionViewModelProviderFactory(application, slFastenerRepository)
         viewModel = ViewModelProvider(this, viewModelProviderFactory)[GRNTransactionViewModel ::class.java]
@@ -124,6 +130,7 @@ class GRNMainActivity : AppCompatActivity() {
                             this@GRNMainActivity,
                             "Login failed - \nError Message: $errorMessage"
                         ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@GRNMainActivity)
                     }
                 }
                 is Resource.Loading -> {
@@ -167,6 +174,7 @@ class GRNMainActivity : AppCompatActivity() {
                             this@GRNMainActivity,
                             "Login failed - \nError Message: $errorMessage"
                         ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@GRNMainActivity)
                     }
                 }
                 is Resource.Loading -> {
@@ -174,6 +182,12 @@ class GRNMainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getGrnList("Draft")
+        getFilteredGRNCompleted("Submitted")
     }
 
     private fun showProgressBar() {
@@ -186,7 +200,7 @@ class GRNMainActivity : AppCompatActivity() {
     private fun getGrnList(status: String)
     {
         try {
-            viewModel.getFilteredGRN(token,Constants.BASE_URL, GetFilteredGRNRequest(status))
+            viewModel.getFilteredGRN(token,baseUrl, GetFilteredGRNRequest(status))
         }
         catch (e:Exception)
         {
@@ -200,7 +214,7 @@ class GRNMainActivity : AppCompatActivity() {
     private fun getFilteredGRNCompleted(status: String)
     {
         try {
-            viewModel.getFilteredGRNCompleted(token,Constants.BASE_URL, GetFilteredGRNRequest(status))
+            viewModel.getFilteredGRNCompleted(token,baseUrl, GetFilteredGRNRequest(status))
         }
         catch (e:Exception)
         {

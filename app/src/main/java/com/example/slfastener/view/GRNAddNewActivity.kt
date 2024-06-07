@@ -86,6 +86,9 @@ class GRNAddNewActivity : AppCompatActivity() {
     private val DEBOUNCE_PERIOD = 1000L
     private var lastUpdateTime: Long = 0
     private var previousData: String? = null
+    private var baseUrl: String =""
+    private var serverIpSharedPrefText: String? = null
+    private var serverHttpPrefText: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_grnadd_new2)
@@ -101,6 +104,10 @@ class GRNAddNewActivity : AppCompatActivity() {
         progress.setMessage("Loading...")
         userDetails = session.getUserDetails()
         token = userDetails["jwtToken"].toString()
+        serverIpSharedPrefText = userDetails!![Constants.KEY_SERVER_IP].toString()
+        serverHttpPrefText = userDetails!![Constants.KEY_HTTP].toString()
+        baseUrl = "$serverHttpPrefText://$serverIpSharedPrefText/service/api/"
+
         getSupplierList()
 
         selectedPoFilteredList = ArrayList()
@@ -197,6 +204,7 @@ class GRNAddNewActivity : AppCompatActivity() {
                             this@GRNAddNewActivity,
                             "Login failed - \nError Message: $errorMessage"
                         ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@GRNAddNewActivity)
                     }
                 }
 
@@ -308,6 +316,7 @@ class GRNAddNewActivity : AppCompatActivity() {
                             this@GRNAddNewActivity,
                             "Login failed - \nError Message: $errorMessage"
                         ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@GRNAddNewActivity)
                     }
                 }
 
@@ -693,7 +702,7 @@ class GRNAddNewActivity : AppCompatActivity() {
 
     private fun getSupplierList() {
         try {
-            viewModel.getActiveSuppliersDDL(token, Constants.BASE_URL)
+            viewModel.getActiveSuppliersDDL(token, baseUrl)
         } catch (e: Exception) {
             Toasty.error(
                 this,
@@ -705,7 +714,7 @@ class GRNAddNewActivity : AppCompatActivity() {
 
     private fun callSelectedPoLineItems(poCode: MutableList<Int>) {
         try {
-            viewModel.getPosLineItemsOnPoIds(token, Constants.BASE_URL, poCode)
+            viewModel.getPosLineItemsOnPoIds(token, baseUrl, poCode)
 
         } catch (e: Exception) {
             Toasty.error(
@@ -718,7 +727,7 @@ class GRNAddNewActivity : AppCompatActivity() {
 
     private fun callParentLocationApi(selectedKey: String) {
         try {
-            viewModel.getSuppliersPosDDLL(token, Constants.BASE_URL, selectedKey)
+            viewModel.getSuppliersPosDDLL(token, baseUrl, selectedKey)
         } catch (e: Exception) {
             Toasty.error(
                 this,

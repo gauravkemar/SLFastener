@@ -8,34 +8,35 @@
         android:layout_margin="5dp"
         android:background="@color/header_bg"
         >
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clTop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            >
+            app:layout_constraintTop_toTopOf="parent">
+
             <CheckBox
                 android:id="@+id/cbLineItem"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
-                app:layout_constraintHorizontal_weight="0.05"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/edGDPONo"
-                />
+                app:layout_constraintHorizontal_weight="0.05"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="0dp"
                 android:background="@android:color/darker_gray"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/edGDPONo"
                 app:layout_constraintStart_toEndOf="@+id/cbLineItem"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
                 android:id="@+id/edGDPONo"
@@ -43,45 +44,44 @@
                 android:layout_height="wrap_content"
                 android:hint="GDPO No"
                 android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tvColumnOne"
                 app:layout_constraintHorizontal_weight="0.15"
                 app:layout_constraintStart_toEndOf="@+id/cbLineItem"
-                app:layout_constraintEnd_toStartOf="@+id/tvColumnOne"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="0dp"
                 android:background="@android:color/darker_gray"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tvColumnOne"
                 app:layout_constraintStart_toEndOf="@+id/edGDPONo"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
+
             <TextView
                 android:id="@+id/tvColumnOne"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textColor="@color/black"
                 android:padding="5dp"
                 android:text="@string/po_sap_line_item"
-                app:layout_constraintHorizontal_weight="0.20"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tvColumnTwo"
+                app:layout_constraintHorizontal_weight="0.20"
                 app:layout_constraintStart_toEndOf="@+id/edGDPONo"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="0dp"
                 android:background="@android:color/darker_gray"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tvColumnTwo"
                 app:layout_constraintStart_toEndOf="@+id/tvColumnOne"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-             />
+                app:layout_constraintTop_toTopOf="parent" />
 
 
             <TextView
@@ -89,25 +89,25 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textColor="@color/black"
                 android:padding="5dp"
                 android:text="@string/item_code"
+                android:textColor="@color/black"
 
-                app:layout_constraintHorizontal_weight="0.10"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tvColumnThree"
+                app:layout_constraintHorizontal_weight="0.10"
                 app:layout_constraintStart_toEndOf="@+id/tvColumnOne"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="0dp"
                 android:background="@android:color/darker_gray"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tvColumnThree"
                 app:layout_constraintStart_toEndOf="@+id/tvColumnTwo"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
 
             <TextView
@@ -116,26 +116,24 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="5dp"
-                android:textColor="@color/black"
                 android:text="@string/item_name"
+                android:textColor="@color/black"
 
-                app:layout_constraintHorizontal_weight="0.10"
-                app:layout_constraintEnd_toStartOf="@id/tvColumnFour"
-                app:layout_constraintStart_toEndOf="@+id/tvColumnTwo"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                />
+                app:layout_constraintEnd_toStartOf="@id/tvColumnFour"
+                app:layout_constraintHorizontal_weight="0.10"
+                app:layout_constraintStart_toEndOf="@+id/tvColumnTwo"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="0dp"
                 android:background="@android:color/darker_gray"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tvColumnFour"
                 app:layout_constraintStart_toEndOf="@+id/tvColumnThree"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-               />
+                app:layout_constraintTop_toTopOf="parent" />
 
 
             <TextView
@@ -145,22 +143,24 @@
                 android:gravity="center"
                 android:padding="5dp"
                 android:text="Item Description"
+                android:maxLines="2"
+                android:ellipsize="end"
                 android:textStyle="bold"
-                app:layout_constraintHorizontal_weight="0.20"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/tvColumnFive"
+                app:layout_constraintHorizontal_weight="0.20"
                 app:layout_constraintStart_toEndOf="@+id/tvColumnThree"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="0dp"
                 android:background="@android:color/darker_gray"
+                app:layout_constraintBottom_toBottomOf="@+id/tvColumnFour"
                 app:layout_constraintEnd_toStartOf="@+id/tvColumnFive"
                 app:layout_constraintStart_toEndOf="@+id/tvColumnFour"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="@+id/tvColumnFour"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
 
             <TextView
@@ -171,19 +171,21 @@
                 android:padding="5dp"
                 android:text="POUOM"
                 android:textStyle="bold"
-                app:layout_constraintHorizontal_weight="0.10"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tvColumnSix"
+                app:layout_constraintHorizontal_weight="0.10"
                 app:layout_constraintStart_toEndOf="@+id/tvColumnFour"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
+
             <View
                 android:layout_width="1dp"
                 android:layout_height="0dp"
                 android:background="@android:color/darker_gray"
+                app:layout_constraintBottom_toBottomOf="@+id/tvColumnFive"
                 app:layout_constraintEnd_toStartOf="@+id/tvColumnSix"
                 app:layout_constraintStart_toEndOf="@+id/tvColumnFive"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="@+id/tvColumnFive"/>
+                app:layout_constraintTop_toTopOf="parent" />
+
             <TextView
                 android:id="@+id/tvColumnSix"
                 android:layout_width="0dp"
@@ -192,20 +194,20 @@
                 android:padding="5dp"
                 android:text="PO Quantity"
                 android:textStyle="bold"
-                app:layout_constraintHorizontal_weight="0.15"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/tvColumnSeven"
+                app:layout_constraintHorizontal_weight="0.15"
                 app:layout_constraintStart_toEndOf="@+id/tvColumnFive"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <View
                 android:layout_width="1dp"
                 android:layout_height="0dp"
                 android:background="@android:color/darker_gray"
+                app:layout_constraintBottom_toBottomOf="@+id/tvColumnFive"
                 app:layout_constraintEnd_toStartOf="@+id/tvColumnSeven"
                 app:layout_constraintStart_toEndOf="@+id/tvColumnSix"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="@+id/tvColumnFive"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tvColumnSeven"
@@ -215,12 +217,11 @@
                 android:padding="5dp"
                 android:text="Balance Qty"
                 android:textStyle="bold"
-                app:layout_constraintHorizontal_weight="0.15"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_weight="0.15"
                 app:layout_constraintStart_toEndOf="@+id/tvColumnSix"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
+                app:layout_constraintTop_toTopOf="parent" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

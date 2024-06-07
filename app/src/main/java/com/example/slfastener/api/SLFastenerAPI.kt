@@ -1,14 +1,17 @@
 package  com.example.demorfidapp.api
 
 
-
 import com.example.demorfidapp.helper.Constants
 import com.example.demorfidapp.helper.Constants.BARCODE_GENERATE_WITH_PREFIX
 import com.example.demorfidapp.helper.Constants.DELETE_GRN_LINE_ITEM_ID
 import com.example.demorfidapp.helper.Constants.DELETE_GRN_LINE_ITEM_UNIT
+import com.example.demorfidapp.helper.Constants.DELETE_GR_LINE_ITEM_ID
+import com.example.demorfidapp.helper.Constants.DELETE_GR_LINE_ITEM_UNIT
 import com.example.demorfidapp.helper.Constants.GET_ACTIVE_SUPPLIERS_DDL
+import com.example.demorfidapp.helper.Constants.GET_ALL_GR
 import com.example.demorfidapp.helper.Constants.GET_ALL_ITEM_MASTER
 import com.example.demorfidapp.helper.Constants.GET_ALL_LOCATION
+import com.example.demorfidapp.helper.Constants.GET_DRAFT_GR
 import com.example.demorfidapp.helper.Constants.GET_DRAFT_GRN
 import com.example.demorfidapp.helper.Constants.GET_GRN_FILTERED_GRN
 import com.example.demorfidapp.helper.Constants.GET_POS_LINE_ITEMS_ON_POIDS
@@ -18,6 +21,7 @@ import com.example.demorfidapp.helper.Constants.HTTP_HEADER_AUTHORIZATION
 import com.example.demorfidapp.helper.Constants.LOGIN_URL
 import com.example.demorfidapp.helper.Constants.PROCESS_GR_LINE_ITEM
 import com.example.demorfidapp.helper.Constants.PROCESS_GR_TRANSACTION
+import com.example.demorfidapp.helper.Constants.SUBMIT_GR
 import com.example.slfastener.model.GetActiveSuppliersDDLResponse
 import com.example.slfastener.model.GetPOsAndLineItemsOnPOIdsResponse
 import com.example.slfastener.model.GetSupllierPOsDDLOriginalResponse
@@ -27,10 +31,14 @@ import com.example.slfastener.model.generalrequest.GRNLineItemDeleteResponse
 import com.example.slfastener.model.generalrequest.GeneralResponse
 import com.example.slfastener.model.generalrequest.GrnBatchDeleteResponse
 import com.example.slfastener.model.getalllocation.GetAllWareHouseLocationResponse
+import com.example.slfastener.model.goodsreceipt.GetAllGRResponse
 import com.example.slfastener.model.goodsreceipt.GetAllItemMasterResponse
 import com.example.slfastener.model.goodsreceipt.PostProcessGRTransactionRequest
 import com.example.slfastener.model.goodsreceipt.PostProcessGRTransactionResponse
 import com.example.slfastener.model.goodsreceipt.ProcessGRLineItemRequest
+import com.example.slfastener.model.goodsreceipt.ProcessGRLineItemResponse
+import com.example.slfastener.model.goodsreceipt.SubmitGRRequest
+import com.example.slfastener.model.goodsreceipt.grdraft.GetSingleGRByGRIdResponse
 import com.example.slfastener.model.grn.GRNSaveToDraftDefaultRequest
 import com.example.slfastener.model.grn.GRNSaveToDraftDefaultResponse
 import com.example.slfastener.model.grn.ProcessGRNLineItemsResponse
@@ -78,19 +86,19 @@ interface SLFastenerAPI {
       getSuppliersPOsRequest: ArrayList<Int>
      ): Response<ArrayList<GetPOsAndLineItemsOnPOIdsResponse>>*/
 
-     @POST(GET_GRN_FILTERED_GRN)
-     suspend fun getFilteredGRN (
-      @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
-      @Body
-      getFilteredGRNRequest: GetFilteredGRNRequest
-     ): Response<ArrayList<GetFilteredGRNResponse>>
+    @POST(GET_GRN_FILTERED_GRN)
+    suspend fun getFilteredGRN(
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Body
+        getFilteredGRNRequest: GetFilteredGRNRequest
+    ): Response<ArrayList<GetFilteredGRNResponse>>
 
-     @POST(GET_GRN_FILTERED_GRN)
-     suspend fun getFilteredGRNCompleted (
-      @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
-      @Body
-      getFilteredGRNRequest: GetFilteredGRNRequest
-     ): Response<ArrayList<GetFilteredGRNResponse>>
+    @POST(GET_GRN_FILTERED_GRN)
+    suspend fun getFilteredGRNCompleted(
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Body
+        getFilteredGRNRequest: GetFilteredGRNRequest
+    ): Response<ArrayList<GetFilteredGRNResponse>>
 
     @POST(GET_POS_LINE_ITEMS_ON_POIDS)
     suspend fun getPosLineItemsOnPoIds(
@@ -106,83 +114,74 @@ interface SLFastenerAPI {
         loginRequest: LoginRequest
     ): Response<LoginResponse>
 
-/*  @POST(Constants.PROCESS_GRN)
-    suspend fun processGRN(
-      @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
-        @Body
-        grnSaveToDraftDefaultRequest: GRNSaveToDraftDefaultRequest
-    ): Response<ProcessGRNLineItemsResponse> */
+    /*  @POST(Constants.PROCESS_GRN)
+        suspend fun processGRN(
+          @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+            @Body
+            grnSaveToDraftDefaultRequest: GRNSaveToDraftDefaultRequest
+        ): Response<ProcessGRNLineItemsResponse> */
     @POST(Constants.PROCESS_GRN)
     suspend fun processGRND(
-      @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         @Body
         grnSaveToDraftDefaultRequest: GRNSaveToDraftDefaultRequest
     ): Response<ProcessGRNLineItemsResponse>
 
     @POST(Constants.PROCESS_SINGLE_GRN_GRN_ITEM_BATCHES)
     suspend fun processSingleGRNGRNItemBatches(
-      @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         @Body
         grnUnitLineItemsSaveRequest: GRNUnitLineItemsSaveRequest
     ): Response<GrnLineItemResponse>
 
     @POST(Constants.PROCESS_SINGLE_GRN_GRN_ITEM_BATCHES)
     suspend fun processSingleGRNGRNItemBatchesForMultiple(
-      @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         @Body
         grnUnitLineItemsSaveRequest: GRNUnitLineItemsSaveRequest
     ): Response<GrnLineItemResponse>
 
 
     @GET(BARCODE_GENERATE_WITH_PREFIX)
-    suspend fun getBarcodeValueWithPrefix
-    (
+    suspend fun getBarcodeValueWithPrefix(
         @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         @Query("transactionPrefix") transactionPrefix: String?
     ): Response<GeneralResponse>
 
     @GET(BARCODE_GENERATE_WITH_PREFIX)
-    suspend fun getBarcodeValueWithPrefixForExisitng
-    (
+    suspend fun getBarcodeValueWithPrefixForExisitng(
         @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         @Query("transactionPrefix") transactionPrefix: String?
     ): Response<GeneralResponse>
+
     @GET(BARCODE_GENERATE_WITH_PREFIX)
-    suspend fun getBarcodeForMultipleBatches
-    (
+    suspend fun getBarcodeForMultipleBatches(
         @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         @Query("transactionPrefix") transactionPrefix: String?
     ): Response<GeneralResponse>
-
-
-
 
 
     @GET(GET_DRAFT_GRN)
-    suspend fun getDraftGRN
-    (
+    suspend fun getDraftGRN(
         @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         @Query("grnId") grnId: Int?
     ): Response<GetDraftGrnResponse>
 
     @POST(Constants.SUBMIT_GRN)
-    suspend fun submitGRN
-    (
+    suspend fun submitGRN(
         @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         @Body
         submitGRNRequest: SubmitGRNRequest
     ): Response<GeneralResponse>
 
     @GET(DELETE_GRN_LINE_ITEM_UNIT)
-    suspend fun deleteGRNLineItemsUnit
-                (
+    suspend fun deleteGRNLineItemsUnit(
         @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         @Query("lineLineUnitId") lineLineUnitId: Int?
     ): Response<GrnBatchDeleteResponse>
 
     @GET(DELETE_GRN_LINE_ITEM_ID)
-    suspend fun deleteGRNLineUnit
-                (
+    suspend fun deleteGRNLineUnit(
         @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         @Query("lineItemId") lineLineUnitId: Int?
     ): Response<GRNLineItemDeleteResponse>
@@ -194,6 +193,18 @@ interface SLFastenerAPI {
 
 
     ////gr all
+
+    @GET(GET_ALL_GR)
+    suspend fun getAllGRResponse(
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Query("Status") status: String?
+    ): Response<ArrayList<GetAllGRResponse>>
+
+    @GET(GET_ALL_GR)
+    suspend fun getAllGRCompleteResponse(
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Query("Status") status: String?
+    ): Response<ArrayList<GetAllGRResponse>>
 
     @GET(GET_ALL_ITEM_MASTER)
     suspend fun getAllItemMaster(
@@ -212,19 +223,45 @@ interface SLFastenerAPI {
         postProcessGRTransactionRequest: PostProcessGRTransactionRequest
     ): Response<PostProcessGRTransactionResponse>
 
+
     @POST(PROCESS_GR_LINE_ITEM)
-    suspend fun processSingleGRItemBatches(
+    suspend fun processSingleGRItem(
         @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         @Body
         processGRLineItemRequest: ProcessGRLineItemRequest
-    ): Response<ProcessGRLineItemRequest>
+    ): Response<ProcessGRLineItemResponse>
+
 
     @POST(PROCESS_GR_LINE_ITEM)
     suspend fun processSingleGRItemForMultiple(
         @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         @Body
         processGRLineItemRequest: ProcessGRLineItemRequest
-    ): Response<ProcessGRLineItemRequest>
+    ): Response<ProcessGRLineItemResponse>
 
+    @GET(GET_DRAFT_GR)
+    suspend fun getSingleGRByGRId(
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Query("grId") grId: Int?
+    ): Response<GetSingleGRByGRIdResponse>
+
+    @GET(DELETE_GR_LINE_ITEM_UNIT)
+    suspend fun deleteGRLineItemsUnit(
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Query("lineLineUnitId") lineLineUnitId: Int?
+    ): Response<GrnBatchDeleteResponse>
+
+    @POST(SUBMIT_GR)
+    suspend fun submitGR(
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Body
+        submitGRRequest: SubmitGRRequest
+    ): Response<GeneralResponse>
+
+    @GET(DELETE_GR_LINE_ITEM_ID)
+    suspend fun deleteGRLineUnit(
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Query("lineItemId") lineLineUnitId: Int?
+    ): Response<GeneralResponse>
 
 }

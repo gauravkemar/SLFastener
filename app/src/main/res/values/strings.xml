@@ -10,7 +10,7 @@
     <!--HOME PAGE -->
     <string name="tv_grn">Goods Receipt Note (GRN)</string>
     <string name="re_print_barcode">Re-Print Barcode</string>
-    <string name="my_transaction">My Transaction</string>
+    <string name="my_transaction">Goods Receipt</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -35,5 +35,10 @@
         <item>ABC Supplier</item>
         <item>DEF Supplier</item>
 
+    </string-array>
+
+    <string-array name="http">
+        <item>http</item>
+        <item>https</item>
     </string-array>
 </resources>

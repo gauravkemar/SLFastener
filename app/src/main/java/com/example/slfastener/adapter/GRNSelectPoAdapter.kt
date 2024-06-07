@@ -34,8 +34,8 @@ class GRNSelectPoAdapter (private val originalList: MutableList<GetSuppliersPOsD
         holder.cbPo.isChecked = grnModel.isChecked
         // Set a tag to prevent checkbox from firing off on bind
         holder.cbPo.tag = position
-
-        if(grnModel.isUpdatable)
+        var grnIsUpdatabble=dataList.any{ it.isUpdatable }
+        if(grnIsUpdatabble)
         {
             holder.cbPo.isEnabled=false
         }

@@ -90,6 +90,10 @@ class CompletedGRNActivity : AppCompatActivity() {
     var lineItemId = 0
     var grnId = 0
 
+    private var baseUrl: String =""
+    private var serverIpSharedPrefText: String? = null
+    private var serverHttpPrefText: String? = null
+
     ///get data from draft
     private var getDraftGrnResponse: GetDraftGrnResponse? = null
 
@@ -101,10 +105,8 @@ class CompletedGRNActivity : AppCompatActivity() {
         session = SessionManager(this)
         selectPoBinding = SelectSupplierPoLineItemBinding.inflate(getLayoutInflater());
         selectPoDialog = Dialog(this)
-
         progress = ProgressDialog(this)
         progress.setMessage("Loading...")
-
         supplierSpinnerArray = ArrayList()
         selectedPoFilteredList = ArrayList()
         getActiveSuppliersDDLResponse = ArrayList()
@@ -116,6 +118,9 @@ class CompletedGRNActivity : AppCompatActivity() {
         getPOsAndLineItemsOnPOIdsResponse = ArrayList()
         userDetails = session.getUserDetails()
         token = userDetails["jwtToken"].toString()
+        serverIpSharedPrefText = userDetails!![Constants.KEY_SERVER_IP].toString()
+        serverHttpPrefText = userDetails!![Constants.KEY_HTTP].toString()
+        baseUrl = "$serverHttpPrefText://$serverIpSharedPrefText/service/api/"
 
         val receivedIntent = intent
         grnId = receivedIntent.getIntExtra("GRNID", 0)
@@ -123,8 +128,7 @@ class CompletedGRNActivity : AppCompatActivity() {
         val SLFastenerRepository = SLFastenerRepository()
         val viewModelProviderFactory =
             GRNTransactionViewModelProviderFactory(application, SLFastenerRepository)
-        viewModel =
-            ViewModelProvider(this, viewModelProviderFactory)[GRNTransactionViewModel::class.java]
+        viewModel = ViewModelProvider(this, viewModelProviderFactory)[GRNTransactionViewModel::class.java]
         getAllLocations()
         if (grnId != 0) {
             callDefaultData()
@@ -177,10 +181,11 @@ class CompletedGRNActivity : AppCompatActivity() {
 
                 if(selectedCurrency.equals("INR"))
                 {
-                    binding.grnAddHeader.edGDPO.visibility= View.VISIBLE
+                    binding.grnAddHeader.edGDPO.visibility= View.GONE
                 }
                 else
-                {binding.grnAddHeader.edGDPO.visibility= View.GONE
+                {
+                    binding.grnAddHeader.edGDPO.visibility= View.VISIBLE
 
                 }
                 if (poline.GDPONumber != null) {
@@ -239,6 +244,7 @@ class CompletedGRNActivity : AppCompatActivity() {
                             this@CompletedGRNActivity,
                             "Login failed - \nError Message: $errorMessage"
                         ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@CompletedGRNActivity)
                     }
                 }
                 is Resource.Loading -> {
@@ -250,7 +256,6 @@ class CompletedGRNActivity : AppCompatActivity() {
         viewModel.getSuppliersPosDDLLMutableResponse.observe(this) { response ->
             when (response) {
                 is Resource.Success -> {
-
                     response.data?.let { resultResponse ->
                         try {
                             if (resultResponse.size > 0) {
@@ -270,7 +275,8 @@ class CompletedGRNActivity : AppCompatActivity() {
                                 if (grnId != 0) {
                                     selectePoDefaultRc()
                                 }
-                            } else {
+                            }
+                            else {
                                 Toast.makeText(this, "List is Empty!!", Toast.LENGTH_SHORT).show()
                                 binding.clSelectPo.visibility = View.GONE
                             }
@@ -291,6 +297,7 @@ class CompletedGRNActivity : AppCompatActivity() {
                             this@CompletedGRNActivity,
                             "Login failed - \nError Message: $errorMessage"
                         ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@CompletedGRNActivity)
                     }
                 }
 
@@ -366,7 +373,6 @@ class CompletedGRNActivity : AppCompatActivity() {
                                             )
                                         }
                                     }
-
                                     grnMainItemAdapter!!.notifyDataSetChanged()
                                     for (r in resultResponse) {
                                         for (e in r.poLineItems) {
@@ -416,6 +422,7 @@ class CompletedGRNActivity : AppCompatActivity() {
                                 e.printStackTrace().toString(),
                                 Toasty.LENGTH_SHORT
                             ).show()
+
                         }
 
                     }
@@ -428,6 +435,7 @@ class CompletedGRNActivity : AppCompatActivity() {
                             this@CompletedGRNActivity,
                             "Login failed - \nError Message: $errorMessage"
                         ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@CompletedGRNActivity)
                     }
                 }
 
@@ -459,6 +467,7 @@ class CompletedGRNActivity : AppCompatActivity() {
                             this@CompletedGRNActivity,
                             "failed - \nError Message: $errorMessage"
                         ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@CompletedGRNActivity)
                     }
                 }
 
@@ -486,10 +495,7 @@ class CompletedGRNActivity : AppCompatActivity() {
         createBatchesMainRcAdapter =
             CreateBatchesCompletedAdapter(this@CompletedGRNActivity,
                 createBatchesList,
-                onSave = { position, updatedItem ->
-
-                },
-
+                onSave = { position, updatedItem -> },
             )
         createBatchesDialogBinding.rcBatchs.adapter = createBatchesMainRcAdapter
         createBatchesDialogBinding.rcBatchs.layoutManager =
@@ -553,7 +559,7 @@ class CompletedGRNActivity : AppCompatActivity() {
 
     private fun callParentLocationApi(selectedKey: String) {
         try {
-            viewModel.getSuppliersPosDDLL(token, Constants.BASE_URL, selectedKey)
+            viewModel.getSuppliersPosDDLL(token, baseUrl, selectedKey)
         } catch (e: Exception) {
             Toasty.error(
                 this,
@@ -564,7 +570,7 @@ class CompletedGRNActivity : AppCompatActivity() {
     }
     private fun getAllLocations() {
         try {
-            viewModel.getAllLocations(token, Constants.BASE_URL)
+            viewModel.getAllLocations(token, baseUrl)
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -585,7 +591,7 @@ class CompletedGRNActivity : AppCompatActivity() {
             if (selectedPoFilteredList.size > 0) {
                 binding.tvCurrencyType.setText(getCommonCode().toString())
                 selectedCurrency = getCommonCode().toString()
-                viewModel.getPosLineItemsOnPoIds(token, Constants.BASE_URL, selectedPoFilteredList)
+                viewModel.getPosLineItemsOnPoIds(token, baseUrl, selectedPoFilteredList)
                 selectPoDialog!!.dismiss()
             } else {
                 Toasty.warning(
@@ -623,7 +629,7 @@ class CompletedGRNActivity : AppCompatActivity() {
 
     private fun generateBarcodeForBatchesForExisitng() {
         try {
-            viewModel.getBarcodeValueWithPrefixForExisitng(token, Constants.BASE_URL, "G")
+            viewModel.getBarcodeValueWithPrefixForExisitng(token, baseUrl, "G")
         } catch (e: Exception) {
             Toasty.error(
                 this,
@@ -636,7 +642,7 @@ class CompletedGRNActivity : AppCompatActivity() {
 
     private fun getSupplierList() {
         try {
-            viewModel.getActiveSuppliersDDL(token, Constants.BASE_URL)
+            viewModel.getActiveSuppliersDDL(token, baseUrl)
         } catch (e: Exception) {
             Toasty.error(
                 this,
@@ -774,6 +780,7 @@ class CompletedGRNActivity : AppCompatActivity() {
                             this@CompletedGRNActivity,
                             "Login failed - \nError Message: $errorMessage"
                         ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@CompletedGRNActivity)
                     }
                 }
 
@@ -786,7 +793,7 @@ class CompletedGRNActivity : AppCompatActivity() {
 
     private fun getDraftGrn() {
         try {
-            viewModel.getDraftGRN(token, Constants.BASE_URL, grnId!!.toInt())
+            viewModel.getDraftGRN(token, baseUrl, grnId!!.toInt())
         } catch (e: Exception) {
             Toasty.error(
                 this@CompletedGRNActivity,

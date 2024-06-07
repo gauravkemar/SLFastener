@@ -200,15 +200,38 @@
             android:textColor="@color/white"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/clWareHouse"
+            app:layout_constraintEnd_toStartOf="@+id/tvQC"
             app:layout_constraintHorizontal_weight="0.05"
             app:layout_constraintStart_toEndOf="@+id/tvMhType"
             app:layout_constraintTop_toTopOf="parent">
 
         </TextView>
 
+        <View
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tvQC"
+            app:layout_constraintStart_toEndOf="@+id/tvBalQty"
+            app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/tvQC"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:padding="5dp"
+            android:text="QC"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/clWareHouse"
+            app:layout_constraintHorizontal_weight="0.05"
+            app:layout_constraintStart_toEndOf="@+id/tvBalQty"
+            app:layout_constraintTop_toTopOf="parent">
 
-
+        </TextView>
 
 
 
@@ -218,7 +241,7 @@
             android:background="@android:color/darker_gray"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/clWareHouse"
-            app:layout_constraintStart_toEndOf="@+id/tvBalQty"
+            app:layout_constraintStart_toEndOf="@+id/tvQC"
             app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -249,7 +272,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/clAction"
             app:layout_constraintHorizontal_weight="0.10"
-            app:layout_constraintStart_toEndOf="@+id/tvBalQty"
+            app:layout_constraintStart_toEndOf="@+id/tvQC"
             app:layout_constraintTop_toTopOf="parent"
             >
             <TextView

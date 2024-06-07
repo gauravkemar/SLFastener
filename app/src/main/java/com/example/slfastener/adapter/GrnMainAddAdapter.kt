@@ -25,6 +25,7 @@ import java.util.Locale
 class GrnMainAddAdapter (
     private val context: Context,
     private val poLineItemParent: MutableList<PoLineItemSelectionModelNewStore>,
+    private val itemDescription:(itemDesc:String)->Unit,
     private val onItemCheck:(Int,PoLineItemSelectionModelNewStore) -> Unit,
     private val onItemDelete:(Int,PoLineItemSelectionModelNewStore) -> Unit,
 
@@ -75,7 +76,9 @@ class GrnMainAddAdapter (
             }
         }*/
 
-
+        holder.tvItemDesc.setOnClickListener {
+            itemDescription(poLineItemModel.itemDescription)
+        }
 
         holder.tvDeleteLineItem.setOnClickListener {
             onItemDelete(position,poLineItemModel)
@@ -100,7 +103,6 @@ class GrnMainAddAdapter (
                 holder.tvDeleteLineItem.visibility=View.VISIBLE
                 holder.tvSaveLineItem.setImageResource(R.drawable.ic_add_blue)
             }
-
         }
         else{
             holder.tvDeleteLineItem.setEnabled(true);
@@ -131,13 +133,6 @@ class GrnMainAddAdapter (
         }
         setGDPO(holder,poLineItemModel)
         setWareHouseLocation(holder,poLineItemModel)
-        if(poLineItemModel.isQCRequired)
-        {
-            holder.tvQc.visibility=View.VISIBLE
-        }
-        else{
-            holder.tvQc.visibility=View.GONE
-        }
 
     }
     private fun setWareHouseLocation(
@@ -221,7 +216,7 @@ class GrnMainAddAdapter (
         val tvDeleteLineItem: ImageButton = itemView.findViewById(R.id.tvDeleteLineItem)
         val clWareHouse: ConstraintLayout = itemView.findViewById(R.id.clWareHouse)
         val tvWareHouse: Spinner = itemView.findViewById(R.id.tvWareHouse)
-        val tvQc: TextView = itemView.findViewById(R.id.tvQc)
+        val tvQc: TextView = itemView.findViewById(R.id.tvIsQc)
     }
 
 

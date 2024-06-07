@@ -66,10 +66,10 @@ class GrnMainAddCompletedAdapter (
 
         if(poLineItemModel.isQCRequired)
         {
-            holder.tvQc.visibility=View.VISIBLE
+            holder.tvQc.setText("QC")
         }
         else{
-            holder.tvQc.visibility=View.GONE
+            holder.tvQc.setText("")
         }
 
     }
@@ -130,7 +130,7 @@ class GrnMainAddCompletedAdapter (
         val tvDeleteLineItem: ImageButton = itemView.findViewById(R.id.tvDeleteLineItem)
 
         val tvWareHouse: TextView = itemView.findViewById(R.id.tvWareHouse)
-        val tvQc: TextView = itemView.findViewById(R.id.tvQc)
+        val tvQc: TextView = itemView.findViewById(R.id.tvIsQc)
     }
 
 

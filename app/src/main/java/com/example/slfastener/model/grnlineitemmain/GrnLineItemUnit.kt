@@ -11,7 +11,7 @@ data class GrnLineItemUnit(
     val lineItemUnitId: Int,
     val modifiedBy: String,
     val modifiedDate: Any,
-    val qty: Int,
+    val qty: Double,
     val supplierBatchNo: String,
     val uom: String
 )
