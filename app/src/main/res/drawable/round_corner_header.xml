@@ -3,5 +3,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 <corners android:topLeftRadius="10dp"
     android:topRightRadius="10dp"/>
-    <solid android:color="@color/blue"/>
+    <solid android:color="@color/lightest_blue"/>
+    <stroke android:width="0.5dp" android:color="@color/divide_line"/>
+    <padding android:left="-2dp"
+        android:top="-2dp"
+        android:right="-2dp"
+        android:bottom="2dp"/>
 </shape>
+
+
+<!--
+<?xml version="1.0" encoding="utf-8"?>
+<shape android:shape="rectangle"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+<corners android:topLeftRadius="10dp"
+    android:topRightRadius="10dp"/>
+    <solid android:color="@color/blue"/>
+</shape>-->

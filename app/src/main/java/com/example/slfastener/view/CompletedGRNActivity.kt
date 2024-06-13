@@ -36,6 +36,7 @@ import com.example.slfastener.databinding.ActivityCompletedGrnactivityBinding
 import com.example.slfastener.databinding.ActivityGrnaddBinding
 import com.example.slfastener.databinding.CompletedBatchesDialogBinding
 import com.example.slfastener.databinding.CreateBatchesDialogBinding
+import com.example.slfastener.databinding.DescriptionInfoDialogBinding
 import com.example.slfastener.databinding.SelectLineItemDialogBinding
 import com.example.slfastener.databinding.SelectSupplierPoLineItemBinding
 import com.example.slfastener.helper.CustomArrayAdapter
@@ -51,6 +52,8 @@ import com.example.slfastener.model.offlinebatchsave.PoLineItemSelectionModelNew
 import com.example.slfastener.viewmodel.GRNTransactionViewModel
 import com.example.slfastener.viewmodel.GRNTransactionViewModelProviderFactory
 import es.dmoral.toasty.Toasty
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class CompletedGRNActivity : AppCompatActivity() {
     lateinit var binding: ActivityCompletedGrnactivityBinding
@@ -90,18 +93,21 @@ class CompletedGRNActivity : AppCompatActivity() {
     var lineItemId = 0
     var grnId = 0
 
-    private var baseUrl: String =""
+    private var baseUrl: String = ""
     private var serverIpSharedPrefText: String? = null
     private var serverHttpPrefText: String? = null
 
     ///get data from draft
     private var getDraftGrnResponse: GetDraftGrnResponse? = null
 
+    private lateinit var itemDescriptionBinding: DescriptionInfoDialogBinding
+    var itemDescriptionDialog: Dialog? = null
 
-    override fun onCreate(savedInstanceState: Bundle?)    {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding=DataBindingUtil.setContentView(this,R.layout.activity_completed_grnactivity)
-      
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_completed_grnactivity)
+
         session = SessionManager(this)
         selectPoBinding = SelectSupplierPoLineItemBinding.inflate(getLayoutInflater());
         selectPoDialog = Dialog(this)
@@ -121,6 +127,8 @@ class CompletedGRNActivity : AppCompatActivity() {
         serverIpSharedPrefText = userDetails!![Constants.KEY_SERVER_IP].toString()
         serverHttpPrefText = userDetails!![Constants.KEY_HTTP].toString()
         baseUrl = "$serverHttpPrefText://$serverIpSharedPrefText/service/api/"
+        itemDescriptionBinding = DescriptionInfoDialogBinding.inflate(LayoutInflater.from(this))
+        itemDescriptionDialog = Dialog(this)
 
         val receivedIntent = intent
         grnId = receivedIntent.getIntExtra("GRNID", 0)
@@ -128,17 +136,17 @@ class CompletedGRNActivity : AppCompatActivity() {
         val SLFastenerRepository = SLFastenerRepository()
         val viewModelProviderFactory =
             GRNTransactionViewModelProviderFactory(application, SLFastenerRepository)
-        viewModel = ViewModelProvider(this, viewModelProviderFactory)[GRNTransactionViewModel::class.java]
+        viewModel =
+            ViewModelProvider(this, viewModelProviderFactory)[GRNTransactionViewModel::class.java]
         getAllLocations()
+        setItemDescriptionDialog()
         if (grnId != 0) {
             callDefaultData()
-            binding.clKGRNNo.visibility= View.VISIBLE
-            binding.mcvAddGrn.visibility= View.GONE
-        }
-        else
-        {
-            binding.clKGRNNo.visibility= View.GONE
-            binding.mcvAddGrn.visibility= View.VISIBLE
+            binding.clKGRNNo.visibility = View.VISIBLE
+            binding.mcvAddGrn.visibility = View.GONE
+        } else {
+            binding.clKGRNNo.visibility = View.GONE
+            binding.mcvAddGrn.visibility = View.VISIBLE
         }
 
         binding.mcvCancel.setOnClickListener {
@@ -150,8 +158,12 @@ class CompletedGRNActivity : AppCompatActivity() {
         binding.logoutBtn.setOnClickListener {
             showLogoutDialog()
         }
-        grnMainItemAdapter = GrnMainAddCompletedAdapter(this@CompletedGRNActivity,
+        grnMainItemAdapter = GrnMainAddCompletedAdapter(
+            this@CompletedGRNActivity,
             selectedPoLineItem,
+            itemDescription = {
+                setItemDescription(it)
+            },
             onItemCheck = { position, poline ->
                 createBatchesList.clear()
                 if (poline?.grnLineItemUnit != null) {
@@ -179,13 +191,10 @@ class CompletedGRNActivity : AppCompatActivity() {
                 }
                 lineItemUnitId = 0
 
-                if(selectedCurrency.equals("INR"))
-                {
-                    binding.grnAddHeader.edGDPO.visibility= View.GONE
-                }
-                else
-                {
-                    binding.grnAddHeader.edGDPO.visibility= View.VISIBLE
+                if (selectedCurrency.equals("INR")) {
+                    binding.grnAddHeader.edGDPO.visibility = View.GONE
+                } else {
+                    binding.grnAddHeader.edGDPO.visibility = View.VISIBLE
 
                 }
                 if (poline.GDPONumber != null) {
@@ -203,9 +212,10 @@ class CompletedGRNActivity : AppCompatActivity() {
                 //  addNewBatch(position,poline)
             },
 
-        )
+            )
         binding.rcGrnAdd!!.adapter = grnMainItemAdapter
-        binding.rcGrnAdd.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.rcGrnAdd.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         ///get list of suppliers PO
         viewModel.getActiveSuppliersDDLMutable.observe(this) { response ->
             when (response) {
@@ -247,6 +257,7 @@ class CompletedGRNActivity : AppCompatActivity() {
                         session.showToastAndHandleErrors(errorMessage, this@CompletedGRNActivity)
                     }
                 }
+
                 is Resource.Loading -> {
                     showProgressBar()
                 }
@@ -275,8 +286,7 @@ class CompletedGRNActivity : AppCompatActivity() {
                                 if (grnId != 0) {
                                     selectePoDefaultRc()
                                 }
-                            }
-                            else {
+                            } else {
                                 Toast.makeText(this, "List is Empty!!", Toast.LENGTH_SHORT).show()
                                 binding.clSelectPo.visibility = View.GONE
                             }
@@ -289,6 +299,7 @@ class CompletedGRNActivity : AppCompatActivity() {
                         }
                     }
                 }
+
                 is Resource.Error -> {
                     hideProgressBar()
                     binding.clSelectPo.visibility = View.GONE
@@ -344,7 +355,7 @@ class CompletedGRNActivity : AppCompatActivity() {
                                         )
                                         Log.e("editcaseDefaultListdf ", df.toString())
                                         val existingItem =
-                                            selectedPoLineItem.find { it.posapLineItemNumber ==  poID}
+                                            selectedPoLineItem.find { it.posapLineItemNumber == poID }
                                         if (existingItem == null) {
                                             selectedPoLineItem.add(
                                                 PoLineItemSelectionModelNewStore(
@@ -368,7 +379,7 @@ class CompletedGRNActivity : AppCompatActivity() {
                                                     true,
                                                     i.gdpoNumber,
                                                     i.unitPrice,
-                                                    getAllLocation, i.locationId,true
+                                                    getAllLocation, i.locationId, true
                                                 )
                                             )
                                         }
@@ -405,7 +416,7 @@ class CompletedGRNActivity : AppCompatActivity() {
                                                     additionalValue,
                                                     false,
                                                     "",
-                                                    unitPrice, getAllLocation, e.locationId,false
+                                                    unitPrice, getAllLocation, e.locationId, false
                                                 ).also { poLineItem.add(it) }
                                                 Log.e("selectPolIne", poLineItem.toString())
                                             }
@@ -459,6 +470,7 @@ class CompletedGRNActivity : AppCompatActivity() {
                         }
                     }
                 }
+
                 is Resource.Error -> {
                     hideProgressBar()
                     binding.clSelectPo.visibility = View.GONE
@@ -477,7 +489,8 @@ class CompletedGRNActivity : AppCompatActivity() {
             }
         }
         ////batches dialog
-        createBatchesDialogBinding = CompletedBatchesDialogBinding.inflate(LayoutInflater.from(this));
+        createBatchesDialogBinding =
+            CompletedBatchesDialogBinding.inflate(LayoutInflater.from(this));
         createBatchedDialog = AppCompatDialog(this).apply {
             setContentView(createBatchesDialogBinding.root)
             window?.setLayout(
@@ -493,7 +506,8 @@ class CompletedGRNActivity : AppCompatActivity() {
             createBatchedDialog!!.dismiss()
         }
         createBatchesMainRcAdapter =
-            CreateBatchesCompletedAdapter(this@CompletedGRNActivity,
+            CreateBatchesCompletedAdapter(
+                this@CompletedGRNActivity,
                 createBatchesList,
                 onSave = { position, updatedItem -> },
             )
@@ -502,14 +516,39 @@ class CompletedGRNActivity : AppCompatActivity() {
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
     }
+
+    private fun setItemDescription(itemDesc: String) {
+        itemDescriptionDialog?.show()
+        itemDescriptionBinding.tvItemDescription.setText(itemDesc)
+    }
+
     private fun getCommonCode(): String? {
         val checkedItem = getSuppliersPOsDDLResponse.find { it.isChecked }
         return checkedItem?.code
     }
 
+    private fun setItemDescriptionDialog() {
+        itemDescriptionDialog!!.setContentView(itemDescriptionBinding.root)
+        itemDescriptionDialog!!.getWindow()?.setBackgroundDrawable(
+            AppCompatResources.getDrawable(
+                this@CompletedGRNActivity,
+                android.R.color.transparent
+            )
+        )
+        itemDescriptionDialog!!.getWindow()?.setLayout(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        itemDescriptionDialog!!.setCancelable(true)
+        itemDescriptionBinding.closeDialogueTopButton.setOnClickListener {
+            itemDescriptionDialog!!.dismiss()
+        }
+    }
+
     private fun setSupplierSpinner() {
 
-        supplierSpinnerAdapter = CustomArrayAdapter(this,android.R.layout.simple_spinner_item, supplierSpinnerArray)
+        supplierSpinnerAdapter =
+            CustomArrayAdapter(this, android.R.layout.simple_spinner_item, supplierSpinnerArray)
         supplierSpinnerAdapter!!.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.tvSpinnerSupplier.adapter = supplierSpinnerAdapter
         if (grnId != 0) {
@@ -568,6 +607,7 @@ class CompletedGRNActivity : AppCompatActivity() {
             ).show()
         }
     }
+
     private fun getAllLocations() {
         try {
             viewModel.getAllLocations(token, baseUrl)
@@ -579,12 +619,13 @@ class CompletedGRNActivity : AppCompatActivity() {
             ).show()
         }
     }
+
     private fun callSelectedPoLineItems() {
         try {
             for (s in getSuppliersPOsDDLResponse) {
                 if (s.isChecked) {
                     if (!selectedPoFilteredList.contains(s.value)) {
-                        selectedPoFilteredList.add(s.value);
+                        s.value?.let { selectedPoFilteredList.add(it) };
                     }
                 }
             }
@@ -610,8 +651,6 @@ class CompletedGRNActivity : AppCompatActivity() {
     }
 
 
-
-
     private fun showProgressBar() {
         progress.show()
     }
@@ -624,7 +663,6 @@ class CompletedGRNActivity : AppCompatActivity() {
         super.onBackPressed()
         finish()
     }
-
 
 
     private fun generateBarcodeForBatchesForExisitng() {
@@ -651,7 +689,6 @@ class CompletedGRNActivity : AppCompatActivity() {
             ).show()
         }
     }
-
 
 
     private fun setSelectSupplierDialog() {
@@ -700,7 +737,7 @@ class CompletedGRNActivity : AppCompatActivity() {
     }
 
     private fun setInfoValues(poModel: PoLineItemSelectionModelNewStore) {
-        Log.e("poModelfrombatches",poModel.toString())
+        Log.e("poModelfrombatches", poModel.toString())
         createBatchesDialogBinding.grnAddHeader.tvPoNoValue.setText(poModel.poNumber)
         createBatchesDialogBinding.grnAddHeader.tvGdPoNoValue.setText(poModel.GDPONumber.toString())
         createBatchesDialogBinding.grnAddHeader.tvLineItemDescValue.setText(poModel.itemCode)
@@ -710,13 +747,10 @@ class CompletedGRNActivity : AppCompatActivity() {
         createBatchesDialogBinding.grnAddHeader.tvMhTypeValue.setText(poModel.mhType)
         createBatchesDialogBinding.grnAddHeader.tvBalanceQuantity.setText(poModel.balQTY.toString())
 
-        if(poModel.isExpirable)
-        {
-            createBatchesDialogBinding.tvExpiryDate.visibility= View.VISIBLE
-        }
-        else
-        {
-            createBatchesDialogBinding.tvExpiryDate.visibility= View.GONE
+        if (poModel.isExpirable) {
+            createBatchesDialogBinding.tvExpiryDate.visibility = View.VISIBLE
+        } else {
+            createBatchesDialogBinding.tvExpiryDate.visibility = View.GONE
         }
         if (poModel.mhType.equals("Serial")) {
             createBatchesDialogBinding.tvDialogueTitle.setText("Create Serial")
@@ -756,7 +790,26 @@ class CompletedGRNActivity : AppCompatActivity() {
                             if (resultResponse != null) {
                                 getDraftGrnResponse = resultResponse
                                 binding.edInvoiceNumber.setText(getDraftGrnResponse!!.grnTransaction.invoiceNumber)
-                                binding.tvDate.setText(getDraftGrnResponse!!.grnTransaction.invoiceDate)
+
+                                try {
+                                    val inputFormat = SimpleDateFormat(
+                                        "yyyy-MM-dd'T'HH:mm:ss",
+                                        Locale.getDefault()
+                                    )
+                                    // Define the output format
+                                    val outputFormat =
+                                        SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                                    val parsedDate =
+                                        inputFormat.parse(getDraftGrnResponse!!.grnTransaction.invoiceDate)
+                                    val formattedDate = outputFormat.format(parsedDate)
+                                    binding.tvDate.setText(formattedDate)
+                                } catch (e: Exception) {
+                                    Toasty.warning(
+                                        this@CompletedGRNActivity,
+                                        "Date format not good",
+                                        Toasty.LENGTH_SHORT
+                                    ).show()
+                                }
                                 selectedKGRN = getDraftGrnResponse!!.grnTransaction.kgrnNumber
                                 binding.tvKGRNNo.setText(selectedKGRN.toString())
                                 currentGrnID = getDraftGrnResponse!!.grnTransaction.grnId

@@ -45,7 +45,7 @@ class GRNSelectPoAdapter (private val originalList: MutableList<GetSuppliersPOsD
                 if (pos != RecyclerView.NO_POSITION && holder.cbPo.tag == pos) {
                     grnModel.isChecked = isChecked
                     if (isChecked) {
-                        filterListByCode(grnModel.code)
+                        grnModel.code?.let { filterListByCode(it) }
                     } else {
 
                         if (dataList.none { it.isChecked }) {

@@ -47,4 +47,18 @@
 
     <color name="enough_grey">#EBEBEB</color>
 
+
+   <!--NEW UI-->
+    <color name="lightest_blue">#e9f2fe</color>
+    <color name="index_1">#ffbf33</color>
+    <color name="index_2">#e27b79</color>
+    <color name="tv_blue">#1c70ef</color>
+    <color name="count_bg">#99a8c1</color>
+    <color name="divide_line">#C0C0C0</color>
+
+
+
+
+
+
 </resources>

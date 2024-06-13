@@ -10,12 +10,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.DatePicker
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -41,9 +38,8 @@ import com.example.slfastener.databinding.CreateBatchesSingleDialogBinding
 import com.example.slfastener.databinding.DescriptionInfoDialogBinding
 import com.example.slfastener.databinding.SelectLineItemDialogBinding
 import com.example.slfastener.databinding.SelectSupplierPoLineItemBinding
-import com.example.slfastener.helper.CustomArrayAdapter
 import com.example.slfastener.helper.CustomKeyboard
-import com.example.slfastener.helper.UsbCommunicationManager
+import com.example.slfastener.helper.weighing.UsbCommunicationManager
 import com.example.slfastener.model.GetActiveSuppliersDDLResponse
 import com.example.slfastener.model.GetPOsAndLineItemsOnPOIdsResponse
 import com.example.slfastener.model.GetSuppliersPOsDDLResponse
@@ -60,10 +56,6 @@ import com.example.slfastener.viewmodel.GRNTransactionViewModel
 import com.example.slfastener.viewmodel.GRNTransactionViewModelProviderFactory
 
 import es.dmoral.toasty.Toasty
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -222,9 +214,12 @@ class GRNAddActivity : AppCompatActivity() {
             callDefaultData()
             binding.clKGRNNo.visibility = View.VISIBLE
             binding.mcvAddGrn.visibility = View.GONE
+            binding.mcvNewLineItem.visibility = View.VISIBLE
         } else {
             binding.clKGRNNo.visibility = View.GONE
             binding.mcvAddGrn.visibility = View.VISIBLE
+            binding.mcvNewLineItem.visibility = View.GONE
+
         }
         getAllLocations()
         getSupplierList()
@@ -246,7 +241,6 @@ class GRNAddActivity : AppCompatActivity() {
         grnMainItemAdapter = GrnMainAddAdapter(this@GRNAddActivity,
             selectedPoLineItem,
             itemDescription = {
-
                 setItemDescription(it)
             },
             onItemCheck = { position, poline ->
@@ -318,8 +312,7 @@ class GRNAddActivity : AppCompatActivity() {
             }
         )
         binding.rcGrnAdd!!.adapter = grnMainItemAdapter
-        binding.rcGrnAdd.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.rcGrnAdd.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         ///get list of suppliers PO
         viewModel.getActiveSuppliersDDLMutable.observe(this) { response ->
@@ -696,7 +689,6 @@ class GRNAddActivity : AppCompatActivity() {
                                 Toasty.LENGTH_SHORT
                             ).show()
                         }
-
                     }
                 }
 
@@ -729,7 +721,9 @@ class GRNAddActivity : AppCompatActivity() {
                                 currentGrnID = resultResponse.responseObject.grnId
                                 binding.mcvAddGrn.visibility = View.GONE
                                 binding.clKGRNNo.visibility = View.VISIBLE
+                                binding.mcvNewLineItem.visibility = View.VISIBLE
                                 binding.tvKGRNNo.setText(selectedKGRN.toString())
+
                                 Log.e("processkgrn", grnSaveToDraftDefaultResponse.toString())
                                 Log.e("processkgrn", selectedKGRN.toString())
 
@@ -788,7 +782,6 @@ class GRNAddActivity : AppCompatActivity() {
 
                 is Resource.Error -> {
                     hideProgressBar()
-
                     response.message?.let { errorMessage ->
                         Toasty.error(
                             this@GRNAddActivity,
@@ -797,7 +790,6 @@ class GRNAddActivity : AppCompatActivity() {
                         session.showToastAndHandleErrors(errorMessage, this@GRNAddActivity)
                     }
                 }
-
                 is Resource.Loading -> {
                     showProgressBar()
                 }
@@ -845,7 +837,6 @@ class GRNAddActivity : AppCompatActivity() {
                                     }
                                 }
                             }
-
                         } catch (e: Exception) {
                             Toasty.warning(
                                 this@GRNAddActivity,
@@ -922,8 +913,7 @@ class GRNAddActivity : AppCompatActivity() {
                             createBatchesList.removeAt(deleteBatchUnitItemPosition.toInt())
                             lineItemUnitId = 0
                             balanceQty = resultResponse.responseObject.toString()
-                            selectedPoLineItem[currentPoLineItemPosition.toInt()].balQTY =
-                                balanceQty.toDouble()
+                            selectedPoLineItem[currentPoLineItemPosition.toInt()].balQTY = balanceQty.toDouble()
                             createBatchesDialogBinding.grnAddHeader.tvBalanceQuantity.setText(
                                 selectedPoLineItem[currentPoLineItemPosition.toInt()].balQTY.toString()
                             )
@@ -933,7 +923,6 @@ class GRNAddActivity : AppCompatActivity() {
                             if (createBatchesList != null) {
                                 totalReceivedTotalFromList =
                                     createBatchesList.sumByDouble { it.recevedQty.toDouble() }
-
                             }
                             val balQtyFormat = String.format("%.3f", totalReceivedTotalFromList)
                             selectedPoLineItem[currentPoLineItemPosition.toInt()].quantityReceived =
@@ -2396,7 +2385,7 @@ class GRNAddActivity : AppCompatActivity() {
             for (s in getSuppliersPOsDDLResponse) {
                 if (s.isChecked) {
                     if (!selectedPoFilteredList.contains(s.value)) {
-                        selectedPoFilteredList.add(s.value);
+                        s.value?.let { selectedPoFilteredList.add(it) };
                     }
                 }
             }

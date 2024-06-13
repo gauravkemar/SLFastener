@@ -112,6 +112,8 @@
             android:layout_marginBottom="5dp"
             android:background="@android:color/transparent"
             android:padding="5dp"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:text="Item Desc"
             android:textAlignment="center"
             android:textColor="@color/black"

@@ -1,10 +1,14 @@
 package com.example.slfastener.view
 
+import android.content.DialogInterface
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.ContactsContract.Data
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
 import com.example.demorfidapp.helper.Constants
 import com.example.demorfidapp.helper.Constants.KEY_GRN_PRN
@@ -12,7 +16,6 @@ import com.example.demorfidapp.helper.Constants.KEY_GR_PRN
 import com.example.demorfidapp.helper.SessionManager
 import com.example.demorfidapp.helper.Utils
 import com.example.slfastener.R
-import com.example.slfastener.databinding.ActivityAdminBinding
 import com.example.slfastener.databinding.ActivityAdminSettingPageBinding
 
 class AdminSettingPageActivity : AppCompatActivity() {
@@ -25,6 +28,8 @@ class AdminSettingPageActivity : AppCompatActivity() {
     private lateinit var user: HashMap<String, Any?>
     private var serverIpSharedPrefText: String? = null
     private var serverHttpPrefText: String? = null
+    private var builder: AlertDialog.Builder? = null
+    private var alert: AlertDialog? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_admin_setting_page)
@@ -37,9 +42,12 @@ class AdminSettingPageActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, items)
         binding.autoCompleteHttp.setAdapter(adapter)
         if (serverHttpPrefText.toString() == "null") {
+            binding.autoCompleteHttp.setText(items[0], false)
+            selectedHttp = items[0]
+        } else {
             binding.autoCompleteHttp.setText(serverHttpPrefText, false)
+            selectedHttp = serverHttpPrefText as String
         }
-        // Optionally, save the selected item back to SharedPreferences when the selection changes
         binding.autoCompleteHttp.setOnItemClickListener { parent, view, position, id ->
             selectedHttp = parent.getItemAtPosition(position) as String
         }
@@ -51,10 +59,10 @@ class AdminSettingPageActivity : AppCompatActivity() {
                 binding.edServerIp.error = "Please enter Domain Name"
 
             } else {
-                session.saveAdminDetails(serverIp, selectedHttp)
+                showDialog(serverIp, selectedHttp)
             }
-        }
 
+        }
         binding.autoCompleteGR.setOnItemClickListener { parent, view, position, id ->
             selectedGrPrn = parent.getItemAtPosition(position) as String
         }
@@ -62,10 +70,78 @@ class AdminSettingPageActivity : AppCompatActivity() {
             selectedGrnPrn = parent.getItemAtPosition(position) as String
         }
         binding.btnUpdateGr.setOnClickListener {
-            Utils.setSharedPrefs(this,KEY_GR_PRN,selectedGrPrn)
+            Utils.setSharedPrefs(this, KEY_GR_PRN, selectedGrPrn)
         }
         binding.btnUpdateGRN.setOnClickListener {
-            Utils.setSharedPrefs(this,KEY_GRN_PRN,selectedGrnPrn)
+            Utils.setSharedPrefs(this, KEY_GRN_PRN, selectedGrnPrn)
+        }
+
+        binding.mcvIpSettings.setOnClickListener {
+            toggleVisibility(binding.clIpSettings)
+        }
+        // Add click listeners for other card views
+        binding.mcvPrinterSelect.setOnClickListener {
+            toggleVisibility(binding.clPrinterSetting)
+        }
+    }
+
+    private fun showDialog(
+        serverIp: String?,
+        http: String?,
+    ) {
+        builder = AlertDialog.Builder(this)
+        builder!!.setMessage("Changes will take effect after Re-Login!")
+            .setCancelable(false)
+            .setPositiveButton("Yes") { dialog: DialogInterface?, id: Int ->
+                session.saveAdminDetails(serverIp, http)
+                startActivity(Intent(this, LoginActivity::class.java))
+                this@AdminSettingPageActivity?.finishAffinity()
+            }
+            .setNegativeButton("No, Continue") { dialog: DialogInterface, id: Int ->
+                dialog.cancel()
+                binding.edServerIp.setText(serverIpSharedPrefText)
+            }
+        alert = builder!!.create()
+        alert!!.show()
+    }
+
+    private fun toggleVisibility(clPrinterSetting: ConstraintLayout) {
+        if (clPrinterSetting == binding.clIpSettings && binding.clPrinterSetting.visibility == View.VISIBLE) {
+            binding.clPrinterSetting.visibility = View.GONE
+            binding.ivOpenClosePrinterSetting.setImageResource(R.drawable.ic_arrow_down_black)
+            binding.clIpSettings.visibility = View.VISIBLE
+            binding.ivOpenCloseBaseUrlSetting.setImageResource(R.drawable.ic_up_arrow_black)
+
+
+        } else if (clPrinterSetting == binding.clPrinterSetting && binding.clIpSettings.visibility == View.VISIBLE) {
+            binding.clIpSettings.visibility = View.GONE
+            binding.ivOpenCloseBaseUrlSetting.setImageResource(R.drawable.ic_arrow_down_black)
+
+            binding.clPrinterSetting.visibility = View.VISIBLE
+            binding.ivOpenClosePrinterSetting.setImageResource(R.drawable.ic_up_arrow_black)
+
+        } else {
+            if (clPrinterSetting.visibility == View.VISIBLE) {
+                clPrinterSetting.visibility = View.GONE
+                if(clPrinterSetting == binding.clPrinterSetting)
+                {
+                    binding.ivOpenClosePrinterSetting.setImageResource(R.drawable.ic_arrow_down_black)
+                }
+                else if(clPrinterSetting == binding.clIpSettings){
+                    binding.ivOpenCloseBaseUrlSetting.setImageResource(R.drawable.ic_arrow_down_black)
+                }
+
+
+            } else {
+                clPrinterSetting.visibility = View.VISIBLE
+                if(clPrinterSetting == binding.clPrinterSetting)
+                {
+                    binding.ivOpenClosePrinterSetting.setImageResource(R.drawable.ic_up_arrow_black)
+                }
+                else if(clPrinterSetting == binding.clIpSettings){
+                    binding.ivOpenCloseBaseUrlSetting.setImageResource(R.drawable.ic_up_arrow_black)
+                }
+            }
         }
     }
 }

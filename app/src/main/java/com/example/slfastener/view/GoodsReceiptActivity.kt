@@ -24,7 +24,6 @@ import com.example.demorfidapp.helper.Resource
 import com.example.demorfidapp.helper.SessionManager
 import com.example.demorfidapp.repository.SLFastenerRepository
 import com.example.slfastener.R
-import com.example.slfastener.adapter.GRNSelectPoAdapter
 import com.example.slfastener.adapter.gradapters.CreateBatchesForGRAdapter
 import com.example.slfastener.adapter.gradapters.GRItemSelectionAdapter
 import com.example.slfastener.adapter.gradapters.GrMainAddAdapter
@@ -35,7 +34,7 @@ import com.example.slfastener.databinding.CreateBatchesSingleDialogBinding
 import com.example.slfastener.databinding.DescriptionInfoDialogBinding
 import com.example.slfastener.databinding.SelectItemFromItemMasterDialogBinding
 import com.example.slfastener.helper.CustomKeyboard
-import com.example.slfastener.helper.UsbCommunicationManager
+import com.example.slfastener.helper.weighing.UsbCommunicationManager
 import com.example.slfastener.model.GetActiveSuppliersDDLResponse
 import com.example.slfastener.model.getalllocation.GetAllWareHouseLocationResponse
 import com.example.slfastener.model.goodsreceipt.GRLineItemUnit
@@ -46,15 +45,9 @@ import com.example.slfastener.model.goodsreceipt.PostProcessGRTransactionRespons
 import com.example.slfastener.model.goodsreceipt.ProcessGRLineItemRequest
 import com.example.slfastener.model.goodsreceipt.SubmitGRRequest
 import com.example.slfastener.model.goodsreceipt.grdraft.GetSingleGRByGRIdResponse
-import com.example.slfastener.model.grndraftdata.GetDraftGrnResponse
-import com.example.slfastener.model.grnmain.SubmitGRNRequest
-import com.example.slfastener.model.offlinebatchsave.GrnLineItemUnitStore
-import com.example.slfastener.model.offlinebatchsave.PoLineItemSelectionModelNewStore
 import com.example.slfastener.viewmodel.GRViewModel
 import com.example.slfastener.viewmodel.GRViewModelFactory
 import es.dmoral.toasty.Toasty
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class GoodsReceiptActivity : AppCompatActivity() {
     lateinit var binding: ActivityGoodsReceiptBinding

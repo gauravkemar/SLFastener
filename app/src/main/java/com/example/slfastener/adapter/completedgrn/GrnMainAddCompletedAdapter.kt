@@ -25,6 +25,7 @@ import java.util.Locale
 class GrnMainAddCompletedAdapter (
     private val context: Context,
     private val poLineItemParent: MutableList<PoLineItemSelectionModelNewStore>,
+    private val itemDescription:(itemDesc:String)->Unit,
     private val onItemCheck:(Int,PoLineItemSelectionModelNewStore) -> Unit,
     ) : RecyclerView.Adapter<GrnMainAddCompletedAdapter.ViewHolder>() {
 
@@ -60,7 +61,9 @@ class GrnMainAddCompletedAdapter (
         holder.tvSaveLineItem.setOnClickListener {
             poLineItemParent[position].locationId=selectedLocationID
             onItemCheck(position,poLineItemParent[position])
-
+        }
+        holder.tvItemDesc.setOnClickListener {
+            itemDescription(poLineItemModel.itemDescription)
         }
         setGDPO(holder,poLineItemModel)
 

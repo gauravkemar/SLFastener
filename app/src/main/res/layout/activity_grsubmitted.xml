@@ -115,8 +115,8 @@
                     android:id="@+id/tvGRNName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Goods Receipt"
-                    android:textSize="25sp"
+                    android:text="Goods Receipt Submitted"
+                    android:textSize="20sp"
                     android:layout_margin="10dp"
                     android:textStyle="bold"
                     android:textColor="@color/black"
@@ -986,7 +986,7 @@
                                 android:paddingBottom="10dp"
                                 android:paddingStart="20dp"
                                 android:paddingEnd="20dp"
-                                android:text="    Cancel    "
+                                android:text="    Back    "
                                 android:textColor="@color/white" />
                         </com.google.android.material.card.MaterialCardView>
 

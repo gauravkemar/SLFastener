@@ -111,7 +111,7 @@ class LoginActivity : AppCompatActivity() {
     }
     fun startAdmin()
     {
-        startActivity(Intent(this@LoginActivity,AdminActivity::class.java))
+        startActivity(Intent(this@LoginActivity,AdminSettingPageActivity::class.java))
         finish()
     }
     private fun clear(){

@@ -1,4 +1,4 @@
-package com.example.slfastener.helper
+package com.example.slfastener.helper.weighing
 
 import android.app.PendingIntent
 import android.content.Context
@@ -8,13 +8,13 @@ import android.hardware.usb.UsbDeviceConnection
 import android.hardware.usb.UsbEndpoint
 import android.hardware.usb.UsbManager
 import android.util.Log
+import com.example.slfastener.helper.DataReceivedListener
 import com.hoho.android.usbserial.driver.UsbSerialDriver
 import com.hoho.android.usbserial.driver.UsbSerialPort
 import com.hoho.android.usbserial.driver.UsbSerialProber
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -48,7 +48,6 @@ class UsbSerialCommunication(private val context: Context) {
             }
         }
     }
-
     fun requestPermission() {
         try {
             if (usbDevice != null && !isPermissionRequested) {
@@ -90,7 +89,7 @@ class UsbSerialCommunication(private val context: Context) {
                                 receivedBytes += buffer.copyOf(numBytesRead)
                                 val receivedDataString = String(receivedBytes, Charsets.UTF_8).toString().trim()
                                 withContext(Dispatchers.Main) {
-                                    //Log.d("Weight", "Received weight: $receivedDataString grams")
+                                   // Log.d("Weight", "Received weight: $receivedDataString grams")
                                     val pattern: Regex = """^\d+\.\d{3}$""".toRegex()
                                     val cleanedWeight = receivedDataString.replace(Regex("^\\+0"), "")
                                     if(cleanedWeight.matches(pattern))

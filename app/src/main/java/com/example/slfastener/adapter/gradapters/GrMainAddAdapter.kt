@@ -107,7 +107,7 @@ class GrMainAddAdapter (
         getAllLocationAdapter!!.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         holder.tvWareHouse.adapter = getAllLocationAdapter
 
-        val defaultLocationName = allLocation.getAllLocation.find { it.locationId == allLocation.defaultLocationCode.toInt() }?.locationName
+        val defaultLocationName = allLocation.getAllLocation.find { it.locationName == allLocation.defaultLocationCode }?.locationName
         Log.e("defaultLocationName",defaultLocationName.toString()+"//default${allLocation.defaultLocationCode}"+"// allLocation.defaultLocationCode")
         if (!defaultLocationName.isNullOrEmpty()) {
             val defaultPosition = locationNameList.indexOf(defaultLocationName)

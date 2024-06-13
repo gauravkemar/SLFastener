@@ -118,15 +118,29 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cvHeader"
                 app:layout_constraintVertical_weight="0.88">
+                <TextView
+                    android:id="@+id/tvGRNName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="GRN Completed"
+                    android:textSize="20sp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="10dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    app:layout_constraintBottom_toTopOf="@+id/clContainer"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/clContainer"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_margin="20dp"
+                    android:layout_margin="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvGRNName"
                     app:layout_constraintBottom_toTopOf="@+id/clContainer2">
 
                     <com.google.android.material.card.MaterialCardView
@@ -339,7 +353,6 @@
                                     android:layout_height="match_parent"
                                     android:visibility="visible"
                                     android:background="@drawable/round_border_grey"
-
                                     >
 
                                     <TextView
@@ -750,7 +763,7 @@
                                 android:paddingBottom="10dp"
                                 android:paddingStart="20dp"
                                 android:paddingEnd="20dp"
-                                android:text="    Cancel    "
+                                android:text="    Back    "
                                 android:textColor="@color/white" />
                         </com.google.android.material.card.MaterialCardView>
 

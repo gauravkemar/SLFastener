@@ -26,16 +26,14 @@ import com.example.demorfidapp.helper.SessionManager
 import com.example.demorfidapp.repository.SLFastenerRepository
 import com.example.slfastener.R
 import com.example.slfastener.adapter.GRNSelectPoAdapter
-import com.example.slfastener.adapter.demoAdapter.CreateBatchesSingleList
 import com.example.slfastener.adapter.newadapters.GRNMainNewAdapter
-import com.example.slfastener.adapter.newadapters.SelectPoLineAdapter
 import com.example.slfastener.databinding.ActivityGrnaddNew2Binding
 import com.example.slfastener.databinding.CreateNewBatchItemDialogBinding
 
 import com.example.slfastener.databinding.SelectLineItemDialogBinding
 import com.example.slfastener.databinding.SelectSupplierPoLineItemBinding
 import com.example.slfastener.helper.CustomArrayAdapter
-import com.example.slfastener.helper.UsbCommunicationManager
+import com.example.slfastener.helper.weighing.UsbCommunicationManager
 import com.example.slfastener.model.BatchInfoListModel
 import com.example.slfastener.model.GetActiveSuppliersDDLResponse
 import com.example.slfastener.model.GetPOsAndLineItemsOnPOIdsResponse

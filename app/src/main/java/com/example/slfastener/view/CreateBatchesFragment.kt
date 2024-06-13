@@ -8,10 +8,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.example.slfastener.R
 import com.example.slfastener.databinding.FragmentCreateBatchesBinding
-import com.example.slfastener.helper.UsbCommunicationManager
-import com.example.slfastener.model.BatchInfoListModel
-import com.example.slfastener.model.PoLineItemSelectionModel
-import es.dmoral.toasty.Toasty
 
 class CreateBatchesFragment : Fragment() {
     lateinit var binding:FragmentCreateBatchesBinding

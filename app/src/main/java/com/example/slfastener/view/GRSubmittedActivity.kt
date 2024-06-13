@@ -94,6 +94,9 @@ class GRSubmittedActivity : AppCompatActivity() {
     private var baseUrl: String =""
     private var serverIpSharedPrefText: String? = null
     private var serverHttpPrefText: String? = null
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=DataBindingUtil.setContentView(this,R.layout.activity_grsubmitted)
