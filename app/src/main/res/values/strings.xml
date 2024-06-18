@@ -41,4 +41,8 @@
         <item>http</item>
         <item>https</item>
     </string-array>
+    <string-array name="printer_type">
+        <item>IP</item>
+        <item>USB</item>
+    </string-array>
 </resources>

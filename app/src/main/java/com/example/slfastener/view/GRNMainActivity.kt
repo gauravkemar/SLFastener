@@ -66,32 +66,34 @@ class GRNMainActivity : AppCompatActivity() {
             var intent = Intent(this@GRNMainActivity, GRNAddActivity::class.java)
             startActivity(intent)
         }
-        binding.clDraft.setBackgroundResource(R.drawable.new_ui_select_draft_complete_bg)
-       // binding.tvDraft.setTextColor(resources.getColor(R.color.white))
-       // binding.tvCompleted.setTextColor(resources.getColor(R.color.blue))
+        binding.mcvGRNDraft.setBackgroundResource(R.drawable.new_ui_select_draft_complete_bg)
+        binding.tvDraft.setTextColor(resources.getColor(R.color.white))
+        binding.tvCompleted.setTextColor(resources.getColor(R.color.blue))
         binding.mcvCancel.setOnClickListener {
             var intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
             finish()
         }
-        binding.clDraft.setOnClickListener {
-            //binding.mcvGRNDraft.setCardBackgroundColor(resources.getColor(R.color.lighter_blue))
-            binding.clDraft.setBackgroundResource(R.drawable.new_ui_select_draft_complete_bg)
-            //binding.tvDraft.setTextColor(resources.getColor(R.color.white))
-            //binding.tvCompleted.setTextColor(resources.getColor(R.color.blue))
-            binding.clCompleted.setBackgroundResource(R.drawable.new_ui_unselect_draft_complete_bg)
+        binding.mcvGRNDraft.setOnClickListener {
+            binding.mcvGRNDraft.setCardBackgroundColor(resources.getColor(R.color.lighter_blue))
+            binding.tvDraft.setTextColor(resources.getColor(R.color.white))
+            binding.tvCompleted.setTextColor(resources.getColor(R.color.blue))
+
+            //binding.clCompleted.setBackgroundResource(R.drawable.new_ui_unselect_draft_complete_bg)
+            //binding.clDraft.setBackgroundResource(R.drawable.new_ui_select_draft_complete_bg)
+
             getGrnList("Draft")
             binding.rcGrnMain.visibility=View.VISIBLE
             binding.rcGrnMainCompleted.visibility=View.GONE
         }
-        binding.clCompleted.setOnClickListener {
-            //binding.tvCompleted.setTextColor(resources.getColor(R.color.white))
-            //binding.tvDraft.setTextColor(resources.getColor(R.color.blue))
-            //binding.mcvGRNCompleted.setCardBackgroundColor(resources.getColor(R.color.lighter_blue))
-            //binding.mcvGRNDraft.setCardBackgroundColor(resources.getColor(R.color.white))
+        binding.mcvGRNCompleted.setOnClickListener {
+            binding.tvCompleted.setTextColor(resources.getColor(R.color.white))
+            binding.tvDraft.setTextColor(resources.getColor(R.color.blue))
+            binding.mcvGRNCompleted.setCardBackgroundColor(resources.getColor(R.color.lighter_blue))
+            binding.mcvGRNDraft.setCardBackgroundColor(resources.getColor(R.color.white))
 
-            binding.clDraft.setBackgroundResource(R.drawable.new_ui_unselect_draft_complete_bg)
-            binding.clCompleted.setBackgroundResource(R.drawable.new_ui_select_draft_complete_bg)
+            //binding.clDraft.setBackgroundResource(R.drawable.new_ui_unselect_draft_complete_bg)
+           // binding.clCompleted.setBackgroundResource(R.drawable.new_ui_select_draft_complete_bg)
 
             //getGrnList("Complete")
             getFilteredGRNCompleted("Submitted")

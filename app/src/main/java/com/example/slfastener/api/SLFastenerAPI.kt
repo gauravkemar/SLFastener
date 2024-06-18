@@ -19,6 +19,7 @@ import com.example.demorfidapp.helper.Constants.GET_SUPPLIERS_POS
 import com.example.demorfidapp.helper.Constants.GET_SUPPLIERS_POS_DDL
 import com.example.demorfidapp.helper.Constants.HTTP_HEADER_AUTHORIZATION
 import com.example.demorfidapp.helper.Constants.LOGIN_URL
+import com.example.demorfidapp.helper.Constants.PRINT_LABEL_BARCODE_For_GRN
 import com.example.demorfidapp.helper.Constants.PROCESS_GR_LINE_ITEM
 import com.example.demorfidapp.helper.Constants.PROCESS_GR_TRANSACTION
 import com.example.demorfidapp.helper.Constants.SUBMIT_GR
@@ -190,6 +191,14 @@ interface SLFastenerAPI {
     suspend fun getAllLocations(
         @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
     ): Response<ArrayList<GetAllWareHouseLocationResponse>>
+
+    @POST(PRINT_LABEL_BARCODE_For_GRN)
+    suspend fun printLabelForGRN(
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Body
+        grnLineUnitItemId: ArrayList<Int>
+    ): Response<GeneralResponse>
+
 
 
     ////gr all

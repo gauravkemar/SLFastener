@@ -10,6 +10,7 @@ import com.example.demorfidapp.helper.Constants.KEY_HTTP
 import com.example.demorfidapp.helper.Constants.KEY_ISLOGGEDIN
 import com.example.demorfidapp.helper.Constants.KEY_JWT_TOKEN
 import com.example.demorfidapp.helper.Constants.KEY_PORT
+import com.example.demorfidapp.helper.Constants.KEY_PRINTER_TYPE
 import com.example.demorfidapp.helper.Constants.KEY_SERVER_IP
 import com.example.demorfidapp.helper.Constants.KEY_USER_EMAIL
 import com.example.demorfidapp.helper.Constants.KEY_USER_FIRST_NAME
@@ -128,6 +129,7 @@ class SessionManager(context: Context) {
         user[KEY_SERVER_IP] = sharedPrefer.getString(KEY_SERVER_IP, null)
         user[KEY_HTTP] = sharedPrefer.getString(KEY_HTTP, null)
         user[KEY_PORT] = sharedPrefer.getString(KEY_PORT, null)
+        user[KEY_PRINTER_TYPE] = sharedPrefer.getString(KEY_PRINTER_TYPE, null)
         return user
     }
 

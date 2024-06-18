@@ -13,6 +13,7 @@ import androidx.databinding.DataBindingUtil
 import com.example.demorfidapp.helper.Constants
 import com.example.demorfidapp.helper.Constants.KEY_GRN_PRN
 import com.example.demorfidapp.helper.Constants.KEY_GR_PRN
+import com.example.demorfidapp.helper.Constants.KEY_PRINTER_TYPE
 import com.example.demorfidapp.helper.SessionManager
 import com.example.demorfidapp.helper.Utils
 import com.example.slfastener.R
@@ -21,6 +22,7 @@ import com.example.slfastener.databinding.ActivityAdminSettingPageBinding
 class AdminSettingPageActivity : AppCompatActivity() {
     lateinit var binding: ActivityAdminSettingPageBinding
     var selectedHttp = ""
+    var selectedPrinterType = ""
     var selectedGrPrn = ""
     var selectedGrnPrn = ""
 
@@ -28,8 +30,11 @@ class AdminSettingPageActivity : AppCompatActivity() {
     private lateinit var user: HashMap<String, Any?>
     private var serverIpSharedPrefText: String? = null
     private var serverHttpPrefText: String? = null
+    private var serverPrinterTypePrefText: String? = null
     private var builder: AlertDialog.Builder? = null
     private var alert: AlertDialog? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_admin_setting_page)
@@ -38,12 +43,19 @@ class AdminSettingPageActivity : AppCompatActivity() {
         user = session.getUserDetails()
         serverIpSharedPrefText = user[Constants.KEY_SERVER_IP].toString()
         serverHttpPrefText = user[Constants.KEY_HTTP].toString()
-        val items = resources.getStringArray(R.array.http)
-        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, items)
+        serverPrinterTypePrefText = user[Constants.KEY_PRINTER_TYPE].toString()
+
+
+
+
+        ///http spinner
+        val httpArray = resources.getStringArray(R.array.http)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, httpArray)
+
         binding.autoCompleteHttp.setAdapter(adapter)
         if (serverHttpPrefText.toString() == "null") {
-            binding.autoCompleteHttp.setText(items[0], false)
-            selectedHttp = items[0]
+            binding.autoCompleteHttp.setText(httpArray[0], false)
+            selectedHttp = httpArray[0]
         } else {
             binding.autoCompleteHttp.setText(serverHttpPrefText, false)
             selectedHttp = serverHttpPrefText as String
@@ -51,6 +63,30 @@ class AdminSettingPageActivity : AppCompatActivity() {
         binding.autoCompleteHttp.setOnItemClickListener { parent, view, position, id ->
             selectedHttp = parent.getItemAtPosition(position) as String
         }
+
+             ///printertype spinner
+        val printerTypeArray = resources.getStringArray(R.array.printer_type)
+        val printerTypeAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, printerTypeArray)
+
+        binding.autoCompleteGeneral.setAdapter(printerTypeAdapter)
+        if (serverPrinterTypePrefText.toString() == "null") {
+            binding.autoCompleteGeneral.setText(printerTypeArray[0], false)
+            selectedPrinterType = printerTypeArray[0]
+        } else {
+            binding.autoCompleteGeneral.setText(serverHttpPrefText, false)
+            selectedPrinterType = serverHttpPrefText as String
+        }
+        binding.autoCompleteGeneral.setOnItemClickListener { parent, view, position, id ->
+            selectedPrinterType = parent.getItemAtPosition(position) as String
+        }
+
+
+        binding.btnUpdateGeneral.setOnClickListener {
+            Utils.setSharedPrefs(this, KEY_PRINTER_TYPE, selectedPrinterType)
+        }
+
+
+
         binding.btnSave.setOnClickListener {
             val serverIp = binding.edServerIp.text.toString().trim()
             if (serverIp == "") {

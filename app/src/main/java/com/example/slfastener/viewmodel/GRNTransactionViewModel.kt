@@ -790,4 +790,93 @@ class GRNTransactionViewModel (
         return Resource.Error(errorMessage)
     }
 
+
+ //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //print
+    val printLabelForGRNMutableResponse: MutableLiveData<Resource<GeneralResponse>> = MutableLiveData()
+
+    fun printLabelForGRN(token: String,baseUrl: String,    grnLineUnitItemId: ArrayList<Int>) {
+        viewModelScope.launch {
+            safeAPICallPrintLabelForGRN(token,baseUrl,grnLineUnitItemId)
+        }
+    }
+
+    private suspend fun safeAPICallPrintLabelForGRN(token: String,baseUrl: String,   grnLineUnitItemId: ArrayList<Int> ) {
+        printLabelForGRNMutableResponse.postValue(Resource.Loading())
+        try {
+            if (Utils.hasInternetConnection(getApplication())) {
+                val response = rfidRepository.printLabelForGRN(token,baseUrl ,grnLineUnitItemId)
+                printLabelForGRNMutableResponse.postValue(handlePrintLabelForGRN(response))
+            } else {
+                printLabelForGRNMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
+            }
+        } catch (t: Throwable) {
+            when (t) {
+                is IOException -> printLabelForGRNMutableResponse.postValue(Resource.Error(Constants.CONFIG_ERROR))
+                else -> printLabelForGRNMutableResponse.postValue(Resource.Error("${t.message}"))
+            }
+        }
+    }
+
+    private fun handlePrintLabelForGRN(response: Response<GeneralResponse>): Resource<GeneralResponse>{
+        var errorMessage = ""
+        if (response.isSuccessful) {
+            response.body()?.let { appDetailsResponse ->
+                return Resource.Success(appDetailsResponse)
+            }
+        } else if (response.errorBody() != null) {
+            val errorObject = response.errorBody()?.let {
+                JSONObject(it.charStream().readText())
+            }
+            errorObject?.let {
+                errorMessage = it.getString(Constants.HTTP_ERROR_MESSAGE)
+            }
+        }
+        return Resource.Error(errorMessage)
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //print bulk
+    val printLabelForGRNBulkMutableResponse: MutableLiveData<Resource<GeneralResponse>> = MutableLiveData()
+
+    fun printLabelForGRNBulk(token: String,baseUrl: String,    grnLineUnitItemId: ArrayList<Int>) {
+        viewModelScope.launch {
+            safeAPICallPrintLabelForGRN(token,baseUrl,grnLineUnitItemId)
+        }
+    }
+
+    private suspend fun safeAPICallPrintLabelForGRNBulk(token: String,baseUrl: String,   grnLineUnitItemId: ArrayList<Int> ) {
+        printLabelForGRNBulkMutableResponse.postValue(Resource.Loading())
+        try {
+            if (Utils.hasInternetConnection(getApplication())) {
+                val response = rfidRepository.printLabelForGRN(token,baseUrl ,grnLineUnitItemId)
+                printLabelForGRNBulkMutableResponse.postValue(handlePrintLabelForGRNBulk(response))
+            } else {
+                printLabelForGRNBulkMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
+            }
+        } catch (t: Throwable) {
+            when (t) {
+                is IOException -> printLabelForGRNBulkMutableResponse.postValue(Resource.Error(Constants.CONFIG_ERROR))
+                else -> printLabelForGRNBulkMutableResponse.postValue(Resource.Error("${t.message}"))
+            }
+        }
+    }
+
+    private fun handlePrintLabelForGRNBulk(response: Response<GeneralResponse>): Resource<GeneralResponse>{
+        var errorMessage = ""
+        if (response.isSuccessful) {
+            response.body()?.let { appDetailsResponse ->
+                return Resource.Success(appDetailsResponse)
+            }
+        } else if (response.errorBody() != null) {
+            val errorObject = response.errorBody()?.let {
+                JSONObject(it.charStream().readText())
+            }
+            errorObject?.let {
+                errorMessage = it.getString(Constants.HTTP_ERROR_MESSAGE)
+            }
+        }
+        return Resource.Error(errorMessage)
+    }
+
 }

@@ -498,6 +498,17 @@
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent">
+                                <ImageView
+                                    android:id="@+id/ivBatchesSelection"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:padding="5dp"
+                                    app:layout_constraintHorizontal_weight="0.05"
+                                    android:src="@drawable/ic_selection_white"
+                                    app:layout_constraintEnd_toStartOf="@+id/tvSrnNo"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:layout_constraintBottom_toBottomOf="parent"/>
 
                                 <TextView
                                     android:id="@+id/tvSrnNo"
@@ -513,7 +524,7 @@
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toStartOf="@+id/tvBatchNo"
                                     app:layout_constraintHorizontal_weight="0.04"
-                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintStart_toEndOf="@+id/ivBatchesSelection"
                                     app:layout_constraintTop_toTopOf="parent" />
 
                                 <TextView

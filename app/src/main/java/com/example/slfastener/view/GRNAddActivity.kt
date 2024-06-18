@@ -148,9 +148,11 @@ class GRNAddActivity : AppCompatActivity() {
     private lateinit var itemDescriptionBinding: DescriptionInfoDialogBinding
     var itemDescriptionDialog: Dialog? = null
 
-    private var baseUrl: String =""
+    private var baseUrl: String = ""
     private var serverIpSharedPrefText: String? = null
     private var serverHttpPrefText: String? = null
+
+    lateinit var selectedBatchForPrint: ArrayList<Int>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -196,6 +198,7 @@ class GRNAddActivity : AppCompatActivity() {
         poLineItem = ArrayList()
         selectedPoLineItem = ArrayList()
         getAllLocation = ArrayList()
+        selectedBatchForPrint = ArrayList()
         getPOsAndLineItemsOnPOIdsResponse = ArrayList()
         userDetails = session.getUserDetails()
         token = userDetails["jwtToken"].toString()
@@ -265,8 +268,7 @@ class GRNAddActivity : AppCompatActivity() {
                             )
                         )
                     }
-                }
-                else {
+                } else {
                     lineItemId = 0
                 }
                 lineItemUnitId = 0
@@ -312,7 +314,8 @@ class GRNAddActivity : AppCompatActivity() {
             }
         )
         binding.rcGrnAdd!!.adapter = grnMainItemAdapter
-        binding.rcGrnAdd.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.rcGrnAdd.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         ///get list of suppliers PO
         viewModel.getActiveSuppliersDDLMutable.observe(this) { response ->
@@ -545,7 +548,7 @@ class GRNAddActivity : AppCompatActivity() {
                                                         grnLineItemUnit.expiryDate,
                                                         i.isExpirable,
                                                         grnLineItemUnit.internalBatchNo,
-                                                        true,
+                                                        false,
                                                         grnLineItemUnit.lineItemId,
                                                         grnLineItemUnit.lineItemUnitId,
                                                         grnLineItemUnit.qty.toString(),
@@ -677,8 +680,7 @@ class GRNAddActivity : AppCompatActivity() {
                                     selectPoLineAdapter!!.notifyDataSetChanged()
                                 }
 
-                            }
-                            else {
+                            } else {
                                 Toast.makeText(this, "List is Empty!!", Toast.LENGTH_SHORT).show()
                             }
 
@@ -913,7 +915,8 @@ class GRNAddActivity : AppCompatActivity() {
                             createBatchesList.removeAt(deleteBatchUnitItemPosition.toInt())
                             lineItemUnitId = 0
                             balanceQty = resultResponse.responseObject.toString()
-                            selectedPoLineItem[currentPoLineItemPosition.toInt()].balQTY = balanceQty.toDouble()
+                            selectedPoLineItem[currentPoLineItemPosition.toInt()].balQTY =
+                                balanceQty.toDouble()
                             createBatchesDialogBinding.grnAddHeader.tvBalanceQuantity.setText(
                                 selectedPoLineItem[currentPoLineItemPosition.toInt()].balQTY.toString()
                             )
@@ -1048,6 +1051,58 @@ class GRNAddActivity : AppCompatActivity() {
                 }
             }
         }
+        viewModel.printLabelForGRNMutableResponse.observe(this) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    hideProgressBar()
+                    response.data?.let { resultResponse ->
+
+                    }
+                }
+
+                is Resource.Error -> {
+                    hideProgressBar()
+                    response.message?.let { errorMessage ->
+                        Toasty.error(
+                            this@GRNAddActivity,
+                            "failed - \nError Message: $errorMessage"
+                        ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@GRNAddActivity)
+                    }
+                }
+
+                is Resource.Loading -> {
+                    showProgressBar()
+                }
+            }
+        }
+        viewModel.printLabelForGRNBulkMutableResponse.observe(this) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    hideProgressBar()
+                    response.data?.let { resultResponse ->
+
+                    }
+                }
+
+                is Resource.Error -> {
+                    hideProgressBar()
+                    response.message?.let { errorMessage ->
+                        Toasty.error(
+                            this@GRNAddActivity,
+                            "failed - \nError Message: $errorMessage"
+                        ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@GRNAddActivity)
+                    }
+                }
+
+                is Resource.Loading -> {
+                    showProgressBar()
+                }
+            }
+        }
+
+
         binding.clEnterInvDate.setOnClickListener {
             showDatePickerDialog()
         }
@@ -1131,6 +1186,16 @@ class GRNAddActivity : AppCompatActivity() {
                         )
                     }
 
+                },
+                onPrint = { position, grnitem ->
+                    printLabelForGRN(grnitem)
+                },
+                onItemCheckedChange = { item ->
+                    if (item.isChecked) {
+                        selectedBatchForPrint.add(item.lineItemUnitId)
+                    } else {
+                        selectedBatchForPrint.remove(item.lineItemUnitId)
+                    }
                 },
                 customKeyboard = customKeyboard,
             )
@@ -1402,8 +1467,45 @@ class GRNAddActivity : AppCompatActivity() {
             }
         }
 
+        createBatchesDialogBinding.ivBatchesSelection.setOnClickListener {
+            createBatchesList.forEachIndexed { index, it ->
+                it.isChecked = true
+                createBatchesMainRcAdapter!!.notifyItemChanged(index)
+            }
+        }
+        createBatchesDialogBinding.ivPrintAll.setOnClickListener {
+            printLabelForBulk()
+        }
+
     }
 
+
+    private fun printLabelForGRN(grnitem: GrnLineItemUnitStore) {
+        try {
+            var grnLineUnitList = ArrayList<Int>()
+            grnLineUnitList.add(grnitem.lineItemUnitId.toInt())
+            viewModel.printLabelForGRN(token, baseUrl, grnLineUnitList)
+        } catch (e: Exception) {
+            Toast.makeText(
+                this,
+                e.message.toString(),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    private fun printLabelForBulk() {
+        try {
+
+            viewModel.printLabelForGRNBulk(token, baseUrl, selectedBatchForPrint)
+        } catch (e: Exception) {
+            Toast.makeText(
+                this,
+                e.message.toString(),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
 
     private fun deleteBatches(grnitem: GrnLineItemUnitStore) {
         try {
@@ -2351,6 +2453,7 @@ class GRNAddActivity : AppCompatActivity() {
     private fun setLineItemRc() {
 
     }
+
     private fun updateTheGDPOForSamePoNumber(updatedItem: PoLineItemSelectionModelNewStore) {
         poLineItem.forEachIndexed { index, item ->
             if (item.poNumber == updatedItem.poNumber) {
@@ -2683,6 +2786,16 @@ class GRNAddActivity : AppCompatActivity() {
         createBatchesDialogBinding.grnAddHeader.tvPoQtyValue.setText(poModel.poqty.toString())
         createBatchesDialogBinding.grnAddHeader.tvMhTypeValue.setText(poModel.mhType)
         createBatchesDialogBinding.grnAddHeader.tvBalanceQuantity.setText(poModel.balQTY.toString())
+
+        if (
+            (poModel.pouom.contains("Number", ignoreCase = true) ||
+                    poModel.pouom.contains("PCS", ignoreCase = true))
+            && poModel.mhType.contains("Batch", ignoreCase = true)
+        ) {
+            createBatchesDialogBinding.ivBatchesSelection.visibility = View.VISIBLE
+        } else {
+            createBatchesDialogBinding.ivBatchesSelection.visibility = View.GONE
+        }
 
         if (poModel.isExpirable) {
             createBatchesDialogBinding.tvExpiryDate.visibility = View.VISIBLE

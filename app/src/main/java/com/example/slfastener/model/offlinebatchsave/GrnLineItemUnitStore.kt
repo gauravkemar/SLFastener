@@ -7,7 +7,7 @@ data class GrnLineItemUnitStore(
     var expiryDate: Any?,
     val isExpirable:Boolean,
     val internalBatchNo: String,
-    val isChecked: Boolean,
+    var isChecked: Boolean,
     var lineItemId: Int,
     var lineItemUnitId: Int,
     var recevedQty: String,

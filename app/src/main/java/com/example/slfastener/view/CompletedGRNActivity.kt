@@ -103,6 +103,7 @@ class CompletedGRNActivity : AppCompatActivity() {
     private lateinit var itemDescriptionBinding: DescriptionInfoDialogBinding
     var itemDescriptionDialog: Dialog? = null
 
+    lateinit var selectedBatchForPrint:ArrayList<Int>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,6 +130,8 @@ class CompletedGRNActivity : AppCompatActivity() {
         baseUrl = "$serverHttpPrefText://$serverIpSharedPrefText/service/api/"
         itemDescriptionBinding = DescriptionInfoDialogBinding.inflate(LayoutInflater.from(this))
         itemDescriptionDialog = Dialog(this)
+        selectedBatchForPrint = ArrayList()
+
 
         val receivedIntent = intent
         grnId = receivedIntent.getIntExtra("GRNID", 0)
@@ -341,7 +344,7 @@ class CompletedGRNActivity : AppCompatActivity() {
                                                     grnLineItemUnit.expiryDate,
                                                     i.isExpirable,
                                                     grnLineItemUnit.internalBatchNo,
-                                                    true,
+                                                    false,
                                                     grnLineItemUnit.lineItemId,
                                                     grnLineItemUnit.lineItemUnitId,
                                                     grnLineItemUnit.qty.toString(),
@@ -488,6 +491,54 @@ class CompletedGRNActivity : AppCompatActivity() {
                 }
             }
         }
+        viewModel.printLabelForGRNMutableResponse.observe(this) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    hideProgressBar()
+                    response.data?.let { resultResponse ->
+
+                    }
+                }
+
+                is Resource.Error -> {
+                    hideProgressBar()
+                    response.message?.let { errorMessage ->
+                        Toasty.error(
+                            this@CompletedGRNActivity,
+                            "failed - \nError Message: $errorMessage"
+                        ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@CompletedGRNActivity)
+                    }
+                }
+
+                is Resource.Loading -> {
+                    showProgressBar()
+                }
+            } }
+        viewModel.printLabelForGRNBulkMutableResponse.observe(this) { response ->
+            when (response) {
+                is Resource.Success -> {
+                    hideProgressBar()
+                    response.data?.let { resultResponse ->
+
+                    }
+                }
+                is Resource.Error -> {
+                    hideProgressBar()
+                    response.message?.let { errorMessage ->
+                        Toasty.error(
+                            this@CompletedGRNActivity,
+                            "failed - \nError Message: $errorMessage"
+                        ).show()
+                        session.showToastAndHandleErrors(errorMessage, this@CompletedGRNActivity)
+                    }
+                }
+
+                is Resource.Loading -> {
+                    showProgressBar()
+                }
+            } }
+
         ////batches dialog
         createBatchesDialogBinding =
             CompletedBatchesDialogBinding.inflate(LayoutInflater.from(this));
@@ -505,18 +556,57 @@ class CompletedGRNActivity : AppCompatActivity() {
         createBatchesDialogBinding.mcvCancel.setOnClickListener {
             createBatchedDialog!!.dismiss()
         }
-        createBatchesMainRcAdapter =
-            CreateBatchesCompletedAdapter(
+        createBatchesMainRcAdapter = CreateBatchesCompletedAdapter(
                 this@CompletedGRNActivity,
                 createBatchesList,
-                onSave = { position, updatedItem -> },
+                onSave = { position, updatedItem ->
+                    printLabelForGRN(updatedItem)
+                },
+                onItemCheckedChange = { item ->
+                    if(item.isChecked)
+                    {
+                        selectedBatchForPrint.add(item.lineItemUnitId)
+                    }
+                    else
+                    {
+                        selectedBatchForPrint.remove(item.lineItemUnitId)
+                    }
+                },
             )
         createBatchesDialogBinding.rcBatchs.adapter = createBatchesMainRcAdapter
         createBatchesDialogBinding.rcBatchs.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
+        createBatchesDialogBinding.ivPrintAll.setOnClickListener {
+            printLabelForBulk()
+        }
+
     }
 
+    private fun printLabelForGRN(grnitem: GrnLineItemUnitStore) {
+        try {
+            var grnLineUnitList = ArrayList<Int> ()
+            grnLineUnitList.add(grnitem.lineItemUnitId.toInt())
+            viewModel.printLabelForGRN(token, baseUrl, grnLineUnitList)
+        } catch (e: Exception) {
+            Toast.makeText(
+                this,
+                e.message.toString(),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+    private fun printLabelForBulk() {
+        try {
+            viewModel.printLabelForGRNBulk(token, baseUrl, selectedBatchForPrint)
+        } catch (e: Exception) {
+            Toast.makeText(
+                this,
+                e.message.toString(),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
     private fun setItemDescription(itemDesc: String) {
         itemDescriptionDialog?.show()
         itemDescriptionBinding.tvItemDescription.setText(itemDesc)
@@ -559,7 +649,8 @@ class CompletedGRNActivity : AppCompatActivity() {
                 binding.tvSpinnerSupplier.setSelection(defaultPosition)
                 binding.tvSpinnerSupplier.isEnabled = false
                 callParentLocationApi(getDraftGrnResponse?.grnTransaction?.bpCode.toString())
-                if (defaultPosition != -1) {
+                if (defaultPosition != -1)
+                {
                     binding.tvSpinnerSupplier.onItemSelectedListener =
                         object : AdapterView.OnItemSelectedListener {
                             override fun onItemSelected(
@@ -664,20 +755,6 @@ class CompletedGRNActivity : AppCompatActivity() {
         finish()
     }
 
-
-    private fun generateBarcodeForBatchesForExisitng() {
-        try {
-            viewModel.getBarcodeValueWithPrefixForExisitng(token, baseUrl, "G")
-        } catch (e: Exception) {
-            Toasty.error(
-                this,
-                e.message.toString(),
-                Toasty.LENGTH_LONG
-            ).show()
-        }
-
-    }
-
     private fun getSupplierList() {
         try {
             viewModel.getActiveSuppliersDDL(token, baseUrl)
@@ -746,6 +823,16 @@ class CompletedGRNActivity : AppCompatActivity() {
         createBatchesDialogBinding.grnAddHeader.tvPoQtyValue.setText(poModel.poqty.toString())
         createBatchesDialogBinding.grnAddHeader.tvMhTypeValue.setText(poModel.mhType)
         createBatchesDialogBinding.grnAddHeader.tvBalanceQuantity.setText(poModel.balQTY.toString())
+
+        if (
+            (poModel.pouom.contains("Number", ignoreCase = true) ||
+                    poModel.pouom.contains("PCS", ignoreCase = true))
+            && poModel.mhType.contains("Batch", ignoreCase = true)
+        ) {
+            createBatchesDialogBinding.ivBatchesSelection.visibility = View.VISIBLE
+        } else {
+            createBatchesDialogBinding.ivBatchesSelection.visibility = View.GONE
+        }
 
         if (poModel.isExpirable) {
             createBatchesDialogBinding.tvExpiryDate.visibility = View.VISIBLE

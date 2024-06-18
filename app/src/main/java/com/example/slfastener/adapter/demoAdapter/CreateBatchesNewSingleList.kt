@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.ImageButton
@@ -18,7 +19,6 @@ import com.example.slfastener.R
 import com.example.slfastener.helper.CustomKeyboard
 import com.example.slfastener.model.offlinebatchsave.GrnLineItemUnitStore
 import com.google.android.material.card.MaterialCardView
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -30,6 +30,8 @@ class CreateBatchesNewSingleList(
     private val addItem: (GrnLineItemUnitStore) -> Unit,
     private val addMultiItem: (GrnLineItemUnitStore) -> Unit,
     private val onDelete: (Int, GrnLineItemUnitStore) -> Unit,
+    private val onPrint: (Int, GrnLineItemUnitStore) -> Unit,
+    private val onItemCheckedChange: (GrnLineItemUnitStore) -> Unit,
     private var customKeyboard: CustomKeyboard? = null
 ) :
     RecyclerView.Adapter<CreateBatchesNewSingleList.ViewHolder>() {
@@ -189,6 +191,7 @@ class CreateBatchesNewSingleList(
             }
         }
         updateView(holder, grnLineItemUnit)
+        setMultiSelect(holder, grnLineItemUnit)
         holder.ivSave.setOnClickListener {
             if (grnLineItemUnit.isExpirable) {
                 if (holder.tvExpiryDate.text.toString() != "" && holder.tvExpiryDate.text.toString() != "null") {
@@ -311,8 +314,35 @@ class CreateBatchesNewSingleList(
         holder.tvExpiryDate.setOnClickListener {
             showDatePickerDialog(holder)
         }
+        holder.ivPrint.setOnClickListener {
+            onPrint(position,grnLineItemUnit)
+        }
     }
 
+    private fun setMultiSelect(holder: ViewHolder, grnLineItemUnit: GrnLineItemUnitStore)
+    {
+        if(grnLineItemUnit.isUpdate)
+        {
+            if(
+                (grnLineItemUnit.UOM.contains("Number",ignoreCase = true) ||
+                        grnLineItemUnit.UOM .contains("PCS",ignoreCase = true) )
+                && grnLineItemUnit.mhType.contains("Batch",ignoreCase = true))
+            {
+                holder.cbBatchesLineUnitItem.visibility=View.VISIBLE
+                holder.cbBatchesLineUnitItem.isChecked = grnLineItemUnit.isChecked
+                holder.cbBatchesLineUnitItem.setOnCheckedChangeListener(null) // Clear before setting to avoid recursion
+                holder.cbBatchesLineUnitItem.setOnCheckedChangeListener { _, isChecked ->
+                    grnLineItemUnit.isChecked = isChecked
+                    onItemCheckedChange(grnLineItemUnit)
+                }
+            }
+            else{
+                holder.cbBatchesLineUnitItem.visibility=View.GONE
+            }
+
+
+        }
+    }
     private fun updateView(holder: ViewHolder, batchInfoItem: GrnLineItemUnitStore) {
         with(holder) {
             if (batchInfoItem.isUpdate) {
@@ -321,12 +351,14 @@ class CreateBatchesNewSingleList(
                 holder.edWeight.isFocusable = false
                 holder.edWeight.isEnabled = false
                 holder.mcvWeight.visibility = View.VISIBLE
+                holder.ivPrint.visibility = View.VISIBLE
             } else {
                 edWeight.setBackgroundColor(Color.TRANSPARENT)
                 tvWeight.setBackgroundColor(Color.TRANSPARENT)
                 holder.edWeight.isFocusable = true
                 holder.edWeight.isEnabled = true
                 holder.mcvWeight.visibility = View.GONE
+                holder.ivPrint.visibility = View.GONE
             }
         }
     }
@@ -356,9 +388,11 @@ class CreateBatchesNewSingleList(
         val ivAdd: ImageButton = itemView.findViewById(R.id.ivAdd)
         val ivSave: ImageButton = itemView.findViewById(R.id.ivSave)
         val ivDelete: ImageButton = itemView.findViewById(R.id.ivDelete)
+        val ivPrint: ImageButton = itemView.findViewById(R.id.ivPrint)
         val ivMultiAdd: ImageButton = itemView.findViewById(R.id.ivMultiAdd)
         val clCardMain: ConstraintLayout = itemView.findViewById(R.id.clCardMain)
         val mcvWeight: MaterialCardView = itemView.findViewById(R.id.mcvWeight)
+        val cbBatchesLineUnitItem: CheckBox = itemView.findViewById(R.id.cbBatchesLineUnitItem)
     }
 
     private fun showDatePickerDialog(holder: ViewHolder) {

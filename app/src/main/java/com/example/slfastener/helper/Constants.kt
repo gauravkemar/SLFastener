@@ -29,6 +29,7 @@ object Constants {
     const val KEY_JWT_TOKEN = "jwtToken"
     const val KEY_SERVER_IP = "serverIp"
     const val KEY_HTTP = "http"
+    const val KEY_PRINTER_TYPE = "printer_type"
     const val KEY_PORT = "port"
     const val KEY_GR_PRN = "gr_prn"
     const val KEY_GRN_PRN = "grn_prn"
@@ -55,6 +56,7 @@ object Constants {
     const val DELETE_GRN_LINE_ITEM_ID = "GRN/deleteGRNLineItemonId"
     const val DELETE_GR_LINE_ITEM_ID = "GoodsReceipt/deleteGRLineItem"
     const val SUBMIT_GRN = "GRN/submitGRN"
+
     const val GET_ALL_LOCATION = "Location/getAllLocations"
     const val GET_ALL_ITEM_MASTER = "ItemMaster/getAllItemMaster"
     const val PROCESS_GR_TRANSACTION = "GoodsReceipt/processGRTransaction"
@@ -64,4 +66,7 @@ object Constants {
     const val DELETE_GR_LINE_ITEM_UNIT = "GoodsReceipt/deleteGRLineItemsUnit"
     const val SUBMIT_GR = "GoodsReceipt/submitGR"
 
+
+    //printing
+    const val PRINT_LABEL_BARCODE_For_GRN = "PrintProductLabel/printLabelbarcodeForGRNAsync"
 }

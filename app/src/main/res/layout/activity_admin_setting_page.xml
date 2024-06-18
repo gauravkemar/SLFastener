@@ -309,7 +309,6 @@
                                 app:layout_constraintTop_toBottomOf="@+id/clBaseurlParent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
-
                                 >
                                 <com.google.android.material.card.MaterialCardView
                                     android:id="@+id/mcvPrinterSelect"
@@ -366,12 +365,86 @@
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     >
+
+                                    <androidx.constraintlayout.widget.ConstraintLayout
+                                        android:id="@+id/clGeneralPrinterSettings"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_margin="5dp"
+                                        app:layout_constraintTop_toTopOf="parent"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        >
+
+                                        <TextView
+                                            android:id="@+id/tvGeneral"
+                                            android:layout_width="0dp"
+                                            android:layout_height="match_parent"
+                                            android:text="PRINTER TYPE :"
+                                            android:textSize="14sp"
+                                            android:textStyle="bold"
+                                            android:textColor="@color/black"
+                                            app:layout_constraintHorizontal_weight="0.2"
+                                            app:layout_constraintTop_toTopOf="parent"
+                                            app:layout_constraintBottom_toBottomOf="parent"
+                                            app:layout_constraintStart_toStartOf="parent"
+                                            app:layout_constraintEnd_toStartOf="@+id/tltvGeneralPrnSpinner"
+                                            />
+                                        <com.google.android.material.textfield.TextInputLayout
+                                            android:id="@+id/tltvGeneralPrnSpinner"
+                                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            app:endIconMode="dropdown_menu"
+                                            android:layout_marginStart="5dp"
+                                            android:layout_marginEnd="10dp"
+                                            app:layout_constraintEnd_toStartOf="@+id/btnUpdateGeneral"
+                                            app:layout_constraintHorizontal_weight="0.6"
+                                            app:layout_constraintStart_toEndOf="@+id/tvGeneral"
+                                            app:layout_constraintTop_toTopOf="parent"
+                                            app:layout_constraintBottom_toBottomOf="parent">
+
+                                            <AutoCompleteTextView
+                                                android:id="@+id/autoCompleteGeneral"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:hint="PRN List"
+                                                android:textSize="12sp"
+                                                android:padding="17dp"
+                                                android:imeOptions="actionDone"
+                                                android:inputType="text"
+                                                android:textColor="@color/black" />
+
+                                        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+                                        <com.google.android.material.button.MaterialButton
+                                            android:id="@+id/btnUpdateGeneral"
+                                            android:layout_width="0dp"
+                                            android:layout_height="match_parent"
+                                            android:text="UPdate"
+                                            android:textAllCaps="true"
+                                            android:textColor="@color/white"
+                                            android:textSize="15sp"
+                                            android:textStyle="bold"
+                                            android:padding="13dp"
+                                            app:layout_constraintHorizontal_weight="0.2"
+                                            app:cornerRadius="10dp"
+                                            app:layout_constraintEnd_toEndOf="parent"
+                                            app:layout_constraintStart_toEndOf="@+id/tltvGeneralPrnSpinner"
+                                            app:layout_constraintTop_toTopOf="parent"
+                                            app:layout_constraintBottom_toBottomOf="parent"
+                                            />
+
+                                    </androidx.constraintlayout.widget.ConstraintLayout>
                                     <androidx.constraintlayout.widget.ConstraintLayout
                                         android:id="@+id/clGRPrinterSettings"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:layout_margin="5dp"
-                                        app:layout_constraintTop_toTopOf="parent"
+                                        app:layout_constraintTop_toBottomOf="@+id/clGeneralPrinterSettings"
                                         app:layout_constraintStart_toStartOf="parent"
                                         app:layout_constraintEnd_toEndOf="parent"
                                         >

@@ -136,6 +136,13 @@ class SLFastenerRepository {
         baseUrl: String,
     ) = RetrofitInstance.api(baseUrl).getAllLocations(bearerToken)
 
+    suspend fun printLabelForGRN(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+        @Body
+        grnLineUnitItemId: ArrayList<Int>
+    ) = RetrofitInstance.api(baseUrl).printLabelForGRN(bearerToken,grnLineUnitItemId)
+
 
     suspend fun getAllItemMaster(
         @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
