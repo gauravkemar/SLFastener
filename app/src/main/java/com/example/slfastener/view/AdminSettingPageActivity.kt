@@ -45,7 +45,7 @@ class AdminSettingPageActivity : AppCompatActivity() {
         serverHttpPrefText = user[Constants.KEY_HTTP].toString()
         serverPrinterTypePrefText = user[Constants.KEY_PRINTER_TYPE].toString()
 
-
+        binding.edServerIp.setText(serverIpSharedPrefText)
 
 
         ///http spinner
