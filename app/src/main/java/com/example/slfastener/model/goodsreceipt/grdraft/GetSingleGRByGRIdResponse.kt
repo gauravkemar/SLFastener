@@ -21,4 +21,4 @@ data class GetSingleGRByGRIdResponse(
     val sgrDate: Any,
     val sgrNumber: Any,
 
-)
+    )

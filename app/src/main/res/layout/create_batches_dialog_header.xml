@@ -4,7 +4,6 @@
     android:id="@+id/lineItemDetails"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
@@ -106,7 +105,7 @@
             android:paddingEnd="4dp"
             android:paddingBottom="5dp"
             android:text="Item Code"
-            android:textSize="12sp"
+            android:textSize="@dimen/tv_text"
             android:textStyle="bold" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -138,7 +137,8 @@
             android:paddingEnd="4dp"
             android:paddingBottom="5dp"
             android:text="Item Code"
-            android:textSize="12sp"
+
+            android:textSize="@dimen/tv_text"
             android:textStyle="bold" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -170,7 +170,7 @@
             android:paddingEnd="4dp"
             android:paddingBottom="5dp"
             android:text="PUOM"
-            android:textSize="12sp"
+            android:textSize="@dimen/tv_text"
             android:textStyle="bold" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -202,7 +202,7 @@
             android:paddingEnd="4dp"
             android:paddingBottom="5dp"
             android:text="MH TYPE"
-            android:textSize="12sp"
+            android:textSize="@dimen/tv_text"
             android:textStyle="bold" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -237,7 +237,7 @@
             android:paddingBottom="5dp"
 
             android:text="PO QTY"
-            android:textSize="12sp"
+            android:textSize="@dimen/tv_text"
             android:textStyle="bold" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -271,7 +271,7 @@
             android:paddingBottom="5dp"
 
             android:text="Bal QTY"
-            android:textSize="12sp"
+            android:textSize="@dimen/tv_text"
             android:textStyle="bold" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -305,7 +305,7 @@
             android:paddingEnd="4dp"
             android:paddingBottom="5dp"
             android:text="Rec. QTY"
-            android:textSize="12sp"
+            android:textSize="@dimen/tv_text"
             android:textStyle="bold" />
 
     </com.google.android.material.textfield.TextInputLayout>

@@ -14,17 +14,10 @@ import com.example.demorfidapp.helper.Resource
 import com.example.demorfidapp.helper.SessionManager
 import com.example.demorfidapp.repository.SLFastenerRepository
 import com.example.slfastener.R
-import com.example.slfastener.adapter.GRNMainCompletedAdapter
-import com.example.slfastener.adapter.GrnMainAdapter
 import com.example.slfastener.adapter.gradapters.GRMainAdapter
 import com.example.slfastener.adapter.gradapters.GRMainCompletedAdapter
 import com.example.slfastener.databinding.ActivityGrmainBinding
-import com.example.slfastener.databinding.ActivityGrnmainBinding
 import com.example.slfastener.model.goodsreceipt.GetAllGRResponse
-import com.example.slfastener.model.grnmain.GetFilteredGRNRequest
-import com.example.slfastener.model.grnmain.GetFilteredGRNResponse
-import com.example.slfastener.viewmodel.GRNTransactionViewModel
-import com.example.slfastener.viewmodel.GRNTransactionViewModelProviderFactory
 import com.example.slfastener.viewmodel.GRViewModel
 import com.example.slfastener.viewmodel.GRViewModelFactory
 import es.dmoral.toasty.Toasty

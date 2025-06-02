@@ -127,12 +127,12 @@
                             tools:listitem="@layout/line_item_selection"
                             app:layout_constraintVertical_weight="0.90"
                             app:layout_constraintTop_toBottomOf="@+id/lineItemHeader"
-                            app:layout_constraintBottom_toTopOf="@+id/mcvSubmit"
+                            app:layout_constraintBottom_toTopOf="@+id/mcvPoLineItemSubmit"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             />
                         <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/mcvSubmit"
+                            android:id="@+id/mcvPoLineItemSubmit"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:cardCornerRadius="5dp"

@@ -1,6 +1,5 @@
 package com.example.slfastener.adapter.completedgrn
 
-import android.app.DatePickerDialog
 import android.content.Context
 import android.graphics.Color
 import android.util.Log
@@ -11,19 +10,17 @@ import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.slfastener.R
-import com.example.slfastener.adapter.demoAdapter.CreateBatchesNewSingleList
-import com.example.slfastener.helper.CustomKeyboard
-import com.example.slfastener.model.offlinebatchsave.GrnLineItemUnitStore
+import com.example.slfastener.model.offlinebatchsave.CustomGrnLineItemUnit
 import com.google.android.material.card.MaterialCardView
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Locale
 
 class CreateBatchesCompletedAdapter(
     private val context: Context,
-    private val batches: MutableList<GrnLineItemUnitStore>,
-    private val onSave: (Int, GrnLineItemUnitStore) -> Unit,
-    private val onItemCheckedChange: (GrnLineItemUnitStore) -> Unit,
+    private val batches: MutableList<CustomGrnLineItemUnit>,
+    private val onSave: (Int, CustomGrnLineItemUnit) -> Unit,
+
+    private val onItemCheckedChange: (CustomGrnLineItemUnit) -> Unit,
 ) :
     RecyclerView.Adapter<CreateBatchesCompletedAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -34,7 +31,7 @@ class CreateBatchesCompletedAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val itemPosition = holder.layoutPosition
-        val grnLineItemUnit: GrnLineItemUnitStore = batches?.get(itemPosition)!!
+        val grnLineItemUnit: CustomGrnLineItemUnit = batches?.get(itemPosition)!!
         holder.tvSrnNo.setText("${itemPosition + 1}")
         holder.tvBatchNo.setText(grnLineItemUnit.supplierBatchNo)
         holder.tvInternalBatchNo.setText(grnLineItemUnit.internalBatchNo)
@@ -42,10 +39,10 @@ class CreateBatchesCompletedAdapter(
         holder.tvBarcodeLableValue.setText(grnLineItemUnit.barcode)
         holder.tvWeight.setText(grnLineItemUnit.recevedQty)
         holder.edWeight.setText(grnLineItemUnit.recevedQty)
-
         updateView(holder, grnLineItemUnit)
         setMultiSelect(holder, grnLineItemUnit)
-        holder.ivSave.setOnClickListener {
+
+        holder.ivDelete.setOnClickListener {
             onSave(position,grnLineItemUnit)
         }
 
@@ -60,18 +57,50 @@ class CreateBatchesCompletedAdapter(
 
         if (grnLineItemUnit.isExpirable) {
             holder.tvExpiryDate.visibility = View.VISIBLE
-            holder.tvExpiryDate.setText(grnLineItemUnit.expiryDate.toString())
+
+
+            Log.e("inputDateelse","grnLineItemUnit.expiryDate.toString()")
+            if (grnLineItemUnit.expiryDate.toString() != "" && grnLineItemUnit.expiryDate.toString() !="null") {
+                val inputDate = grnLineItemUnit.expiryDate.toString()
+                val inputFormat: SimpleDateFormat
+                val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+
+                if (inputDate.length == "yyyy-MM-dd'T'HH:mm:ss".length) {
+                    Log.e("inputDate.length ",inputDate.length.toString())
+                    inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+                    val parsedDate = inputFormat.parse(inputDate)
+                    val formattedDate = outputFormat.format(parsedDate)
+                    holder.tvExpiryDate.setText(formattedDate)
+                } else {
+                    Log.e("inputDateelse",inputDate.length.toString())
+                    inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    val parsedDate = inputFormat.parse(inputDate)
+                    val formattedDate = outputFormat.format(parsedDate)
+                    holder.tvExpiryDate.setText(formattedDate)
+                }
+            } else {
+                Log.e("inputDateelse","outerelse")
+                holder.tvExpiryDate.setText("")
+            }
+
         } else {
             holder.tvExpiryDate.visibility = View.GONE
         }
+
+
+
     }
 
-    private fun setMultiSelect(holder: ViewHolder, grnLineItemUnit: GrnLineItemUnitStore)
+    private fun setMultiSelect(
+        holder: ViewHolder,
+        grnLineItemUnit: CustomGrnLineItemUnit
+    )
     {
         if(grnLineItemUnit.isUpdate)
         {
             if(
-                (grnLineItemUnit.UOM.contains("Number",ignoreCase = true) ||
+                (grnLineItemUnit.UOM!!.contains("Number",ignoreCase = true) ||
                         grnLineItemUnit.UOM .contains("PCS",ignoreCase = true) )
                 && grnLineItemUnit.mhType.contains("Batch",ignoreCase = true))
             {
@@ -89,7 +118,7 @@ class CreateBatchesCompletedAdapter(
 
         }
     }
-    private fun updateView(holder: ViewHolder, batchInfoItem: GrnLineItemUnitStore) {
+    private fun updateView(holder: ViewHolder, batchInfoItem: CustomGrnLineItemUnit) {
         with(holder) {
             if (batchInfoItem.isUpdate) {
                 edWeight.setBackgroundColor(Color.LTGRAY)

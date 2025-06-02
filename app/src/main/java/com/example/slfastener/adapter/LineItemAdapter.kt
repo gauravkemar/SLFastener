@@ -15,14 +15,14 @@ class LineItemAdapter  : RecyclerView.Adapter<LineItemAdapter.ViewHolder>() {
 
     private var poLineItemMainModel = mutableListOf<PoLineItemSelectionModel>()
     private var context: Context?=null
-   /* fun setGrnMainList(
-        poLineItemMainModel: ArrayList<PoLineItemSelectionModel>,
-        context: Context,
-    ) {
-        this.poLineItemMainModel =poLineItemMainModel
-        this.context=context
-        notifyDataSetChanged()
-    }*/
+    /* fun setGrnMainList(
+         poLineItemMainModel: ArrayList<PoLineItemSelectionModel>,
+         context: Context,
+     ) {
+         this.poLineItemMainModel =poLineItemMainModel
+         this.context=context
+         notifyDataSetChanged()
+     }*/
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.line_item_selection, parent, false)

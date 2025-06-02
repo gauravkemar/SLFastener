@@ -1,12 +1,13 @@
 package com.example.slfastener.model.goodsreceipt
 
 data class GetAllItemMasterResponse(
-    val auom: String,
+    val aUoM: String,
     val code: String,
     val createdBy: String,
     val createdDate: String,
     val defaultLocationCode: String,
     val description: String,
+    val invFrequency: String,
     val isActive: Boolean,
     val isExpirable: Boolean,
     val isPurchasable: Boolean,
@@ -15,10 +16,10 @@ data class GetAllItemMasterResponse(
     val itemGroup: String,
     val itemId: Int,
     val mhType: String,
-    val modifiedBy: String?,
-    val modifiedDate: Any?,
+    val modifiedBy: String,
+    val modifiedDate: String,
     val msq: Int,
     val name: String,
-    val uom: String,
-    val uomRatio: Double
+    val uoM: String,
+    val uoMRatio: Double
 )

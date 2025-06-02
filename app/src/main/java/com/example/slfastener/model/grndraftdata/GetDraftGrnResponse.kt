@@ -1,7 +1,7 @@
 package com.example.slfastener.model.grndraftdata
 
 data class GetDraftGrnResponse(
-    val grnTransaction: GrnTransaction,
     val poIds: List<Int>,
+    val grnTransaction: GrnTransaction,
     val poTransaction: List<PoTransaction>
 )

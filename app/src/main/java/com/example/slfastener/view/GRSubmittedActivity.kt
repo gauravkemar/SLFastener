@@ -22,17 +22,11 @@ import com.example.demorfidapp.helper.Resource
 import com.example.demorfidapp.helper.SessionManager
 import com.example.demorfidapp.repository.SLFastenerRepository
 import com.example.slfastener.R
-import com.example.slfastener.adapter.completedgrn.CreateBatchesCompletedAdapter
-import com.example.slfastener.adapter.gradapters.CreateBatchesForGRAdapter
-import com.example.slfastener.adapter.gradapters.GRItemSelectionAdapter
-import com.example.slfastener.adapter.gradapters.GrMainAddAdapter
 import com.example.slfastener.adapter.gradapters.completedGr.CreateBatchesGRCompletedAdapter
 import com.example.slfastener.adapter.gradapters.completedGr.GRMainAddCompletedAdapter
 import com.example.slfastener.databinding.ActivityGrsubmittedBinding
 import com.example.slfastener.databinding.CompletedBatchesDialogBinding
-import com.example.slfastener.databinding.CreateBatchesDialogBinding
 import com.example.slfastener.databinding.DescriptionInfoDialogBinding
-import com.example.slfastener.databinding.SelectItemFromItemMasterDialogBinding
 import com.example.slfastener.model.GetActiveSuppliersDDLResponse
 import com.example.slfastener.model.getalllocation.GetAllWareHouseLocationResponse
 import com.example.slfastener.model.goodsreceipt.GRLineUnitItemSelection
@@ -65,7 +59,7 @@ class GRSubmittedActivity : AppCompatActivity() {
     //draft
     private var getDraftGRResponse: GetSingleGRByGRIdResponse? = null
 
-//line item
+    //line item
     lateinit var lineItem: MutableList<GetAllItemMasterSelection>
     lateinit var selectedLineItem: MutableList<GetAllItemMasterSelection>
     private var grMainAddAdapter: GRMainAddCompletedAdapter? = null
@@ -95,6 +89,7 @@ class GRSubmittedActivity : AppCompatActivity() {
     private var serverIpSharedPrefText: String? = null
     private var serverHttpPrefText: String? = null
 
+    lateinit var selectedBatchForPrint: ArrayList<Int>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -108,6 +103,7 @@ class GRSubmittedActivity : AppCompatActivity() {
         getActiveSuppliersDDLResponse = ArrayList()
         selectedLineItem = ArrayList()
         lineItem = ArrayList()
+        selectedBatchForPrint = ArrayList()
         createBatchesList = ArrayList()
         session = SessionManager(this)
         userDetails = session.getUserDetails()
@@ -128,14 +124,13 @@ class GRSubmittedActivity : AppCompatActivity() {
             currentGrID = grId
             callDefaultData()
             binding.mcvKGRNNo.visibility = View.VISIBLE
-          //  binding.mcvNewLineItem.visibility = View.VISIBLE
+            //  binding.mcvNewLineItem.visibility = View.VISIBLE
         } else
         {
             binding.mcvKGRNNo.visibility = View.GONE
 
             //binding.mcvAddGrn.visibility = View.VISIBLE
         }
-
 
         viewModel.getAllLocationsMutableResponse.observe(this) { response ->
             when (response) {
@@ -268,69 +263,70 @@ class GRSubmittedActivity : AppCompatActivity() {
                         try {
                             if (resultResponse != null) {
                                 if (grId != 0) {
-                                        //getPOsAndLineItemsOnPOIdsResponse.addAll(resultResponse)
-                                        var df = getDraftGRResponse!!.grLineItems
-                                        for (i in df) {
-                                            var itemCode = i.itemCode
+                                    //getPOsAndLineItemsOnPOIdsResponse.addAll(resultResponse)
+                                    var df = getDraftGRResponse!!.grLineItems
+                                    for (i in df) {
+                                        var itemCode = i.itemCode
 
-                                            val convertedGrnLineItemUnits =
-                                                i.grLineItemUnit.map { grLineItemUnit ->
-                                                    var expiryDate = grLineItemUnit.expiryDate ?: "Empty"
-                                                    GRLineUnitItemSelection(
-                                                        grLineItemUnit.barcode,
-                                                        grLineItemUnit.batchNo,
-                                                        false,
-                                                        expiryDate.toString(),
-                                                        grLineItemUnit.internalBatchNo,
-                                                        false,
-                                                        false,
-                                                        grLineItemUnit.lineItemId,
-                                                        grLineItemUnit.lineItemUnitId,
-                                                        grLineItemUnit.qty.toString(),
-                                                        grLineItemUnit.uom,
-                                                        i.mhType,
-                                                        true,
-                                                    )
-                                                }.toMutableList()
-                                            Log.e(
-                                                "editcaseDefaultList",
-                                                convertedGrnLineItemUnits.toString() + "//////${df.size}"
-                                            )
-                                            Log.e("editcaseDefaultListdf ", df.toString())
-                                            val existingItem =
-                                                selectedLineItem.find { it.code == itemCode }
-                                            if (existingItem == null) {
-                                                selectedLineItem.add(
-                                                    GetAllItemMasterSelection(
-                                                        grId,
-                                                        i.uom,
-                                                        i.itemCode,
-                                                        i.defautLocation,
-                                                        i.lineItemId,
-                                                        i.locationId,
-                                                        i.itemDescription,
-                                                        false,
-                                                        false,
-                                                        i.isQCRequired,
-                                                        false,
-                                                        "",
-                                                        0,
-                                                        i.mhType,
-                                                        0,
-                                                        i.itemName,
-                                                        i.uom,
-                                                        0.00,
-                                                        true,
-                                                        i.qty.toString(),
-                                                        convertedGrnLineItemUnits,
-                                                        getAllLocation,
-                                                        true
-                                                    )
+                                        val convertedGrnLineItemUnits =
+                                            i.grLineItemUnit.map { grLineItemUnit ->
+                                                var expiryDate = grLineItemUnit.expiryDate ?: "Empty"
+                                                GRLineUnitItemSelection(
+                                                    grLineItemUnit.barcode,
+                                                    grLineItemUnit.batchNo,
+                                                    false,
+                                                    expiryDate.toString(),
+                                                    grLineItemUnit.kBatchNo,
+                                                    false,
+                                                    false,
+                                                    grLineItemUnit.lineItemId,
+                                                    grLineItemUnit.lineItemUnitId,
+                                                    grLineItemUnit.qty.toString(),
+                                                    grLineItemUnit.uoM,
+                                                    i.mhType,
+                                                    true,
+                                                    false
                                                 )
+                                            }.toMutableList()
+                                        Log.e(
+                                            "editcaseDefaultList",
+                                            convertedGrnLineItemUnits.toString() + "//////${df.size}"
+                                        )
+                                        Log.e("editcaseDefaultListdf ", df.toString())
+                                        val existingItem =
+                                            selectedLineItem.find { it.code == itemCode }
+                                        if (existingItem == null) {
+                                            selectedLineItem.add(
+                                                GetAllItemMasterSelection(
+                                                    grId,
+                                                    i.uoM,
+                                                    i.itemCode,
+                                                    i.defautLocation,
+                                                    i.lineItemId,
+                                                    i.locationId,
+                                                    i.itemDescription,
+                                                    false,
+                                                    false,
+                                                    i.isQCRequired,
+                                                    false,
+                                                    "",
+                                                    0,
+                                                    i.mhType,
+                                                    0,
+                                                    i.itemName,
+                                                    i.uoM,
+                                                    0.00,
+                                                    true,
+                                                    i.qty.toString(),
+                                                    convertedGrnLineItemUnits,
+                                                    getAllLocation,
+                                                    true
+                                                )
+                                            )
 
-                                            }
                                         }
-                                        grMainAddAdapter!!.notifyDataSetChanged()
+                                    }
+                                    grMainAddAdapter!!.notifyDataSetChanged()
 
                                 }
                             }
@@ -386,7 +382,6 @@ class GRSubmittedActivity : AppCompatActivity() {
         binding.rcGrAdd!!.adapter = grMainAddAdapter
         binding.rcGrAdd.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-
         createBatchesDialogBinding = CompletedBatchesDialogBinding.inflate(LayoutInflater.from(this));
         createBatchedDialog = AppCompatDialog(this).apply {
             setContentView(createBatchesDialogBinding.root)
@@ -405,7 +400,19 @@ class GRSubmittedActivity : AppCompatActivity() {
         createBatchesMainRcAdapter =
             CreateBatchesGRCompletedAdapter(this@GRSubmittedActivity,
                 createBatchesList,
-                onSave = { position, updatedItem -> },
+                onSave = { position, updatedItem ->
+                    printLabelForGR(updatedItem)
+                },
+                onItemCheckedChange = { item ->
+                    if (item.isChecked)
+                    {
+                        selectedBatchForPrint.add(item.LineItemUnitId)
+                    }
+                    else
+                    {
+                        selectedBatchForPrint.remove(item.LineItemUnitId)
+                    }
+                },
             )
         createBatchesDialogBinding.rcBatchs.adapter = createBatchesMainRcAdapter
         createBatchesDialogBinding.rcBatchs.layoutManager =
@@ -413,7 +420,46 @@ class GRSubmittedActivity : AppCompatActivity() {
         binding.mcvCancel.setOnClickListener {
             onBackPressed()
         }
+
+        createBatchesDialogBinding.ivBatchesSelection.setOnClickListener {
+            createBatchesList.forEachIndexed { index, it ->
+                it.isChecked = true
+                selectedBatchForPrint.add(it.LineItemUnitId)
+                createBatchesMainRcAdapter!!.notifyItemChanged(index)
+
+            }
+        }
+        createBatchesDialogBinding.ivPrintAll.setOnClickListener {
+            printLabelForBulk()
+            Log.e("selectedBatchForPrint",selectedBatchForPrint.toString())
+        }
     }
+    private fun printLabelForGR(grnitem: GRLineUnitItemSelection) {
+        try {
+            var grnLineUnitList = ArrayList<Int>()
+            grnLineUnitList.add(grnitem.LineItemUnitId)
+            viewModel.printLabelForGR(token, baseUrl, grnLineUnitList)
+        } catch (e: Exception) {
+            Toast.makeText(
+                this,
+                e.message.toString(),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    private fun printLabelForBulk() {
+        try {
+            viewModel.printLabelForGRBulk(token, baseUrl, selectedBatchForPrint)
+        } catch (e: Exception) {
+            Toast.makeText(
+                this,
+                e.message.toString(),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
     private fun setCreateBatchesDialog(poModel: GetAllItemMasterSelection) {
         setInfoValues(poModel)
         createBatchedDialog!!.show()
@@ -473,8 +519,6 @@ class GRSubmittedActivity : AppCompatActivity() {
             getDraftGr()
         }
     }
-
-
     private fun getDraftGr() {
         try {
             viewModel.getSingleGRByGRId(token, baseUrl, grId!!.toInt())
@@ -544,8 +588,6 @@ class GRSubmittedActivity : AppCompatActivity() {
     private fun handleSupplierSelection(position: Int) {
         val selectedItem = supplierSpinnerArray[position]
         Log.e("clickedDropdown", selectedItem.toString())
-        // if (!isIntialSelectSupplier) {
-        //if (selectedItem != "Select Supplier") {
         selectedBpName = selectedItem
         Log.e("supplierselected1", selectedBpName.toString())
         val selectedKey = supplierMap.entries.find { it.value == selectedItem }?.key
@@ -559,11 +601,7 @@ class GRSubmittedActivity : AppCompatActivity() {
             Log.e("supplierselected2", selectedBpName.toString())
         }
         Log.e("supplierselected3", selectedBpName.toString())
-        //   } else {
-        //      selectedSupplierCode = ""
-        //  }
-        //  }
-        // isIntialSelectSupplier = false
+
     }
 
 

@@ -1,7 +1,6 @@
 package com.example.slfastener.adapter
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.slfastener.R
 import com.example.slfastener.model.grnmain.GetFilteredGRNResponse
-import com.example.slfastener.model.offlinebatchsave.PoLineItemSelectionModelNewStore
+import com.google.android.material.card.MaterialCardView
 import java.text.SimpleDateFormat
 import java.util.ArrayList
 
@@ -46,6 +45,12 @@ class GRNMainCompletedAdapter (private val editItem: (Int) -> Unit) : RecyclerVi
         holder.tvCurrency.setText(grnMainModel.currency)
         holder.tvStatus.setText(grnMainModel.grnStatus)
         if (grnMainModel.kgrnDate != null) {
+
+
+
+
+
+
             holder.tvKGRNDate.setText(convertDateFormatKgrn(grnMainModel.kgrnDate))
         }
         if (grnMainModel.invoiceDate != null) {
@@ -92,7 +97,7 @@ class GRNMainCompletedAdapter (private val editItem: (Int) -> Unit) : RecyclerVi
         val tvCurrency: TextView = itemView.findViewById(R.id.tvCurrency)
         val tvStatus: TextView = itemView.findViewById(R.id.tvStatus)
         val ivAdd: ImageButton = itemView.findViewById(R.id.ivAdd)
-        val ivEdit: ImageButton = itemView.findViewById(R.id.ivEdit)
+        val ivEdit: MaterialCardView = itemView.findViewById(R.id.ivEdit)
         val ivDelete: ImageButton = itemView.findViewById(R.id.ivDelete)
         val ivPrint: ImageButton = itemView.findViewById(R.id.ivPrint)
 

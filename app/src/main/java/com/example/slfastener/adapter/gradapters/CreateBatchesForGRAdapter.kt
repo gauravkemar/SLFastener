@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.ImageButton
@@ -15,6 +16,7 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.slfastener.R
+import com.example.slfastener.adapter.gradapters.completedGr.CreateBatchesGRCompletedAdapter
 import com.example.slfastener.helper.CustomKeyboard
 import com.example.slfastener.model.goodsreceipt.GRLineUnitItemSelection
 import com.google.android.material.card.MaterialCardView
@@ -29,6 +31,8 @@ class CreateBatchesForGRAdapter(
     private val addItem: (GRLineUnitItemSelection) -> Unit,
     private val addMultiItem: (GRLineUnitItemSelection) -> Unit,
     private val onDelete: (Int, GRLineUnitItemSelection) -> Unit,
+    private val onPrint: (Int, GRLineUnitItemSelection) -> Unit,
+    private val onItemCheckedChange: (GRLineUnitItemSelection) -> Unit,
     private var customKeyboard: CustomKeyboard? = null
 ) :
     RecyclerView.Adapter<CreateBatchesForGRAdapter.ViewHolder>() {
@@ -107,7 +111,8 @@ class CreateBatchesForGRAdapter(
                                 holder.edWeight.text.toString(),
                                 grLineItemUnit.UOM,
                                 grLineItemUnit.mhType,
-                                false
+                                false,
+                                grLineItemUnit.isChecked
                             )
                         )
                         holder.edWeight.clearFocus()
@@ -129,7 +134,8 @@ class CreateBatchesForGRAdapter(
                             holder.edWeight.text.toString(),
                             grLineItemUnit.UOM,
                             grLineItemUnit.mhType,
-                            false
+                            false,
+                            grLineItemUnit.isChecked
                         )
                     )
                     holder.edWeight.clearFocus()
@@ -159,7 +165,8 @@ class CreateBatchesForGRAdapter(
                                 holder.edWeight.text.toString(),
                                 grLineItemUnit.UOM,
                                 grLineItemUnit.mhType,
-                                false
+                                false,
+                                grLineItemUnit.isChecked
                             )
                         )
                         holder.edWeight.clearFocus()
@@ -169,20 +176,21 @@ class CreateBatchesForGRAdapter(
                 } else {
                     addMultiItem(
                         GRLineUnitItemSelection(
-                        grLineItemUnit.Barcode,
-                        grLineItemUnit.BatchNo,
-                        grLineItemUnit.isExpirable,
-                        "",
-                        grLineItemUnit.InternalBatchNo,
-                        grLineItemUnit.IsEdit,
-                        grLineItemUnit.Isdisabled,
-                        grLineItemUnit.LineItemId,
-                        grLineItemUnit.LineItemUnitId,
-                        holder.edWeight.text.toString(),
-                        grLineItemUnit.UOM,
-                        grLineItemUnit.mhType,
-                        false
-                    ))
+                            grLineItemUnit.Barcode,
+                            grLineItemUnit.BatchNo,
+                            grLineItemUnit.isExpirable,
+                            "",
+                            grLineItemUnit.InternalBatchNo,
+                            grLineItemUnit.IsEdit,
+                            grLineItemUnit.Isdisabled,
+                            grLineItemUnit.LineItemId,
+                            grLineItemUnit.LineItemUnitId,
+                            holder.edWeight.text.toString(),
+                            grLineItemUnit.UOM,
+                            grLineItemUnit.mhType,
+                            false,
+                            grLineItemUnit.isChecked
+                        ))
 
                     holder.edWeight.clearFocus()
                 }
@@ -265,8 +273,8 @@ class CreateBatchesForGRAdapter(
             holder.edWeight.visibility = View.VISIBLE
         }
 
-        if (grLineItemUnit.mhType.lowercase().equals("batch") && grLineItemUnit.UOM.lowercase()
-                .equals("pcs")
+        if (grLineItemUnit.mhType.lowercase().equals("batch") &&
+            (grLineItemUnit.UOM.lowercase().equals("pcs")||  grLineItemUnit.UOM.lowercase().equals("number"))
         ) {
             holder.ivMultiAdd.visibility = View.VISIBLE
         } else {
@@ -349,8 +357,35 @@ class CreateBatchesForGRAdapter(
         holder.tvExpiryDate.setOnClickListener {
             showDatePickerDialog(holder)
         }
+        setMultiSelect(holder, grLineItemUnit)
+        holder.ivPrint.setOnClickListener {
+            onPrint(position,grLineItemUnit)
+        }
     }
+    private fun setMultiSelect(holder:  ViewHolder, grnLineItemUnit: GRLineUnitItemSelection)
+    {
+        if(grnLineItemUnit.isUpdate)
+        {
+            if(
+                (grnLineItemUnit.UOM.contains("Number",ignoreCase = true) ||
+                        grnLineItemUnit.UOM .contains("PCS",ignoreCase = true) )
+                && grnLineItemUnit.mhType.contains("Batch",ignoreCase = true))
+            {
+                holder.cbBatchesLineUnitItem.visibility=View.VISIBLE
+                holder.cbBatchesLineUnitItem.isChecked = grnLineItemUnit.isChecked
+                holder.cbBatchesLineUnitItem.setOnCheckedChangeListener(null) // Clear before setting to avoid recursion
+                holder.cbBatchesLineUnitItem.setOnCheckedChangeListener { _, isChecked ->
+                    grnLineItemUnit.isChecked = isChecked
+                    onItemCheckedChange(grnLineItemUnit)
+                }
+            }
+            else{
+                holder.cbBatchesLineUnitItem.visibility=View.GONE
+            }
 
+
+        }
+    }
     private fun updateView(holder: ViewHolder, batchInfoItem: GRLineUnitItemSelection) {
         with(holder) {
             if (batchInfoItem.isUpdate) {
@@ -395,10 +430,12 @@ class CreateBatchesForGRAdapter(
         val tvExpiryDate: TextView = itemView.findViewById(R.id.tvExpiryDate)
         val ivAdd: ImageButton = itemView.findViewById(R.id.ivAdd)
         val ivSave: ImageButton = itemView.findViewById(R.id.ivSave)
+        val ivPrint: ImageButton = itemView.findViewById(R.id.ivPrint)
         val ivDelete: ImageButton = itemView.findViewById(R.id.ivDelete)
         val ivMultiAdd: ImageButton = itemView.findViewById(R.id.ivMultiAdd)
         val clCardMain: ConstraintLayout = itemView.findViewById(R.id.clCardMain)
         val mcvWeight: MaterialCardView = itemView.findViewById(R.id.mcvWeight)
+        val cbBatchesLineUnitItem: CheckBox = itemView.findViewById(R.id.cbBatchesLineUnitItem)
     }
 
     private fun showDatePickerDialog(holder: ViewHolder) {

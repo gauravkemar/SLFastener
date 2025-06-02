@@ -73,13 +73,13 @@ class CustomKeyboard(private val context: Context, private val keyboardView: Vie
     fun setTargetEditText(editText: EditText) {
         this.targetEditText = editText
     }
+    /*   if (!popupWindow.isShowing) {
+                val xOffset = anchor.width / 2 - popupWindow.contentView.measuredWidth / 2
+                val yOffset = -anchor.height
+                popupWindow.showAsDropDown(anchor, xOffset, yOffset)
+            }*/
+/*   fun showAt(anchor: View) {
 
-    fun showAt(anchor: View) {
-        /*if (!popupWindow.isShowing) {
-            val xOffset = anchor.width / 2 - popupWindow.contentView.measuredWidth / 2
-            val yOffset = -anchor.height
-            popupWindow.showAsDropDown(anchor, xOffset, yOffset)
-        }*/
         if (!popupWindow.isShowing) {
             // Calculate xOffset to display the popup window further to the right
             Log.e("measure","anchor${anchor.width / 2}///${popupWindow.contentView.measuredWidth}}")
@@ -87,8 +87,36 @@ class CustomKeyboard(private val context: Context, private val keyboardView: Vie
             val yOffset = -anchor.height
             popupWindow.showAsDropDown(anchor, xOffset, yOffset)
         }
-    }
+    }*/
 
+  fun showAt(anchor: View) {
+      if (!popupWindow.isShowing) {
+          // Measure the screen height
+          val displayMetrics = context.resources.displayMetrics
+          val screenHeight = displayMetrics.heightPixels
+
+          // Get the location of the anchor view on the screen
+          val location = IntArray(2)
+          anchor.getLocationOnScreen(location)
+          val anchorY = location[1]
+          val anchorHeight = anchor.height
+
+          // Calculate xOffset for centering the popup
+          val xOffset = /*(anchor.width / 2) */anchor.width   - popupWindow.contentView.measuredWidth
+
+          // Calculate yOffset to ensure the popup does not go below the screen
+          val popupHeight = popupWindow.contentView.measuredHeight
+          val spaceBelowAnchor = screenHeight - (anchorY + anchorHeight)
+          val yOffset = if (spaceBelowAnchor >= popupHeight) {
+              -anchorHeight // Default offset if there's enough space below the anchor
+          } else {
+              -anchorHeight - popupHeight // Shift above the anchor to fit on the screen
+          }
+
+          // Show the popup window
+          popupWindow.showAsDropDown(anchor, xOffset, yOffset)
+      }
+  }
     fun dismiss() {
         if (popupWindow.isShowing) {
             popupWindow.dismiss()

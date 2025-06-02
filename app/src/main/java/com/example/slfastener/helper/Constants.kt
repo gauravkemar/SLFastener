@@ -32,7 +32,9 @@ object Constants {
     const val KEY_PRINTER_TYPE = "printer_type"
     const val KEY_PORT = "port"
     const val KEY_GR_PRN = "gr_prn"
+    const val KEY_GR_PRN_File_Name = "GR_Prn_File_Name"
     const val KEY_GRN_PRN = "grn_prn"
+    const val KEY_GRN_PRN_FILE_NAME = "GRN_Prn_File_Name"
     const val HTTP_HEADER_AUTHORIZATION = "Authorization"
     const val SESSION_EXPIRE = "Session Expired ! Please relogin"
 
@@ -40,10 +42,9 @@ object Constants {
     //const val BASE_URL = "http://192.168.1.205:7510/service/api/"
     const val BASE_URL = "http://192.168.1.231:5000/api/"
 
-
     const val LOGIN_URL = "UserManagement/authenticate"
     const val GET_ACTIVE_SUPPLIERS_DDL = "BP/GetActiveSuppliersDDL"
-    const val GET_SUPPLIERS_POS_DDL = "PurchaseOrder/getSuppliersPOsDDL"
+    const val GET_SUPPLIERS_POS_DDL = "PurchaseOrder/getAllOpenSuppliersPOsDDL"
     const val GET_SUPPLIERS_POS = "PurchaseOrder/getSuppliersPOs"
     const val GET_POS_LINE_ITEMS_ON_POIDS = "PurchaseOrder/getPOsAndLineItemsOnPOIds"
     const val GET_GRN_FILTERED_GRN = "GRN/filteredGRN"
@@ -65,6 +66,22 @@ object Constants {
     const val GET_DRAFT_GR = "GoodsReceipt/getSingleGRByGRId"
     const val DELETE_GR_LINE_ITEM_UNIT = "GoodsReceipt/deleteGRLineItemsUnit"
     const val SUBMIT_GR = "GoodsReceipt/submitGR"
+    const val GET_ALL_TAX= "GRN/GetAllTax"
+    const val UPDATE_OTHER_CHARGES= "GRN/UpdateOtherCharges"
+    const val UPDATE_LINE_ITEM= "GRN/UpdateLineItem"
+
+
+    const val GET_OTHER_CHARGES= "GRN/GetAddtionalCharge"
+
+
+    //printing
+    const val PRINT_LABEL_BARCODE_For_GRN = "PrintProductLabel/printLabelbarcodeForGRNAsync"
+    const val GET_PRN_FILE_DETAIL = "PrintPRNDetails/GetPRNFileDetailOnKeyAsync"
+    const val GET_SELF_SYSTEM_MAPPING_DETAILS = "DeviceLocationMapping/GetSelfSystemMappingDetailAsync"
+    const val GET_ALL_ACTIVE_DEVICE_LOCATION_MAPPING_ON_DEVICE_TYPE= "DeviceLocationMapping/GetAllActiveDeviceLocationMappingOnSystemIPAndDeviceType"
+    const val UPDATE_DEFAULT_PRINTER_ON_DEVICE= "DeviceLocationMapping/UpdateDefaultPrinterOnDevice"
+    const val GET_GRN_PRODUCT_DETAILS_UNIT_ID= "PrintProductLabel/GetGRNProductDetailsOnUnitId"
+
 
 
     //printing

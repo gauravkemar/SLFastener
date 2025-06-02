@@ -130,6 +130,9 @@ class GoodsReceiptActivity : AppCompatActivity() {
     private var serverIpSharedPrefText: String? = null
     private var serverHttpPrefText: String? = null
 
+
+    lateinit var selectedBatchForPrint: ArrayList<Int>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -174,6 +177,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
         getAllLocation = ArrayList()
         lineItem = ArrayList()
         selectedLineItem = ArrayList()
+        selectedBatchForPrint = ArrayList()
         createBatchesList = ArrayList()
         getAllLocations()
         getSupplierList()
@@ -333,11 +337,11 @@ class GoodsReceiptActivity : AppCompatActivity() {
                                     if (isGRNUpdate) {
                                         for (r in resultResponse) {
                                             val additionalValue =
-                                                if (r.uom != "KGS") "0" else "0.000"
+                                                if (r.uoM != "KGS") "0" else "0.000"
                                             lineItem.add(
                                                 GetAllItemMasterSelection(
                                                     currentGrID,
-                                                    r.auom,
+                                                    r.aUoM,
                                                     r.code,
                                                     r.defaultLocationCode,
                                                     0,
@@ -352,8 +356,8 @@ class GoodsReceiptActivity : AppCompatActivity() {
                                                     r.mhType,
                                                     r.msq,
                                                     r.name,
-                                                    r.uom,
-                                                    r.uomRatio,
+                                                    r.uoM,
+                                                    r.uoMRatio,
                                                     false,
                                                     "0.00",
                                                     null,
@@ -369,7 +373,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
                                             lineItem.add(
                                                 GetAllItemMasterSelection(
                                                     currentGrID,
-                                                    r.auom,
+                                                    r.aUoM,
                                                     r.code,
                                                     r.defaultLocationCode,
                                                     0,
@@ -384,8 +388,8 @@ class GoodsReceiptActivity : AppCompatActivity() {
                                                     r.mhType,
                                                     r.msq,
                                                     r.name,
-                                                    r.uom,
-                                                    r.uomRatio,
+                                                    r.uoM,
+                                                    r.uoMRatio,
                                                     false,
                                                     "0.00",
                                                     null,
@@ -410,15 +414,16 @@ class GoodsReceiptActivity : AppCompatActivity() {
                                                         grLineItemUnit.batchNo,
                                                         i.isExpirable,
                                                         expiryDate.toString(),
-                                                        grLineItemUnit.internalBatchNo,
+                                                        grLineItemUnit.kBatchNo,
                                                         false,
                                                         false,
                                                         grLineItemUnit.lineItemId,
                                                         grLineItemUnit.lineItemUnitId,
                                                         grLineItemUnit.qty.toString(),
-                                                        grLineItemUnit.uom,
+                                                        grLineItemUnit.uoM,
                                                         i.mhType,
                                                         true,
+                                                        false,
                                                     )
                                                 }.toMutableList()
                                             Log.e(
@@ -432,7 +437,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
                                                 selectedLineItem.add(
                                                     GetAllItemMasterSelection(
                                                         grId,
-                                                        i.uom,
+                                                        i.uoM,
                                                         i.itemCode,
                                                         i.defautLocation,
                                                         i.lineItemId,
@@ -447,7 +452,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
                                                         i.mhType,
                                                         0,
                                                         i.itemName,
-                                                        i.uom,
+                                                        i.uoM,
                                                         0.00,
                                                         true,
                                                         i.qty.toString(),
@@ -466,7 +471,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
                                                 lineItem.add(
                                                     GetAllItemMasterSelection(
                                                         grId,
-                                                        r.auom,
+                                                        r.aUoM,
                                                         r.code,
                                                         r.defaultLocationCode,
                                                         0,
@@ -481,8 +486,8 @@ class GoodsReceiptActivity : AppCompatActivity() {
                                                         r.mhType,
                                                         r.msq,
                                                         r.name,
-                                                        r.uom,
-                                                        r.uomRatio,
+                                                        r.uoM,
+                                                        r.uoMRatio,
                                                         false,
                                                         "0.00",
                                                         null,
@@ -500,7 +505,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
                                         lineItem.add(
                                             GetAllItemMasterSelection(
                                                 currentGrID,
-                                                r.auom,
+                                                r.aUoM,
                                                 r.code,
                                                 r.defaultLocationCode,
                                                 0,
@@ -515,8 +520,8 @@ class GoodsReceiptActivity : AppCompatActivity() {
                                                 r.mhType,
                                                 r.msq,
                                                 r.name,
-                                                r.uom,
-                                                r.uomRatio,
+                                                r.uoM,
+                                                r.uoMRatio,
                                                 false,
                                                 "0.00",
                                                 null,
@@ -828,7 +833,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
                             balanceQty = resultResponse.responseObject.toString()
                             selectedLineItem[currentPoLineItemPosition.toInt()].balQty =
                                 balanceQty
-                            createBatchesDialogBinding.grnAddHeader.tvBalanceQuantity.setText(
+                            createBatchesDialogBinding.tvBalanceQuantity.setText(
                                 selectedLineItem[currentPoLineItemPosition.toInt()].balQty.toString()
                             )
                             //var totalReceived = totalQty.toDouble() - balanceQty.toDouble()
@@ -840,7 +845,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
                             }
                             val sumOfReceivedQtyIncludingUpdatedItem =
                                 createBatchesList.sumByDouble { it.Qty.toDouble() }
-                            createBatchesDialogBinding.grnAddHeader.tvQtyValue.setText(
+                            createBatchesDialogBinding.tvQtyValue.setText(
                                 sumOfReceivedQtyIncludingUpdatedItem.toString()
                             )
                             createBatchesMainRcAdapter!!.notifyItemRemoved(
@@ -1165,6 +1170,19 @@ class GoodsReceiptActivity : AppCompatActivity() {
                     }
 
                 },
+                onPrint = { position, grnitem ->
+                    printLabelForGR(grnitem)
+                },
+                onItemCheckedChange = { item ->
+                    if (item.isChecked)
+                    {
+                        selectedBatchForPrint.add(item.LineItemUnitId)
+                    }
+                    else
+                    {
+                        selectedBatchForPrint.remove(item.LineItemUnitId)
+                    }
+                },
                 customKeyboard = customKeyboard,
             )
         createBatchesDialogBinding.rcBatchs.adapter = createBatchesMainRcAdapter
@@ -1188,8 +1206,44 @@ class GoodsReceiptActivity : AppCompatActivity() {
         binding.mcvSubmitGRN.setOnClickListener {
             submitGrn()
         }
+        createBatchesDialogBinding.ivBatchesSelection.setOnClickListener {
+            createBatchesList.forEachIndexed { index, it ->
+                it.isChecked = true
+                selectedBatchForPrint.add(it.LineItemUnitId)
+                createBatchesMainRcAdapter!!.notifyItemChanged(index)
+
+            }
+        }
+        createBatchesDialogBinding.ivPrintAll.setOnClickListener {
+            printLabelForBulk()
+            Log.e("selectedBatchForPrint",selectedBatchForPrint.toString())
+        }
+    }
+    private fun printLabelForGR(grnitem: GRLineUnitItemSelection) {
+        try {
+            var grnLineUnitList = ArrayList<Int>()
+            grnLineUnitList.add(grnitem.LineItemUnitId)
+            viewModel.printLabelForGR(token, baseUrl, grnLineUnitList)
+        } catch (e: Exception) {
+            Toast.makeText(
+                this,
+                e.message.toString(),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
+    private fun printLabelForBulk() {
+        try {
+            viewModel.printLabelForGRBulk(token, baseUrl, selectedBatchForPrint)
+        } catch (e: Exception) {
+            Toast.makeText(
+                this,
+                e.message.toString(),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
     private fun deleteLineItem(poLineItem: GetAllItemMasterSelection) {
         try {
             viewModel.deleteGRLineUnit(token,baseUrl, poLineItem.LineItemId)
@@ -1322,36 +1376,36 @@ class GoodsReceiptActivity : AppCompatActivity() {
                 "updatedItem",
                 updatedItem.toString() + "Previous--" + previousReceivedQty + "//" + "updatedvalue--" + updatedReceivedQty
             )
-           // if (updatedReceivedQty != previousReceivedQty) {
-                createBatchesList[position] = updatedItem.copy()
-                val sumOfReceivedQtyIncludingUpdatedItem =
-                    createBatchesList.sumByDouble { it.Qty.toDouble() }
-                selectedLineItem[currentPoLineItemPosition.toInt()].balQty =
-                    sumOfReceivedQtyIncludingUpdatedItem.toString()
-                selectedLineItem[currentPoLineItemPosition.toInt()].isUpdated = true
-                // Update received quantity for the item being modified
-                selectedLineItem[currentPoLineItemPosition.toInt()].grLineItemUnit!![position] =
-                    updatedItem.copy()
-                createBatchesDialogBinding.grnAddHeader.tvQtyValue.setText(
-                    sumOfReceivedQtyIncludingUpdatedItem.toString()
-                )
-                selectedLineItem[currentPoLineItemPosition.toInt()].grLineItemUnit!![position].ExpiryDate =
-                    updatedItem?.ExpiryDate!!
-                addSingleGrnLineUnitItemApiCall(updatedItem)
-                createBatchesMainRcAdapter!!.notifyItemChanged(position)
-                grMainAddAdapter!!.notifyItemChanged(currentPoLineItemPosition.toInt())
-          /*  } else {
-                val previousExpiryDate =
-                    selectedLineItem[currentPoLineItemPosition.toInt()].grLineItemUnit!![position].ExpiryDate
-                if (!updatedItem?.ExpiryDate!!.equals(previousExpiryDate)) {
-                    selectedLineItem[currentPoLineItemPosition.toInt()].grLineItemUnit!![position].ExpiryDate =
-                        updatedItem?.ExpiryDate!!
-                    createBatchesList[position] = updatedItem.copy()
-                    addSingleGrnLineUnitItemApiCall(updatedItem)
-                    createBatchesMainRcAdapter!!.notifyItemChanged(position)
-                    grMainAddAdapter!!.notifyItemChanged(currentPoLineItemPosition.toInt())
-                }
-            }*/
+            // if (updatedReceivedQty != previousReceivedQty) {
+            createBatchesList[position] = updatedItem.copy()
+            val sumOfReceivedQtyIncludingUpdatedItem =
+                createBatchesList.sumByDouble { it.Qty.toDouble() }
+            selectedLineItem[currentPoLineItemPosition.toInt()].balQty =
+                sumOfReceivedQtyIncludingUpdatedItem.toString()
+            selectedLineItem[currentPoLineItemPosition.toInt()].isUpdated = true
+            // Update received quantity for the item being modified
+            selectedLineItem[currentPoLineItemPosition.toInt()].grLineItemUnit!![position] =
+                updatedItem.copy()
+            createBatchesDialogBinding.tvQtyValue.setText(
+                sumOfReceivedQtyIncludingUpdatedItem.toString()
+            )
+            selectedLineItem[currentPoLineItemPosition.toInt()].grLineItemUnit!![position].ExpiryDate =
+                updatedItem?.ExpiryDate!!
+            addSingleGrnLineUnitItemApiCall(updatedItem)
+            createBatchesMainRcAdapter!!.notifyItemChanged(position)
+            grMainAddAdapter!!.notifyItemChanged(currentPoLineItemPosition.toInt())
+            /*  } else {
+                  val previousExpiryDate =
+                      selectedLineItem[currentPoLineItemPosition.toInt()].grLineItemUnit!![position].ExpiryDate
+                  if (!updatedItem?.ExpiryDate!!.equals(previousExpiryDate)) {
+                      selectedLineItem[currentPoLineItemPosition.toInt()].grLineItemUnit!![position].ExpiryDate =
+                          updatedItem?.ExpiryDate!!
+                      createBatchesList[position] = updatedItem.copy()
+                      addSingleGrnLineUnitItemApiCall(updatedItem)
+                      createBatchesMainRcAdapter!!.notifyItemChanged(position)
+                      grMainAddAdapter!!.notifyItemChanged(currentPoLineItemPosition.toInt())
+                  }
+              }*/
         } else {
             Toast.makeText(
                 this,
@@ -1407,7 +1461,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
         val sumOfReceivedQtyIncludingUpdatedItem =
             createBatchesList.sumByDouble { it.Qty.toDouble() }
         selectedLineItem[currentPoLineItemPosition.toInt()].balQty = sumOfReceivedQtyIncludingUpdatedItem.toString()
-        createBatchesDialogBinding.grnAddHeader.tvQtyValue.setText(selectedLineItem[currentPoLineItemPosition.toInt()].balQty)
+        createBatchesDialogBinding.tvQtyValue.setText(selectedLineItem[currentPoLineItemPosition.toInt()].balQty)
         processSingleItemBatchesForMultiple(newBatch)
         createBatchesMainRcAdapter?.notifyItemInserted(createBatchesList.size - 1)
         grMainAddAdapter?.notifyItemChanged(currentPoLineItemPosition.toInt())
@@ -1434,11 +1488,11 @@ class GoodsReceiptActivity : AppCompatActivity() {
         Log.e("poModelfrombatches", poModel.toString())
 
 
-        createBatchesDialogBinding.grnAddHeader.tvLineItemDescValue.setText(poModel.code)
-        createBatchesDialogBinding.grnAddHeader.tvItemDescValue.setText(poModel.description)
-        createBatchesDialogBinding.grnAddHeader.tvPuomValue.setText(poModel.uom)
-        createBatchesDialogBinding.grnAddHeader.tvMhTypeValue.setText(poModel.mhType)
-        createBatchesDialogBinding.grnAddHeader.tvQtyValue.setText(poModel.balQty)
+        createBatchesDialogBinding.tvLineItemDescValue.setText(poModel.code)
+        createBatchesDialogBinding.tvItemDescValue.setText(poModel.description)
+        createBatchesDialogBinding.tvPuomValue.setText(poModel.uom)
+        createBatchesDialogBinding.tvMhTypeValue.setText(poModel.mhType)
+        createBatchesDialogBinding.tvQtyValue.setText(poModel.balQty)
 
 
 
@@ -1468,9 +1522,9 @@ class GoodsReceiptActivity : AppCompatActivity() {
             var total = poModel.grLineItemUnit!!.sumByDouble {
                 it.Qty.toDouble()
             }
-            createBatchesDialogBinding.grnAddHeader.tvQtyValue.setText(total.toString())
+            createBatchesDialogBinding.tvQtyValue.setText(total.toString())
         } else {
-            createBatchesDialogBinding.grnAddHeader.tvQtyValue.setText(poModel.balQty)
+            createBatchesDialogBinding.tvQtyValue.setText(poModel.balQty)
         }
         balanceQty = poModel.balQty.toString()
         totalQty = poModel.balQty.toString()
@@ -1994,6 +2048,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
             0,
             additionalValue,
             poModel.uom, poModel.mhType,
+            false,
             false
         )
     }
@@ -2014,6 +2069,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
             poModel.uom,
             poModel.mhType,
             true,
+            false
         )
 
     }

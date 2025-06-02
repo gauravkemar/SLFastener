@@ -17,24 +17,24 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.slfastener.R
 import com.example.slfastener.helper.CustomKeyboard
-import com.example.slfastener.model.offlinebatchsave.GrnLineItemUnitStore
+import com.example.slfastener.model.offlinebatchsave.CustomGrnLineItemUnit
 import com.google.android.material.card.MaterialCardView
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class CreateBatchesNewSingleList(
+class CreateBatchesNewSingleListAdapter(
     private val context: Context,
-    private val batches: MutableList<GrnLineItemUnitStore>,
-    private val onSave: (Int, GrnLineItemUnitStore) -> Unit,
-    private val addItem: (GrnLineItemUnitStore) -> Unit,
-    private val addMultiItem: (GrnLineItemUnitStore) -> Unit,
-    private val onDelete: (Int, GrnLineItemUnitStore) -> Unit,
-    private val onPrint: (Int, GrnLineItemUnitStore) -> Unit,
-    private val onItemCheckedChange: (GrnLineItemUnitStore) -> Unit,
+    private val batches: MutableList<CustomGrnLineItemUnit>,
+    private val onSave: (Int, CustomGrnLineItemUnit) -> Unit,
+    private val addItem: (CustomGrnLineItemUnit) -> Unit,
+    private val addMultiItem: (CustomGrnLineItemUnit) -> Unit,
+    private val onDelete: (Int, CustomGrnLineItemUnit) -> Unit,
+    private val onPrint: (Int, CustomGrnLineItemUnit) -> Unit,
+    private val onItemCheckedChange: (CustomGrnLineItemUnit) -> Unit,
     private var customKeyboard: CustomKeyboard? = null
 ) :
-    RecyclerView.Adapter<CreateBatchesNewSingleList.ViewHolder>() {
+    RecyclerView.Adapter<CreateBatchesNewSingleListAdapter.ViewHolder>() {
     private var weightData: String? = null
     private var focusedTextView: TextView? = null
 
@@ -46,7 +46,7 @@ class CreateBatchesNewSingleList(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val itemPosition = holder.layoutPosition
-        val grnLineItemUnit: GrnLineItemUnitStore = batches?.get(itemPosition)!!
+        val grnLineItemUnit: CustomGrnLineItemUnit = batches?.get(itemPosition)!!
         holder.tvSrnNo.setText("${itemPosition + 1}")
         holder.tvBatchNo.setText(grnLineItemUnit.supplierBatchNo)
         holder.tvInternalBatchNo.setText(grnLineItemUnit.internalBatchNo)
@@ -90,7 +90,7 @@ class CreateBatchesNewSingleList(
             customKeyboard!!.showAt(holder.itemView)
         }
 
-        holder.ivAdd.setOnClickListener {
+        holder.mcvAdd.setOnClickListener {
             if (conditionMatches) {
                 Toast.makeText(context, "Please complete current transaction", Toast.LENGTH_SHORT)
                     .show()
@@ -98,7 +98,7 @@ class CreateBatchesNewSingleList(
                 if (grnLineItemUnit.isExpirable) {
                     if (holder.tvExpiryDate.text.toString() != "" && holder.tvExpiryDate.text.toString() != "null") {
                         addItem(
-                            GrnLineItemUnitStore(
+                            CustomGrnLineItemUnit(
                                 grnLineItemUnit.UOM,
                                 grnLineItemUnit.mhType,
                                 grnLineItemUnit.barcode,
@@ -110,7 +110,8 @@ class CreateBatchesNewSingleList(
                                 grnLineItemUnit.lineItemUnitId,
                                 holder.edWeight.text.toString(),
                                 grnLineItemUnit.supplierBatchNo,
-                                false
+                                false,
+                                grnLineItemUnit.totalUnits
                             )
                         )
                         holder.edWeight.clearFocus()
@@ -119,7 +120,7 @@ class CreateBatchesNewSingleList(
                     }
                 } else {
                     addItem(
-                        GrnLineItemUnitStore(
+                        CustomGrnLineItemUnit(
                             grnLineItemUnit.UOM,
                             grnLineItemUnit.mhType,
                             grnLineItemUnit.barcode,
@@ -131,7 +132,7 @@ class CreateBatchesNewSingleList(
                             grnLineItemUnit.lineItemUnitId,
                             holder.edWeight.text.toString(),
                             grnLineItemUnit.supplierBatchNo,
-                            false
+                            false,grnLineItemUnit.totalUnits
                         )
                     )
                     holder.edWeight.clearFocus()
@@ -139,7 +140,7 @@ class CreateBatchesNewSingleList(
             }
 
         }
-        holder.ivMultiAdd.setOnClickListener {
+        holder.mcvMultiAdd.setOnClickListener {
             if (conditionMatches) {
                 Toast.makeText(context, "Please complete current transaction", Toast.LENGTH_SHORT)
                     .show()
@@ -148,7 +149,7 @@ class CreateBatchesNewSingleList(
                 if (grnLineItemUnit.isExpirable) {
                     if (holder.tvExpiryDate.text.toString() != "") {
                         addMultiItem(
-                            GrnLineItemUnitStore(
+                            CustomGrnLineItemUnit(
                                 grnLineItemUnit.UOM,
                                 grnLineItemUnit.mhType,
                                 grnLineItemUnit.barcode,
@@ -160,7 +161,7 @@ class CreateBatchesNewSingleList(
                                 grnLineItemUnit.lineItemUnitId,
                                 holder.edWeight.text.toString(),
                                 grnLineItemUnit.supplierBatchNo,
-                                false
+                                false,grnLineItemUnit.totalUnits
                             )
                         )
                         holder.edWeight.clearFocus()
@@ -170,7 +171,7 @@ class CreateBatchesNewSingleList(
                 }
                 else {
                     addMultiItem(
-                        GrnLineItemUnitStore(
+                        CustomGrnLineItemUnit(
                             grnLineItemUnit.UOM,
                             grnLineItemUnit.mhType,
                             grnLineItemUnit.barcode,
@@ -182,7 +183,7 @@ class CreateBatchesNewSingleList(
                             grnLineItemUnit.lineItemUnitId,
                             holder.edWeight.text.toString(),
                             grnLineItemUnit.supplierBatchNo,
-                            false
+                            false,grnLineItemUnit.totalUnits
                         )
                     )
 
@@ -192,7 +193,7 @@ class CreateBatchesNewSingleList(
         }
         updateView(holder, grnLineItemUnit)
         setMultiSelect(holder, grnLineItemUnit)
-        holder.ivSave.setOnClickListener {
+        holder.mcvSave.setOnClickListener {
             if (grnLineItemUnit.isExpirable) {
                 if (holder.tvExpiryDate.text.toString() != "" && holder.tvExpiryDate.text.toString() != "null") {
                     if (grnLineItemUnit.UOM.equals("KGS")) {
@@ -244,32 +245,32 @@ class CreateBatchesNewSingleList(
             }
 
         }
-        holder.ivDelete.setOnClickListener {
+        holder.mcvDelete.setOnClickListener {
             onDelete(position, grnLineItemUnit)
         }
 
         if (grnLineItemUnit.UOM.equals("KGS")) {
-            holder.ivAdd.visibility = View.GONE
+            holder.mcvAdd.visibility = View.GONE
             holder.tvWeight.visibility = View.VISIBLE
             holder.edWeight.visibility = View.GONE
         } else {
             if(grnLineItemUnit.mhType.lowercase().equals("serial"))
             {
-                holder.ivAdd.visibility = View.GONE
+                holder.mcvAdd.visibility = View.GONE
             }
             else{
-                holder.ivAdd.visibility = View.VISIBLE
+                holder.mcvAdd.visibility = View.VISIBLE
             }
             holder.tvWeight.visibility = View.GONE
             holder.edWeight.visibility = View.VISIBLE
         }
 
-        if (grnLineItemUnit.mhType.lowercase().equals("batch") && grnLineItemUnit.UOM.lowercase()
+        if (grnLineItemUnit.mhType.lowercase().equals("batch") && grnLineItemUnit.UOM!!.lowercase()
                 .equals("pcs")
         ) {
-            holder.ivMultiAdd.visibility = View.VISIBLE
+            holder.mcvMultiAdd.visibility = View.VISIBLE
         } else {
-            holder.ivMultiAdd.visibility = View.GONE
+            holder.mcvMultiAdd.visibility = View.GONE
         }
 
 
@@ -314,17 +315,17 @@ class CreateBatchesNewSingleList(
         holder.tvExpiryDate.setOnClickListener {
             showDatePickerDialog(holder)
         }
-        holder.ivPrint.setOnClickListener {
+        holder.mcvPrint.setOnClickListener {
             onPrint(position,grnLineItemUnit)
         }
     }
 
-    private fun setMultiSelect(holder: ViewHolder, grnLineItemUnit: GrnLineItemUnitStore)
+    private fun setMultiSelect(holder: ViewHolder, grnLineItemUnit: CustomGrnLineItemUnit)
     {
         if(grnLineItemUnit.isUpdate)
         {
             if(
-                (grnLineItemUnit.UOM.contains("Number",ignoreCase = true) ||
+                (grnLineItemUnit.UOM!!.contains("Number",ignoreCase = true) ||
                         grnLineItemUnit.UOM .contains("PCS",ignoreCase = true) )
                 && grnLineItemUnit.mhType.contains("Batch",ignoreCase = true))
             {
@@ -343,7 +344,7 @@ class CreateBatchesNewSingleList(
 
         }
     }
-    private fun updateView(holder: ViewHolder, batchInfoItem: GrnLineItemUnitStore) {
+    private fun updateView(holder: ViewHolder, batchInfoItem: CustomGrnLineItemUnit) {
         with(holder) {
             if (batchInfoItem.isUpdate) {
                 edWeight.setBackgroundColor(Color.LTGRAY)
@@ -351,14 +352,14 @@ class CreateBatchesNewSingleList(
                 holder.edWeight.isFocusable = false
                 holder.edWeight.isEnabled = false
                 holder.mcvWeight.visibility = View.VISIBLE
-                holder.ivPrint.visibility = View.VISIBLE
+                holder.mcvPrint.visibility = View.VISIBLE
             } else {
                 edWeight.setBackgroundColor(Color.TRANSPARENT)
                 tvWeight.setBackgroundColor(Color.TRANSPARENT)
                 holder.edWeight.isFocusable = true
                 holder.edWeight.isEnabled = true
                 holder.mcvWeight.visibility = View.GONE
-                holder.ivPrint.visibility = View.GONE
+                holder.mcvPrint.visibility = View.GONE
             }
         }
     }
@@ -385,11 +386,11 @@ class CreateBatchesNewSingleList(
         val tvUOM: TextView = itemView.findViewById(R.id.tvUOM)
         val tvBarcodeLableValue: TextView = itemView.findViewById(R.id.tvBarcodeLableValue)
         val tvExpiryDate: TextView = itemView.findViewById(R.id.tvExpiryDate)
-        val ivAdd: ImageButton = itemView.findViewById(R.id.ivAdd)
-        val ivSave: ImageButton = itemView.findViewById(R.id.ivSave)
-        val ivDelete: ImageButton = itemView.findViewById(R.id.ivDelete)
-        val ivPrint: ImageButton = itemView.findViewById(R.id.ivPrint)
-        val ivMultiAdd: ImageButton = itemView.findViewById(R.id.ivMultiAdd)
+        val mcvAdd: MaterialCardView = itemView.findViewById(R.id.mcvAdd)
+        val mcvSave: MaterialCardView = itemView.findViewById(R.id.mcvSave)
+        val mcvDelete: MaterialCardView = itemView.findViewById(R.id.mcvDelete)
+        val mcvPrint: MaterialCardView = itemView.findViewById(R.id.mcvPrint)
+        val mcvMultiAdd: MaterialCardView = itemView.findViewById(R.id.mcvMultiAdd)
         val clCardMain: ConstraintLayout = itemView.findViewById(R.id.clCardMain)
         val mcvWeight: MaterialCardView = itemView.findViewById(R.id.mcvWeight)
         val cbBatchesLineUnitItem: CheckBox = itemView.findViewById(R.id.cbBatchesLineUnitItem)

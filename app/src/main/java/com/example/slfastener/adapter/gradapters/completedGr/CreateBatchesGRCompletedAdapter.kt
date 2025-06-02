@@ -1,33 +1,25 @@
 package com.example.slfastener.adapter.gradapters.completedGr
 
-import android.app.DatePickerDialog
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.DatePicker
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.slfastener.R
-import com.example.slfastener.adapter.demoAdapter.CreateBatchesNewSingleList
-import com.example.slfastener.helper.CustomKeyboard
 import com.example.slfastener.model.goodsreceipt.GRLineUnitItemSelection
-import com.example.slfastener.model.offlinebatchsave.GrnLineItemUnitStore
 import com.google.android.material.card.MaterialCardView
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 
 class CreateBatchesGRCompletedAdapter(
     private val context: Context,
     private val batches: MutableList<GRLineUnitItemSelection>,
     private val onSave: (Int, GRLineUnitItemSelection) -> Unit,
+    private val onItemCheckedChange: (GRLineUnitItemSelection) -> Unit,
 ) :
     RecyclerView.Adapter<CreateBatchesGRCompletedAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -48,7 +40,7 @@ class CreateBatchesGRCompletedAdapter(
         holder.edWeight.setText(grnLineItemUnit.Qty)
         updateView(holder, grnLineItemUnit)
         holder.ivSave.setOnClickListener {
-
+            onSave(position,grnLineItemUnit)
         }
         if (grnLineItemUnit.UOM.equals("KGS")) {
             holder.tvWeight.visibility = View.VISIBLE
@@ -65,6 +57,8 @@ class CreateBatchesGRCompletedAdapter(
         } else {
             holder.tvExpiryDate.visibility = View.GONE
         }
+
+        setMultiSelect(holder, grnLineItemUnit)
     }
 
     private fun updateView(holder: ViewHolder, batchInfoItem: GRLineUnitItemSelection) {
@@ -83,7 +77,30 @@ class CreateBatchesGRCompletedAdapter(
             }
         }
     }
+    private fun setMultiSelect(holder: ViewHolder, grnLineItemUnit: GRLineUnitItemSelection)
+    {
+        if(grnLineItemUnit.isUpdate)
+        {
+            if(
+                (grnLineItemUnit.UOM.contains("Number",ignoreCase = true) ||
+                        grnLineItemUnit.UOM .contains("PCS",ignoreCase = true) )
+                && grnLineItemUnit.mhType.contains("Batch",ignoreCase = true))
+            {
+                holder.cbBatchesLineUnitItem.visibility=View.VISIBLE
+                holder.cbBatchesLineUnitItem.isChecked = grnLineItemUnit.isChecked
+                holder.cbBatchesLineUnitItem.setOnCheckedChangeListener(null) // Clear before setting to avoid recursion
+                holder.cbBatchesLineUnitItem.setOnCheckedChangeListener { _, isChecked ->
+                    grnLineItemUnit.isChecked = isChecked
+                    onItemCheckedChange(grnLineItemUnit)
+                }
+            }
+            else{
+                holder.cbBatchesLineUnitItem.visibility=View.GONE
+            }
 
+
+        }
+    }
 
 
     override fun getItemCount(): Int {
@@ -110,6 +127,7 @@ class CreateBatchesGRCompletedAdapter(
         val ivMultiAdd: ImageButton = itemView.findViewById(R.id.ivMultiAdd)
         val clCardMain: ConstraintLayout = itemView.findViewById(R.id.clCardMain)
         val mcvWeight: MaterialCardView = itemView.findViewById(R.id.mcvWeight)
+        val cbBatchesLineUnitItem: CheckBox = itemView.findViewById(R.id.cbBatchesLineUnitItem)
 
 
     }

@@ -1,5 +1,7 @@
 package com.example.slfastener.model.goodsreceipt.grdraft
 
+
+
 data class GrLineItem(
     val createdBy: String,
     val createdDate: String,
@@ -7,6 +9,7 @@ data class GrLineItem(
     val grId: Int,
     val grLineItemUnit: List<GrLineItemUnit>,
     val isActive: Boolean,
+    val isExpirable: Boolean,
     val isQCRequired: Boolean,
     val itemCode: String,
     val itemDescription: String,
@@ -15,9 +18,8 @@ data class GrLineItem(
     val locationId: Int,
     val mhType: String,
     val modifiedBy: String,
-    val modifiedDate: Any,
+    val modifiedDate: String,
     val qty: Double,
-    val unitPrice: Any,
-    val uom: String,
-    val isExpirable:Boolean,
+    val unitPrice: Double,
+    val uoM: String
 )

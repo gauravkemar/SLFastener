@@ -8,13 +8,19 @@ import com.example.demorfidapp.helper.Constants.DELETE_GRN_LINE_ITEM_UNIT
 import com.example.demorfidapp.helper.Constants.DELETE_GR_LINE_ITEM_ID
 import com.example.demorfidapp.helper.Constants.DELETE_GR_LINE_ITEM_UNIT
 import com.example.demorfidapp.helper.Constants.GET_ACTIVE_SUPPLIERS_DDL
+import com.example.demorfidapp.helper.Constants.GET_ALL_ACTIVE_DEVICE_LOCATION_MAPPING_ON_DEVICE_TYPE
 import com.example.demorfidapp.helper.Constants.GET_ALL_GR
 import com.example.demorfidapp.helper.Constants.GET_ALL_ITEM_MASTER
 import com.example.demorfidapp.helper.Constants.GET_ALL_LOCATION
+import com.example.demorfidapp.helper.Constants.GET_ALL_TAX
 import com.example.demorfidapp.helper.Constants.GET_DRAFT_GR
 import com.example.demorfidapp.helper.Constants.GET_DRAFT_GRN
 import com.example.demorfidapp.helper.Constants.GET_GRN_FILTERED_GRN
+import com.example.demorfidapp.helper.Constants.GET_GRN_PRODUCT_DETAILS_UNIT_ID
+import com.example.demorfidapp.helper.Constants.GET_OTHER_CHARGES
 import com.example.demorfidapp.helper.Constants.GET_POS_LINE_ITEMS_ON_POIDS
+import com.example.demorfidapp.helper.Constants.GET_PRN_FILE_DETAIL
+import com.example.demorfidapp.helper.Constants.GET_SELF_SYSTEM_MAPPING_DETAILS
 import com.example.demorfidapp.helper.Constants.GET_SUPPLIERS_POS
 import com.example.demorfidapp.helper.Constants.GET_SUPPLIERS_POS_DDL
 import com.example.demorfidapp.helper.Constants.HTTP_HEADER_AUTHORIZATION
@@ -23,15 +29,17 @@ import com.example.demorfidapp.helper.Constants.PRINT_LABEL_BARCODE_For_GRN
 import com.example.demorfidapp.helper.Constants.PROCESS_GR_LINE_ITEM
 import com.example.demorfidapp.helper.Constants.PROCESS_GR_TRANSACTION
 import com.example.demorfidapp.helper.Constants.SUBMIT_GR
+import com.example.demorfidapp.helper.Constants.UPDATE_DEFAULT_PRINTER_ON_DEVICE
+import com.example.demorfidapp.helper.Constants.UPDATE_OTHER_CHARGES
 import com.example.slfastener.model.GetActiveSuppliersDDLResponse
 import com.example.slfastener.model.GetPOsAndLineItemsOnPOIdsResponse
 import com.example.slfastener.model.GetSupllierPOsDDLOriginalResponse
-import com.example.slfastener.model.GetSuppliersPOsDDLResponse
 import com.example.slfastener.model.GetSuppliersPOsRequest
 import com.example.slfastener.model.generalrequest.GRNLineItemDeleteResponse
 import com.example.slfastener.model.generalrequest.GeneralResponse
 import com.example.slfastener.model.generalrequest.GrnBatchDeleteResponse
 import com.example.slfastener.model.getalllocation.GetAllWareHouseLocationResponse
+import com.example.slfastener.model.getalltax.GetAllTaxItem
 import com.example.slfastener.model.goodsreceipt.GetAllGRResponse
 import com.example.slfastener.model.goodsreceipt.GetAllItemMasterResponse
 import com.example.slfastener.model.goodsreceipt.PostProcessGRTransactionRequest
@@ -41,7 +49,6 @@ import com.example.slfastener.model.goodsreceipt.ProcessGRLineItemResponse
 import com.example.slfastener.model.goodsreceipt.SubmitGRRequest
 import com.example.slfastener.model.goodsreceipt.grdraft.GetSingleGRByGRIdResponse
 import com.example.slfastener.model.grn.GRNSaveToDraftDefaultRequest
-import com.example.slfastener.model.grn.GRNSaveToDraftDefaultResponse
 import com.example.slfastener.model.grn.ProcessGRNLineItemsResponse
 import com.example.slfastener.model.grndraftdata.GetDraftGrnResponse
 import com.example.slfastener.model.grnlineitemmain.GrnLineItemResponse
@@ -50,7 +57,13 @@ import com.example.slfastener.model.grnmain.GetFilteredGRNResponse
 import com.example.slfastener.model.grnmain.SubmitGRNRequest
 import com.example.slfastener.model.login.LoginRequest
 import com.example.slfastener.model.login.LoginResponse
-import com.example.slfastener.model.polineitemnew.GRNUnitLineItemsSaveRequest
+import com.example.slfastener.model.othercharges.GetOtherChargesItem
+import com.example.slfastener.model.grnlineitemmain.GRNUnitLineItemsSaveRequest
+import com.example.slfastener.model.grnmain.UpdateGRNLineItem
+import com.example.slfastener.model.printerprnmodel.GetAllActiveDeviceLocationDeviceType
+import com.example.slfastener.model.printerprnmodel.GetPRNFileDetailOnKeyResponse
+import com.example.slfastener.model.printerprnmodel.GetSelfSystemMappingDetailsResponse
+import com.example.slfastener.model.printerprnmodel.PrinterDeviceLocationMappingIdRequest
 
 import retrofit2.Response
 import retrofit2.http.*
@@ -134,6 +147,12 @@ interface SLFastenerAPI {
         @Body
         grnUnitLineItemsSaveRequest: GRNUnitLineItemsSaveRequest
     ): Response<GrnLineItemResponse>
+    @POST(Constants.UPDATE_LINE_ITEM)
+    suspend fun updateLineItem(
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Body
+        grnUnitLineItemsSaveRequest: UpdateGRNLineItem
+    ): Response<GeneralResponse>
 
     @POST(Constants.PROCESS_SINGLE_GRN_GRN_ITEM_BATCHES)
     suspend fun processSingleGRNGRNItemBatchesForMultiple(
@@ -199,6 +218,11 @@ interface SLFastenerAPI {
         grnLineUnitItemId: ArrayList<Int>
     ): Response<GeneralResponse>
 
+    @GET(GET_OTHER_CHARGES)
+    suspend fun getOtherCharges(
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @QueryMap queryMap: Map<String, Int>
+    ): Response<ArrayList<GetOtherChargesItem>>
 
 
     ////gr all
@@ -272,5 +296,58 @@ interface SLFastenerAPI {
         @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         @Query("lineItemId") lineLineUnitId: Int?
     ): Response<GeneralResponse>
+
+    @POST(PRINT_LABEL_BARCODE_For_GRN)
+    suspend fun printLabelForGR(
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Body
+        grnLineUnitItemId: ArrayList<Int>
+    ): Response<GeneralResponse>
+
+    @GET(GET_PRN_FILE_DETAIL)
+    suspend fun getPRNFleDetail(
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Query("labelKey") labelKey: String
+    ): Response<GetPRNFileDetailOnKeyResponse>
+
+    @GET(GET_SELF_SYSTEM_MAPPING_DETAILS)
+    suspend fun getSelfSystemMappingDetail(
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+    ): Response<GetSelfSystemMappingDetailsResponse>
+
+    @GET(GET_ALL_ACTIVE_DEVICE_LOCATION_MAPPING_ON_DEVICE_TYPE)
+    suspend fun getAllActiveDeviceLocationDeviceMapping(
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Query("deviceType") deviceType: String
+    ): Response<GetAllActiveDeviceLocationDeviceType>
+
+
+    @POST(UPDATE_DEFAULT_PRINTER_ON_DEVICE)
+    suspend fun updateDefaultPrinterOnDevice(
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Body
+        printerDeviceLocationMappingIdRequest: PrinterDeviceLocationMappingIdRequest
+    ): Response<GeneralResponse>
+
+    @POST(GET_GRN_PRODUCT_DETAILS_UNIT_ID)
+    suspend fun getGRNProductDetailsOnUnitIdItem(
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Body
+        grnLineUnitItemId: ArrayList<Int>
+    ): Response<ArrayList<Map<String, Any>>>
+
+    @GET(GET_ALL_TAX)
+    suspend fun getAllTax(
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+    ): Response<ArrayList<GetAllTaxItem>>
+
+    @GET(UPDATE_OTHER_CHARGES)
+    suspend fun updateOtherCharges(
+        @Header(HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        @Query("GrnId") grnId: Int,
+        @Query("OtherCharges") otherCharges: Double
+    ): Response<GeneralResponse>
+
+
 
 }

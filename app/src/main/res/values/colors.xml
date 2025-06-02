@@ -45,7 +45,13 @@
     <color name="add_btn_color">#f23905</color>
     <color name="bg_orange">#f23905</color>
 
-    <color name="enough_grey">#EBEBEB</color>
+    <color name="enough_grey">#D5D5D5</color>
+
+
+    <color name="btn_delete">#E75487</color>
+    <color name="btn_save">#E8B354</color>
+    <color name="btn_add">#030335</color>
+    <color name="btn_other_charges">#0FA105</color>
 
 
    <!--NEW UI-->

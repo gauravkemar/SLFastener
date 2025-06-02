@@ -6,12 +6,12 @@ data class GrLineItemUnit(
     val createdBy: String,
     val createdDate: String,
     val expiryDate: String,
-    val internalBatchNo: String,
     val isActive: Boolean,
+    val kBatchNo: String,
     val lineItemId: Int,
     val lineItemUnitId: Int,
     val modifiedBy: String,
     val modifiedDate: Any,
     val qty: Double,
-    val uom: String
+    val uoM: String
 )

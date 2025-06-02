@@ -10,7 +10,8 @@
     <!--HOME PAGE -->
     <string name="tv_grn">Goods Receipt Note (GRN)</string>
     <string name="re_print_barcode">Re-Print Barcode</string>
-    <string name="my_transaction">Goods Receipt</string>
+    <string name="goods_receipt">Goods Receipt</string>
+    <string name="my_transaction">My Transaction</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>

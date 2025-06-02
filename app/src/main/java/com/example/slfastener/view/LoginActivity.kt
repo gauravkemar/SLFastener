@@ -22,7 +22,7 @@ import com.example.slfastener.viewmodel.login.LoginViewModel
 import com.example.slfastener.viewmodel.login.LoginViewModelFactory
 import es.dmoral.toasty.Toasty
 
-class LoginActivity : AppCompatActivity() {
+class  LoginActivity : AppCompatActivity() {
     lateinit var binding:ActivityLoginBinding
     private lateinit var viewModel: LoginViewModel
     private lateinit var progress: ProgressDialog
@@ -67,17 +67,17 @@ class LoginActivity : AppCompatActivity() {
                     hideProgressBar()
                     response.data?.let { resultResponse ->
                         try {
-                                session.createLoginSession(
-                                    resultResponse.firstName,
-                                    resultResponse.lastName,
-                                    resultResponse.email,
-                                    resultResponse.mobileNumber.toString(),
-                                    resultResponse.userName,
-                                    resultResponse.jwtToken,
-                                    resultResponse.roleName,
-                                )
-                                Utils.setSharedPrefsBoolean(this@LoginActivity, KEY_ISLOGGEDIN, true)
-                                startActivity()
+                            session.createLoginSession(
+                                resultResponse.firstName,
+                                resultResponse.lastName,
+                                resultResponse.email,
+                                resultResponse.mobileNumber.toString(),
+                                resultResponse.userName,
+                                resultResponse.jwtToken,
+                                resultResponse.roleName,
+                            )
+                            Utils.setSharedPrefsBoolean(this@LoginActivity, KEY_ISLOGGEDIN, true)
+                            startActivity()
 
                         } catch (e: Exception) {
                             Toasty.warning(
@@ -106,12 +106,16 @@ class LoginActivity : AppCompatActivity() {
     }
     fun startActivity()
     {
-        startActivity(Intent(this@LoginActivity,HomeActivity::class.java))
+        var intent=Intent(this@LoginActivity,HomeActivity::class.java)
+        startActivity( intent)
+
         finish()
     }
     fun startAdmin()
     {
-        startActivity(Intent(this@LoginActivity,AdminActivity::class.java))
+        var intent=Intent(this@LoginActivity,AdminSettingPageActivity::class.java)
+        intent.putExtra("key_user_type","Admin")
+        startActivity(intent)
         finish()
     }
     private fun clear(){

@@ -1,17 +1,13 @@
 package com.example.slfastener.adapter
 
-import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.slfastener.R
 import com.example.slfastener.model.GetSuppliersPOsDDLResponse
-import com.example.slfastener.model.offlinebatchsave.GrnLineItemUnitStore
 
 
 class GRNSelectPoAdapter (private val originalList: MutableList<GetSuppliersPOsDDLResponse>) :

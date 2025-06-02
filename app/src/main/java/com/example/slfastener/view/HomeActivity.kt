@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import com.example.demorfidapp.helper.SessionManager
@@ -29,19 +30,20 @@ class HomeActivity : AppCompatActivity() {
         binding.logoutBtn.setOnClickListener {
             showLogoutDialog()
         }
+        binding.settingBtn.setOnClickListener {
+            startActivity(Intent(this@HomeActivity,AdminSettingPageActivity::class.java))
+        }
 
     }
 
     private fun showLogoutDialog() {
         val builder = AlertDialog.Builder(this)
-
         builder.setTitle("Logout")
             .setMessage("Are you sure you want to log out?")
             .setPositiveButton("Yes") { dialog, which ->
                 logout()
             }
             .setNegativeButton("Cancel") { dialog, which ->
-
                 dialog.dismiss()
             }
             .setCancelable(false)

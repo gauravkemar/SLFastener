@@ -13,5 +13,7 @@ data class GRLineUnitItemSelection(
     var Qty: String,
     val UOM: String,
     val mhType:String,
-    var isUpdate:Boolean
-    )
+    var isUpdate:Boolean,
+    var isChecked:Boolean
+
+)

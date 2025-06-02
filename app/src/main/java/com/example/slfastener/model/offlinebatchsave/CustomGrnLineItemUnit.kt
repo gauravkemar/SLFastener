@@ -1,7 +1,7 @@
 package com.example.slfastener.model.offlinebatchsave
 
-data class GrnLineItemUnitStore(
-    val UOM: String,
+data class CustomGrnLineItemUnit(
+    val UOM: String?,
     val mhType:String,
     val barcode: String,
     var expiryDate: Any?,
@@ -12,5 +12,6 @@ data class GrnLineItemUnitStore(
     var lineItemUnitId: Int,
     var recevedQty: String,
     val supplierBatchNo: String,
-    var isUpdate:Boolean
+    var isUpdate:Boolean,
+    var totalUnits:Int
 )

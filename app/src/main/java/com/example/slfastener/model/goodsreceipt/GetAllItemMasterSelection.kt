@@ -1,8 +1,6 @@
 package com.example.slfastener.model.goodsreceipt
 
-import com.example.slfastener.model.BatchInfoListModel
 import com.example.slfastener.model.getalllocation.GetAllWareHouseLocationResponse
-import com.example.slfastener.model.offlinebatchsave.GrnLineItemUnitStore
 
 data class GetAllItemMasterSelection(
     val grId:Int,

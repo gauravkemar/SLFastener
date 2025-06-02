@@ -10,23 +10,26 @@ import com.example.slfastener.model.grn.GRNSaveToDraftDefaultRequest
 import com.example.slfastener.model.grnmain.GetFilteredGRNRequest
 import com.example.slfastener.model.grnmain.SubmitGRNRequest
 import com.example.slfastener.model.login.LoginRequest
-import com.example.slfastener.model.polineitemnew.GRNUnitLineItemsSaveRequest
+import com.example.slfastener.model.grnlineitemmain.GRNUnitLineItemsSaveRequest
+import com.example.slfastener.model.grnmain.UpdateGRNLineItem
+import com.example.slfastener.model.printerprnmodel.PrinterDeviceLocationMappingIdRequest
 import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.Query
+import retrofit2.http.QueryMap
 
 
 class SLFastenerRepository {
 
 
-   /* suspend fun submitRFIDDetails(
+    /* suspend fun submitRFIDDetails(
+         baseUrl: String,
+         postRFIDReadRequest: PostRFIDReadRequest
+     ) = RetrofitInstance.api(baseUrl).submitRFIDDetails(postRFIDReadRequest)*/
+    suspend fun login(
         baseUrl: String,
-        postRFIDReadRequest: PostRFIDReadRequest
-    ) = RetrofitInstance.api(baseUrl).submitRFIDDetails(postRFIDReadRequest)*/
-   suspend fun login(
-       baseUrl: String,
-       loginRequest: LoginRequest
-   ) = RetrofitInstance.api(baseUrl).login(loginRequest)
+        loginRequest: LoginRequest
+    ) = RetrofitInstance.api(baseUrl).login(loginRequest)
 
     suspend fun getActiveSuppliersDDL(
         @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
@@ -81,6 +84,12 @@ class SLFastenerRepository {
         @Body
         grnUnitLineItemsSaveRequest: GRNUnitLineItemsSaveRequest
     ) = RetrofitInstance.api(baseUrl).processSingleGRNGRNItemBatches(bearerToken,grnUnitLineItemsSaveRequest)
+    suspend fun updateLineItem(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+        @Body
+        updateGRNLineItem: UpdateGRNLineItem
+    ) = RetrofitInstance.api(baseUrl).updateLineItem(bearerToken,updateGRNLineItem)
     suspend fun processSingleGRNGRNItemBatchesForMultiple(
         @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
         baseUrl: String,
@@ -142,6 +151,14 @@ class SLFastenerRepository {
         @Body
         grnLineUnitItemId: ArrayList<Int>
     ) = RetrofitInstance.api(baseUrl).printLabelForGRN(bearerToken,grnLineUnitItemId)
+
+    suspend fun getGRNProductDetailsOnUnitIdItem(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+        @Body
+        grnLineUnitItemId: ArrayList<Int>
+    ) = RetrofitInstance.api(baseUrl).getGRNProductDetailsOnUnitIdItem(bearerToken,grnLineUnitItemId)
+
 
 
     suspend fun getAllItemMaster(
@@ -209,5 +226,56 @@ class SLFastenerRepository {
         baseUrl: String,
         @Query("lineItemId") lineLineUnitId: Int?
     ) = RetrofitInstance.api(baseUrl).deleteGRLineUnit(bearerToken,lineLineUnitId)
+
+
+    suspend fun printLabelForGR(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+        @Body
+        grnLineUnitItemId: ArrayList<Int>
+    ) = RetrofitInstance.api(baseUrl).printLabelForGR(bearerToken,grnLineUnitItemId)
+
+    suspend fun getPRNFleDetail(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+        @Query("labelKey") labelKey: String
+    ) = RetrofitInstance.api(baseUrl).getPRNFleDetail(bearerToken,labelKey)
+    suspend fun getSelfSystemMappingDetail(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+    ) = RetrofitInstance.api(baseUrl).getSelfSystemMappingDetail(bearerToken)
+
+    suspend fun getAllActiveDeviceLocationDeviceMapping(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+        @Query("deviceType") deviceType: String
+    ) = RetrofitInstance.api(baseUrl).getAllActiveDeviceLocationDeviceMapping(bearerToken,deviceType)
+
+    suspend fun updateDefaultPrinterOnDevice(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+        @Body
+        printerDeviceLocationMappingIdRequest: PrinterDeviceLocationMappingIdRequest
+    ) = RetrofitInstance.api(baseUrl).updateDefaultPrinterOnDevice(bearerToken,printerDeviceLocationMappingIdRequest)
+
+    suspend fun getAllTax(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+    ) = RetrofitInstance.api(baseUrl).getAllTax(bearerToken)
+
+    suspend fun updateOtherCharges(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+        @Query("GrnId") grnId: Int,
+        @Query("OtherCharges") otherCharges: Double
+    ) = RetrofitInstance.api(baseUrl).updateOtherCharges(bearerToken,grnId,otherCharges)
+
+    suspend fun getOtherCharges(
+        @Header(Constants.HTTP_HEADER_AUTHORIZATION) bearerToken: String,
+        baseUrl: String,
+        @QueryMap queryMap: Map<String, Int>
+    ) = RetrofitInstance.api(baseUrl).getOtherCharges(bearerToken,queryMap)
+
+
 
 }

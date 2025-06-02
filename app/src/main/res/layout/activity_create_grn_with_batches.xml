@@ -551,7 +551,7 @@
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toBottomOf="@id/grnAddHeader"
-                                    tools:listitem="@layout/grn_add_item" />
+                                    tools:listitem="@layout/grn_added_line_item_rc_layout" />
 
                             </androidx.constraintlayout.widget.ConstraintLayout>
 

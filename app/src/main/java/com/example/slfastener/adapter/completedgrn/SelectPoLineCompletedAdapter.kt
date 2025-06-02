@@ -1,16 +1,13 @@
 package com.example.slfastener.adapter.completedgrn
 
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.slfastener.databinding.LineItemSelectionBinding
-import com.example.slfastener.model.offlinebatchsave.PoLineItemSelectionModelNewStore
+import com.example.slfastener.model.offlinebatchsave.CustomPoLineItemSelectionModel
 
 class SelectPoLineCompletedAdapter(
-    private val items: MutableList<PoLineItemSelectionModelNewStore>,
+    private val items: MutableList<CustomPoLineItemSelectionModel>,
 ) : RecyclerView.Adapter<SelectPoLineCompletedAdapter.ItemViewHolder>() {
 
     class ItemViewHolder(val binding: LineItemSelectionBinding) : RecyclerView.ViewHolder(binding.root)

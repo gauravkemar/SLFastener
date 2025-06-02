@@ -35,7 +35,7 @@
             android:padding="5dp"
             android:layout_margin="2dp"
             android:textAlignment="center"
-            android:textSize="12sp"
+            android:textSize="@dimen/tv_text"
             android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_weight="0.04"
@@ -51,11 +51,11 @@
             android:textAlignment="center"
             android:padding="5dp"
             android:layout_margin="2dp"
-            android:textSize="12sp"
+            android:textSize="@dimen/tv_text"
             android:textColor="@color/black"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_weight="0.10"
+            app:layout_constraintHorizontal_weight="0.08"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tvSrnNo"
             app:layout_constraintEnd_toStartOf="@+id/tvInternalBatchNo"
@@ -68,11 +68,11 @@
             android:textAlignment="center"
             android:padding="5dp"
             android:layout_margin="2dp"
-            android:textSize="12sp"
+            android:textSize="@dimen/tv_text"
             android:textColor="@color/black"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_weight="0.14"
+            app:layout_constraintHorizontal_weight="0.16"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tvBatchNo"
             app:layout_constraintEnd_toStartOf="@+id/clWeight"
@@ -104,7 +104,7 @@
                     android:layout_width="match_parent"
                     android:padding="5dp"
                     android:id="@+id/edWeight"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/tv_text"
                     android:textColor="@color/black"
                     android:background="@android:color/transparent"
                     android:visibility="gone"
@@ -124,7 +124,7 @@
                     android:layout_height="match_parent"
                     android:focusableInTouchMode="true"
                     android:textAlignment="center"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/tv_text"
                     android:background="@android:color/transparent"
                     android:textColor="@color/black"
                     app:layout_constraintStart_toStartOf="parent"
@@ -165,7 +165,7 @@
             android:layout_height="wrap_content"
             android:text="UOM"
             android:textColor="@color/black"
-            android:textSize="12sp"
+            android:textSize="@dimen/tv_text"
             android:textAlignment="center"
             app:layout_constraintHorizontal_weight="0.05"
             app:layout_constraintStart_toEndOf="@+id/clWeight"
@@ -177,9 +177,9 @@
         <TextView
             android:id="@+id/tvBarcodeLableValue"
             android:layout_width="0dp"
-            app:layout_constraintHorizontal_weight="0.14"
+            app:layout_constraintHorizontal_weight="0.15"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
+            android:textSize="@dimen/tv_text"
             android:textColor="@color/black"
             android:textAlignment="center"
             android:text="G YY:MM:DD:HH:MM:SS:001"
@@ -200,7 +200,7 @@
             android:visibility="gone"
             android:layout_margin="2dp"
             android:hint="Expiry"
-            android:textSize="12sp"
+            android:textSize="@dimen/tv_text"
             android:gravity="center"
             app:layout_constraintHorizontal_weight="0.08"
             app:layout_constraintEnd_toStartOf="@+id/clActions"
@@ -213,131 +213,185 @@
             android:id="@+id/clActions"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintHorizontal_weight="0.20"
-            app:layout_constraintStart_toEndOf="@+id/tvExpiryDate"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            >
-            <ImageButton
-                android:id="@+id/ivAdd"
+            app:layout_constraintHorizontal_weight="0.21"
+            app:layout_constraintStart_toEndOf="@+id/tvExpiryDate"
+            app:layout_constraintTop_toTopOf="parent">
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcvAdd"
                 android:layout_width="0dp"
-                android:layout_margin="2dp"
-                android:padding="5dp"
-                android:src="@drawable/ic_add_black"
+                android:layout_margin="3dp"
+                app:cardCornerRadius="11dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_weight="0.10"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/mcvSave"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/ivSave"
-                />
-            <ImageButton
-                android:id="@+id/ivSave"
-                android:layout_width="0dp"
-                android:layout_margin="2dp"
-                android:padding="5dp"
-                android:src="@drawable/ic_save_black"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_weight="0.10"
-                app:layout_constraintStart_toEndOf="@+id/ivAdd"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/ivMultiAdd"
-                />
+                >
+                <ImageView
+                    android:id="@+id/ivAdd"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/btn_icon"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_add_black"
+                    android:background="@drawable/round_border_darkblue"
 
-            <ImageButton
-                android:id="@+id/ivMultiAdd"
-                android:layout_width="0dp"
-                android:padding="5dp"
-                android:layout_margin="2dp"
-                android:src="@drawable/ic_multiple_add_black"
-                android:layout_height="wrap_content"
-                app:layout_constraintHorizontal_weight="0.10"
-                app:layout_constraintStart_toEndOf="@+id/ivSave"
-                app:layout_constraintEnd_toStartOf="@+id/ivDelete"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                />
+                    />
 
-            <ImageButton
-                android:id="@+id/ivDelete"
+            </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcvSave"
                 android:layout_width="0dp"
-                android:padding="5dp"
-                android:layout_margin="2dp"
-                android:src="@drawable/ic_delete_black"
                 android:layout_height="wrap_content"
-                app:layout_constraintHorizontal_weight="0.10"
-                app:layout_constraintStart_toEndOf="@+id/ivMultiAdd"
-                app:layout_constraintEnd_toStartOf="@+id/ivPrint"
-                app:layout_constraintTop_toTopOf="parent"
+                android:layout_margin="3dp"
+                app:cardCornerRadius="11dp"
+
                 app:layout_constraintBottom_toBottomOf="parent"
-                />
-      <ImageButton
-                android:id="@+id/ivPrint"
+                app:layout_constraintStart_toEndOf="@+id/mcvAdd"
+                app:layout_constraintEnd_toStartOf="@+id/mcvMultiAdd"
+                app:layout_constraintTop_toTopOf="parent"
+                >
+                <ImageView
+                    android:id="@+id/ivSave"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/btn_icon"
+                    android:src="@drawable/ic_save_black"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerInside"
+                    android:background="@drawable/round_border_yellow"
+
+                    />
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcvMultiAdd"
                 android:layout_width="0dp"
-                android:padding="5dp"
-                android:layout_margin="2dp"
-                android:src="@drawable/ic_print_black"
                 android:layout_height="wrap_content"
-                app:layout_constraintHorizontal_weight="0.10"
-                app:layout_constraintStart_toEndOf="@+id/ivDelete"
+                android:layout_margin="3dp"
+                app:cardCornerRadius="11dp"
+
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/mcvSave"
+                app:layout_constraintEnd_toStartOf="@+id/mcvDelete"
+                app:layout_constraintTop_toTopOf="parent"
+                >
+                <ImageView
+                    android:id="@+id/ivMultiAdd"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/btn_icon"
+                    android:src="@drawable/ic_multiple_add_aqua"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerInside"
+                    android:background="@drawable/round_border_aqua"
+
+                    />
+            </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcvDelete"
+                android:layout_width="0dp"
+                android:layout_margin="3dp"
+                app:cardCornerRadius="11dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/mcvPrint"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/mcvMultiAdd"
+                >
+
+                <ImageView
+                    android:id="@+id/ivDelete"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/btn_icon"
+                    android:src="@drawable/ic_delete_black"
+                    android:scaleType="centerInside"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/round_border_red"
+
+                    />
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcvPrint"
+                android:layout_width="0dp"
+                android:layout_margin="3dp"
+                app:cardCornerRadius="11dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/mcvDelete"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                />
+                >
+                <ImageView
+                    android:id="@+id/ivPrint"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/btn_icon"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_print_black"
+                    android:background="@drawable/round_border_darkblue"
+
+                    />
+
+            </com.google.android.material.card.MaterialCardView>
+
+
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-       <!-- <com.google.android.material.card.MaterialCardView
-            android:id="@+id/mcvGenerateBarcode"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/blue"
-            app:cardCornerRadius="5dp"
-            android:layout_margin="5dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_weight="0.15"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/clWeight"
-            app:layout_constraintEnd_toStartOf="@+id/tvBarcodeNo"
-            >
-            <TextView
-                android:id="@+id/tvPrint"
-                android:layout_width="match_parent"
-                android:padding="5dp"
-                android:text="PRINT"
-                android:textAlignment="center"
-                android:layout_margin="2dp"
-                android:textSize="14sp"
-                android:textColor="@color/white"
-                android:layout_height="match_parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_weight="0.20"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/btnGenerateBarcode"
-                app:layout_constraintEnd_toStartOf="@+id/ivAdd"
-                />
-        </com.google.android.material.card.MaterialCardView>-->
+        <!-- <com.google.android.material.card.MaterialCardView
+             android:id="@+id/mcvGenerateBarcode"
+             android:layout_width="0dp"
+             android:layout_height="wrap_content"
+             app:cardBackgroundColor="@color/blue"
+             app:cardCornerRadius="5dp"
+             android:layout_margin="5dp"
+             app:layout_constraintBottom_toBottomOf="parent"
+             app:layout_constraintHorizontal_weight="0.15"
+             app:layout_constraintTop_toTopOf="parent"
+             app:layout_constraintStart_toEndOf="@+id/clWeight"
+             app:layout_constraintEnd_toStartOf="@+id/tvBarcodeNo"
+             >
+             <TextView
+                 android:id="@+id/tvPrint"
+                 android:layout_width="match_parent"
+                 android:padding="5dp"
+                 android:text="PRINT"
+                 android:textAlignment="center"
+                 android:layout_margin="2dp"
+                 android:textSize="14sp"
+                 android:textColor="@color/white"
+                 android:layout_height="match_parent"
+                 app:layout_constraintBottom_toBottomOf="parent"
+                 app:layout_constraintHorizontal_weight="0.20"
+                 app:layout_constraintTop_toTopOf="parent"
+                 app:layout_constraintStart_toEndOf="@+id/btnGenerateBarcode"
+                 app:layout_constraintEnd_toStartOf="@+id/ivAdd"
+                 />
+         </com.google.android.material.card.MaterialCardView>-->
 
 
-       <!-- <TextView
-            android:id="@+id/tvBarcodeNo"
-            android:layout_width="0dp"
-            android:padding="5dp"
-            android:text="Barcode No"
-            android:textAlignment="center"
-            android:layout_margin="2dp"
-            android:textSize="14sp"
-            android:textColor="@color/black"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_weight="0.20"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/mcvGenerateBarcode"
-            app:layout_constraintEnd_toStartOf="@+id/ivAdd"
-            />-->
+        <!-- <TextView
+             android:id="@+id/tvBarcodeNo"
+             android:layout_width="0dp"
+             android:padding="5dp"
+             android:text="Barcode No"
+             android:textAlignment="center"
+             android:layout_margin="2dp"
+             android:textSize="14sp"
+             android:textColor="@color/black"
+             android:layout_height="wrap_content"
+             app:layout_constraintBottom_toBottomOf="parent"
+             app:layout_constraintHorizontal_weight="0.20"
+             app:layout_constraintTop_toTopOf="parent"
+             app:layout_constraintStart_toEndOf="@+id/mcvGenerateBarcode"
+             app:layout_constraintEnd_toStartOf="@+id/ivAdd"
+             />-->
 
 
 

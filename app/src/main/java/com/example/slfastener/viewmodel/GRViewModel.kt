@@ -9,7 +9,6 @@ import com.example.demorfidapp.helper.Resource
 import com.example.demorfidapp.helper.Utils
 import com.example.demorfidapp.repository.SLFastenerRepository
 import com.example.slfastener.model.GetActiveSuppliersDDLResponse
-import com.example.slfastener.model.generalrequest.GRNLineItemDeleteResponse
 import com.example.slfastener.model.generalrequest.GeneralResponse
 import com.example.slfastener.model.generalrequest.GrnBatchDeleteResponse
 import com.example.slfastener.model.getalllocation.GetAllWareHouseLocationResponse
@@ -21,13 +20,6 @@ import com.example.slfastener.model.goodsreceipt.ProcessGRLineItemRequest
 import com.example.slfastener.model.goodsreceipt.ProcessGRLineItemResponse
 import com.example.slfastener.model.goodsreceipt.SubmitGRRequest
 import com.example.slfastener.model.goodsreceipt.grdraft.GetSingleGRByGRIdResponse
-import com.example.slfastener.model.grn.ProcessGRNLineItemsResponse
-import com.example.slfastener.model.grndraftdata.GetDraftGrnResponse
-import com.example.slfastener.model.grnlineitemmain.GrnLineItemResponse
-import com.example.slfastener.model.grnmain.GetFilteredGRNRequest
-import com.example.slfastener.model.grnmain.GetFilteredGRNResponse
-import com.example.slfastener.model.grnmain.SubmitGRNRequest
-import com.example.slfastener.model.polineitemnew.GRNUnitLineItemsSaveRequest
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.Response
@@ -820,6 +812,94 @@ class GRViewModel(
     }
 
     private fun handleSubmitGR(response: Response<GeneralResponse>): Resource<GeneralResponse> {
+        var errorMessage = ""
+        if (response.isSuccessful) {
+            response.body()?.let { appDetailsResponse ->
+                return Resource.Success(appDetailsResponse)
+            }
+        } else if (response.errorBody() != null) {
+            val errorObject = response.errorBody()?.let {
+                JSONObject(it.charStream().readText())
+            }
+            errorObject?.let {
+                errorMessage = it.getString(Constants.HTTP_ERROR_MESSAGE)
+            }
+        }
+        return Resource.Error(errorMessage)
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //print
+    val printLabelForGRMutableResponse: MutableLiveData<Resource<GeneralResponse>> = MutableLiveData()
+
+    fun printLabelForGR(token: String,baseUrl: String,    grnLineUnitItemId: ArrayList<Int>) {
+        viewModelScope.launch {
+            safeAPICallPrintLabelForGR(token,baseUrl,grnLineUnitItemId)
+        }
+    }
+
+    private suspend fun safeAPICallPrintLabelForGR(token: String,baseUrl: String,   grnLineUnitItemId: ArrayList<Int> ) {
+        printLabelForGRMutableResponse.postValue(Resource.Loading())
+        try {
+            if (Utils.hasInternetConnection(getApplication())) {
+                val response = rfidRepository.printLabelForGR(token,baseUrl ,grnLineUnitItemId)
+                printLabelForGRMutableResponse.postValue(handlePrintLabelForGR(response))
+            } else {
+                printLabelForGRMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
+            }
+        } catch (t: Throwable) {
+            when (t) {
+                is IOException -> printLabelForGRMutableResponse.postValue(Resource.Error(Constants.CONFIG_ERROR))
+                else -> printLabelForGRMutableResponse.postValue(Resource.Error("${t.message}"))
+            }
+        }
+    }
+
+    private fun handlePrintLabelForGR(response: Response<GeneralResponse>): Resource<GeneralResponse>{
+        var errorMessage = ""
+        if (response.isSuccessful) {
+            response.body()?.let { appDetailsResponse ->
+                return Resource.Success(appDetailsResponse)
+            }
+        } else if (response.errorBody() != null) {
+            val errorObject = response.errorBody()?.let {
+                JSONObject(it.charStream().readText())
+            }
+            errorObject?.let {
+                errorMessage = it.getString(Constants.HTTP_ERROR_MESSAGE)
+            }
+        }
+        return Resource.Error(errorMessage)
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //print bulk
+    val printLabelForGRBulkMutableResponse: MutableLiveData<Resource<GeneralResponse>> = MutableLiveData()
+
+    fun printLabelForGRBulk(token: String,baseUrl: String,    grnLineUnitItemId: ArrayList<Int>) {
+        viewModelScope.launch {
+            safeAPICallPrintLabelForGRBulk(token,baseUrl,grnLineUnitItemId)
+        }
+    }
+
+    private suspend fun safeAPICallPrintLabelForGRBulk(token: String,baseUrl: String,   grnLineUnitItemId: ArrayList<Int> ) {
+        printLabelForGRBulkMutableResponse.postValue(Resource.Loading())
+        try {
+            if (Utils.hasInternetConnection(getApplication())) {
+                val response = rfidRepository.printLabelForGR(token,baseUrl ,grnLineUnitItemId)
+                printLabelForGRBulkMutableResponse.postValue(handlePrintLabelForGRNBulk(response))
+            } else {
+                printLabelForGRBulkMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
+            }
+        } catch (t: Throwable) {
+            when (t) {
+                is IOException -> printLabelForGRBulkMutableResponse.postValue(Resource.Error(Constants.CONFIG_ERROR))
+                else -> printLabelForGRBulkMutableResponse.postValue(Resource.Error("${t.message}"))
+            }
+        }
+    }
+
+    private fun handlePrintLabelForGRNBulk(response: Response<GeneralResponse>): Resource<GeneralResponse>{
         var errorMessage = ""
         if (response.isSuccessful) {
             response.body()?.let { appDetailsResponse ->

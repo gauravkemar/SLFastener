@@ -86,8 +86,8 @@ class GrMainAddAdapter (
 
         setWareHouseLocation(holder,poLineItemModel)
         holder.tvSaveLineItem.setOnClickListener {
-               poLineItemParent[position].LocationId=selectedLocationID
-                onItemCheck(position,poLineItemParent[position])
+            poLineItemParent[position].LocationId=selectedLocationID
+            onItemCheck(position,poLineItemParent[position])
         }
 
 
@@ -149,7 +149,7 @@ class GrMainAddAdapter (
         val tvItemDesc: TextView = itemView.findViewById(R.id.tvItemDesc)
         val tvPuom: TextView = itemView.findViewById(R.id.tvPuom)
         val tvMhType: TextView = itemView.findViewById(R.id.tvMhType)
-       // val tvPoQty: TextView = itemView.findViewById(R.id.tvPoQty)
+        // val tvPoQty: TextView = itemView.findViewById(R.id.tvPoQty)
         val tvBalQty: TextView = itemView.findViewById(R.id.tvBalQty)
         //val tvRate: TextView = itemView.findViewById(R.id.tvRate)
         //val tvGRNQty: TextView = itemView.findViewById(R.id.tvGRNQty)

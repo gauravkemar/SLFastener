@@ -28,7 +28,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_weight="0.10"
+                    app:layout_constraintVertical_weight="0.08"
                     >
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
@@ -80,7 +80,7 @@
                             android:id="@+id/settingBtn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
+                            android:layout_margin="5dp"
                             android:background="@drawable/round_border_blue"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/tvSupervisor"
@@ -115,56 +115,58 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/cvHeader"
-                    app:layout_constraintVertical_weight="0.88">
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/clHeadeChild"
-                        android:layout_width="match_parent"
+                    app:layout_constraintVertical_weight="0.90">
+
+                    <TextView
+                        android:id="@+id/tvGRNName"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="Goods Receipt Note"
+                        android:textSize="@dimen/sub_heading"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginTop="10dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
+                        />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:layout_marginTop="5dp"
+
+                        android:background="@drawable/rounded_left_white"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toTopOf="@+id/clContainer"
                         app:layout_constraintEnd_toEndOf="parent"
                         >
-                        <TextView
-                            android:id="@+id/tvGRNName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Goods Receipt Note"
-                            android:textSize="20sp"
-                            android:layout_marginStart="15dp"
-                            android:layout_marginTop="10dp"
-                            android:textStyle="bold"
-                            android:textColor="@color/black"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            />
-
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/validatePrinter"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_marginEnd="10dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintEnd_toStartOf="@+id/validateWeightMachine"
 
                             >
                             <ImageView
                                 android:id="@+id/ivPrinter"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:padding="15dp"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:scaleType="fitXY"
+                                android:padding="5dp"
                                 android:src="@drawable/printer_check_if_connected"
+                                app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 />
                             <ImageView
                                 android:id="@+id/ivPrinterIndicator"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_width="10dp"
+                                android:layout_height="10dp"
                                 android:src="@drawable/ic_circl_green"
-                                android:visibility="gone"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 />
@@ -172,36 +174,30 @@
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/validateWeightMachine"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="20dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:layout_height="match_parent"
 
+                            app:layout_constraintEnd_toEndOf="parent"
                             >
                             <ImageView
                                 android:id="@+id/ivWeight"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:padding="15dp"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:padding="5dp"
                                 android:src="@drawable/weighing_machine_if_connected"
                                 app:layout_constraintTop_toTopOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 />
                             <ImageView
                                 android:id="@+id/ivWeightIndicator"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:visibility="gone"
+                                android:layout_width="10dp"
+                                android:layout_height="10dp"
                                 android:src="@drawable/ic_circl_green"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 />
                         </androidx.constraintlayout.widget.ConstraintLayout>
                     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
 
@@ -212,17 +208,17 @@
                         android:layout_margin="5dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/clHeadeChild"
+                        app:layout_constraintTop_toBottomOf="@+id/tvGRNName"
                         app:layout_constraintBottom_toTopOf="@+id/clContainer2">
 
                         <com.google.android.material.card.MaterialCardView
                             android:id="@+id/mcvHeaders"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
-                            android:layout_margin="10dp"
+                            android:layout_margin="5dp"
                             app:cardCornerRadius="10dp"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintVertical_weight="0.15"
+                            app:layout_constraintVertical_weight="0.10"
                             app:layout_constraintBottom_toTopOf="@+id/mcvRcLineItem"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent">
@@ -231,16 +227,15 @@
                                 android:id="@+id/clAddDelete"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:padding="5dp"
+
                                 >
                                 <androidx.constraintlayout.widget.ConstraintLayout
                                     android:id="@+id/clSelectSupplier"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_margin="5dp"
-
                                     app:layout_constraintBottom_toBottomOf="parent"
-                                    app:layout_constraintEnd_toStartOf="@+id/clSelectPo"
+                                    app:layout_constraintEnd_toStartOf="@+id/clSelectPoId"
                                     app:layout_constraintHorizontal_weight="0.16"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toTopOf="parent">
@@ -249,9 +244,14 @@
                                         android:id="@+id/textInputLayout"
                                         android:layout_width="match_parent"
                                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                                        android:layout_height="wrap_content"
+                                        android:layout_height="35dp"
                                         android:hint="Select Supplier"
+                                        app:boxCornerRadiusBottomEnd="10dp"
+                                        app:boxCornerRadiusBottomStart="10dp"
+                                        app:boxCornerRadiusTopEnd="10dp"
+                                        app:boxCornerRadiusTopStart="10dp"
                                         app:endIconMode="dropdown_menu"
+                                        app:hintTextAppearance="@style/CustomHintTextAppearance"
                                         android:layout_margin="2dp"
                                         app:layout_constraintTop_toTopOf="parent"
                                         app:layout_constraintStart_toStartOf="parent"
@@ -262,6 +262,7 @@
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
                                             android:padding="5dp"
+                                            android:textSize="@dimen/tv_text"
                                             android:inputType="text"
                                             android:singleLine="true" />
                                     </com.google.android.material.textfield.TextInputLayout>
@@ -297,16 +298,13 @@
 
 
                                 <com.google.android.material.card.MaterialCardView
-                                    android:id="@+id/clSelectPo"
+                                    android:id="@+id/clSelectPoId"
                                     android:layout_width="0dp"
-                                    android:layout_height="0dp"
-                                    android:layout_marginTop="15dp"
-                                    android:layout_marginBottom="15dp"
-                                    android:layout_marginStart="5dp"
-                                    android:layout_marginEnd="5dp"
+                                    android:layout_height="@dimen/button_ed_size"
+                                    android:layout_margin="5dp"
                                     android:visibility="gone"
                                     app:cardBackgroundColor="@color/blue"
-                                    app:cardCornerRadius="5dp"
+                                    app:cardCornerRadius="10dp"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toStartOf="@+id/clEnterInvNo"
                                     app:layout_constraintHorizontal_weight="0.16"
@@ -317,21 +315,28 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_gravity="center"
-                                        android:padding="5dp"
+                                        android:paddingStart="20dp"
+                                        android:paddingEnd="20dp"
+                                        android:paddingTop="5dp"
+                                        android:paddingBottom="5dp"
+                                        android:drawablePadding="10dp"
+                                        android:gravity="center"
+                                        android:textSize="@dimen/tv_text"
                                         android:text="Select PO"
-                                        android:textColor="@color/white" />
+                                        android:textColor="@color/white"
+                                        app:drawableStartCompat="@drawable/ic_check_po_list_white" />
                                 </com.google.android.material.card.MaterialCardView>
 
                                 <androidx.constraintlayout.widget.ConstraintLayout
                                     android:id="@+id/clEnterInvNo"
                                     android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
+                                    android:layout_height="@dimen/button_ed_size"
                                     android:layout_margin="5dp"
                                     android:background="@drawable/round_border_grey"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toStartOf="@+id/clCurrencyType"
                                     app:layout_constraintHorizontal_weight="0.16"
-                                    app:layout_constraintStart_toEndOf="@+id/clSelectPo"
+                                    app:layout_constraintStart_toEndOf="@+id/clSelectPoId"
                                     app:layout_constraintTop_toTopOf="parent">
 
                                     <EditText
@@ -340,9 +345,9 @@
                                         android:layout_height="match_parent"
                                         android:background="@android:color/transparent"
                                         android:hint="Enter Inv NO"
-                                        android:padding="15dp"
+                                        android:padding="5dp"
+                                        android:textSize="@dimen/tv_text"
                                         android:textColor="@color/tv_sub_head_color"
-                                        android:textSize="12sp"
                                         android:textStyle="bold"
                                         app:layout_constraintBottom_toBottomOf="parent"
                                         app:layout_constraintEnd_toEndOf="parent"
@@ -354,7 +359,7 @@
                                 <androidx.constraintlayout.widget.ConstraintLayout
                                     android:id="@+id/clCurrencyType"
                                     android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
+                                    android:layout_height="@dimen/button_ed_size"
                                     android:layout_margin="5dp"
                                     android:background="@drawable/round_border_grey"
                                     app:layout_constraintBottom_toBottomOf="parent"
@@ -369,9 +374,10 @@
                                         android:layout_height="match_parent"
                                         android:background="@android:color/transparent"
                                         android:text=""
-                                        android:padding="15dp"
+                                        android:padding="5dp"
                                         android:textColor="@color/tv_sub_head_color"
-                                        android:textSize="12sp"
+                                        android:textSize="@dimen/tv_text"
+                                        android:gravity="center_vertical"
                                         android:textStyle="bold"
                                         app:layout_constraintBottom_toBottomOf="parent"
                                         app:layout_constraintEnd_toEndOf="parent"
@@ -383,7 +389,7 @@
                                 <androidx.constraintlayout.widget.ConstraintLayout
                                     android:id="@+id/clEnterInvDate"
                                     android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
+                                    android:layout_height="@dimen/button_ed_size"
                                     android:layout_margin="5dp"
                                     android:background="@drawable/round_border_grey"
                                     app:layout_constraintBottom_toBottomOf="parent"
@@ -398,9 +404,9 @@
                                         android:layout_height="wrap_content"
                                         android:background="@android:color/transparent"
                                         android:hint="Select Inv Date"
-                                        android:padding="15dp"
+                                        android:padding="5dp"
                                         android:textColor="@color/tv_sub_head_color"
-                                        android:textSize="12sp"
+                                        android:textSize="@dimen/tv_text"
                                         android:textStyle="bold"
                                         app:layout_constraintBottom_toBottomOf="parent"
                                         app:layout_constraintEnd_toEndOf="parent"
@@ -414,7 +420,7 @@
                                 <androidx.constraintlayout.widget.ConstraintLayout
                                     android:id="@+id/clAddGrn"
                                     android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
+                                    android:layout_height="@dimen/button_ed_size"
                                     android:layout_margin="5dp"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintHorizontal_weight="0.16"
@@ -426,26 +432,33 @@
                                         android:id="@+id/mcvAddGrn"
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
-                                        app:cardCornerRadius="5dp"
+                                        app:cardCornerRadius="10dp"
                                         android:visibility="visible"
                                         app:cardBackgroundColor="@color/bg_orange"
 
                                         >
 
                                         <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
                                             android:layout_gravity="center"
-                                            android:padding="15dp"
+                                            android:paddingStart="20dp"
+                                            android:paddingEnd="20dp"
+                                            android:paddingTop="5dp"
+                                            android:paddingBottom="5dp"
+                                            android:textSize="@dimen/btn_text"
                                             android:text="Next"
-                                            android:textColor="@color/white" />
+                                            android:gravity="center"
+                                            android:drawablePadding="10dp"
+                                            android:textColor="@color/white"
+                                            app:drawableEndCompat="@drawable/ic_forward_arrow_white" />
                                     </com.google.android.material.card.MaterialCardView>
 
                                     <androidx.constraintlayout.widget.ConstraintLayout
                                         android:id="@+id/clKGRNNo"
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
-                                        android:visibility="visible"
+                                        android:visibility="gone"
                                         android:background="@drawable/round_border_grey"
 
                                     >
@@ -456,9 +469,10 @@
                                             android:layout_height="match_parent"
                                             android:background="@android:color/transparent"
                                             android:text="KGRN"
-                                            android:padding="15dp"
+                                            android:padding="5dp"
+                                            android:gravity="center_vertical"
                                             android:textColor="@color/tv_sub_head_color"
-                                            android:textSize="12sp"
+                                            android:textSize="@dimen/tv_text"
                                             android:textStyle="bold"
                                             app:layout_constraintBottom_toBottomOf="parent"
                                             app:layout_constraintEnd_toEndOf="parent"
@@ -479,9 +493,9 @@
                             android:id="@+id/mcvRcLineItem"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
-                            android:layout_margin="10dp"
+                            android:layout_margin="5dp"
                             app:cardCornerRadius="10dp"
-                            app:layout_constraintVertical_weight="0.75"
+                            app:layout_constraintVertical_weight="0.94"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintBottom_toTopOf="@+id/clSubmit"
@@ -542,6 +556,7 @@
                                                     android:layout_width="wrap_content"
                                                     android:layout_height="wrap_content"
                                                     android:padding="5dp"
+                                                    android:textSize="@dimen/tv_text"
                                                     android:text="UnProcessed"
                                                     android:textColor="@color/white"
                                                     app:layout_constraintBottom_toBottomOf="parent"
@@ -573,7 +588,7 @@
                                                 android:paddingBottom="2dp"
                                                 android:text="100"
                                                 android:textColor="@color/white"
-                                                android:textSize="8sp" />
+                                                android:textSize="@dimen/tv_text"/>
 
                                         </com.google.android.material.card.MaterialCardView>
 
@@ -618,6 +633,7 @@
                                                     android:layout_height="wrap_content"
                                                     android:padding="5dp"
                                                     android:text="  Processed"
+                                                    android:textSize="@dimen/tv_text"
                                                     android:textColor="@color/blue"
                                                     app:layout_constraintBottom_toBottomOf="parent"
                                                     app:layout_constraintEnd_toEndOf="parent"
@@ -639,12 +655,13 @@
                                                 android:layout_width="wrap_content"
                                                 android:layout_height="wrap_content"
                                                 android:paddingStart="5dp"
+                                                android:textSize="@dimen/tv_text"
                                                 android:paddingTop="2dp"
                                                 android:paddingEnd="5dp"
                                                 android:paddingBottom="2dp"
                                                 android:text="100"
                                                 android:textColor="@color/white"
-                                                android:textSize="8sp" />
+                                            />
 
                                         </com.google.android.material.card.MaterialCardView>
 
@@ -658,7 +675,8 @@
                                     android:id="@+id/clMidChild2"
                                     android:layout_width="match_parent"
                                     android:layout_height="0dp"
-                                    app:layout_constraintVertical_weight="0.70"
+                                    android:layout_marginBottom="5dp"
+                                    app:layout_constraintVertical_weight="0.73"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toBottomOf="@+id/clMidChild1"
@@ -669,12 +687,21 @@
                                         android:layout_height="wrap_content"
                                         android:id="@+id/grnAddHeader"
                                         android:layout_marginStart="5dp"
-                                        android:layout_marginEnd="5dp"
+                                        android:layout_marginEnd="2dp"
                                         layout="@layout/grn_add_list_header"
                                         app:layout_constraintEnd_toEndOf="parent"
                                         app:layout_constraintStart_toStartOf="parent"
                                         app:layout_constraintTop_toTopOf="parent"
                                         app:layout_constraintBottom_toTopOf="@+id/rcGrnAdd"/>
+                                    <View
+                                        android:layout_width="match_parent"
+                                        android:layout_height="1dp"
+                                        android:background="@color/enough_grey"
+                                        app:layout_constraintStart_toStartOf="parent"
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintBottom_toTopOf="@+id/rcGrnAdd"
+                                        app:layout_constraintTop_toBottomOf="@+id/grnAddHeader"
+                                        />
 
                                     <androidx.recyclerview.widget.RecyclerView
                                         android:id="@+id/rcGrnAdd"
@@ -682,21 +709,141 @@
                                         android:layout_height="0dp"
                                         app:layout_constraintBottom_toBottomOf="parent"
                                         app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintHorizontal_bias="0.0"
                                         app:layout_constraintStart_toStartOf="parent"
                                         app:layout_constraintTop_toBottomOf="@id/grnAddHeader"
-                                        tools:listitem="@layout/grn_add_item" />
+                                        tools:listitem="@layout/grn_added_line_item_rc_layout" />
 
                                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                                <View
+                                    android:layout_width="match_parent"
+                                    android:layout_height="1dp"
+                                    android:layout_margin="5dp"
+                                    android:background="@color/enough_grey"
+                                    app:layout_constraintTop_toBottomOf="@+id/clMidChild2"
+                                    app:layout_constraintBottom_toTopOf="@+id/clMidChild3"
+                                    />
 
                                 <androidx.constraintlayout.widget.ConstraintLayout
                                     android:id="@+id/clMidChild3"
                                     android:layout_width="match_parent"
                                     android:layout_height="0dp"
-                                    app:layout_constraintVertical_weight="0.15"
+                                    android:layout_marginTop="1dp"
+                                    app:layout_constraintVertical_weight="0.07"
                                     app:layout_constraintBottom_toBottomOf="parent"
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toBottomOf="@+id/clMidChild2">
+                                    <androidx.constraintlayout.widget.ConstraintLayout
+                                        android:id="@+id/clOtherCharges"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="@dimen/btn_size"
+                                        android:layout_marginEnd="10dp"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_marginBottom="5dp"
+                                        app:layout_goneMarginEnd="5dp"
+                                        app:layout_constraintEnd_toStartOf="@+id/tvTaxAmount"
+                                        app:layout_constraintTop_toTopOf="parent"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        >
+                                        <TextView
+                                            android:id="@+id/tvOtherCharges"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:hint="0.00"
+                                            android:paddingStart="30dp"
+                                            android:paddingEnd="30dp"
+                                            android:paddingTop="10dp"
+                                            android:paddingBottom="10dp"
+                                            android:textSize="@dimen/tv_text"
+                                            android:textColor="@color/black"
+                                            android:textStyle="bold"
+                                            android:inputType="numberDecimal"
+                                            android:background="@drawable/round_border_black"
+                                            app:layout_constraintEnd_toStartOf="@+id/mcvViewOtherCharges"
+                                            app:layout_constraintTop_toTopOf="parent"
+                                            app:layout_constraintStart_toStartOf="parent"
+                                            app:layout_constraintBottom_toBottomOf="parent"
+                                            />
+                                        <com.google.android.material.card.MaterialCardView
+                                            android:id="@+id/mcvViewOtherCharges"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_margin="3dp"
+                                            app:cardCornerRadius="11dp"
+                                            app:layout_constraintBottom_toBottomOf="parent"
+                                            app:layout_constraintStart_toEndOf="@+id/tvOtherCharges"
+                                            app:layout_constraintEnd_toEndOf="parent"
+                                            app:layout_constraintTop_toTopOf="parent"
+                                            >
+                                            <ImageView
+                                                android:id="@+id/tvViewOtherCharges"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="@dimen/btn_size"
+                                                android:background="@drawable/round_border_green"
+                                                android:src="@drawable/ic_other_charges"
+                                                android:adjustViewBounds="true"
+                                                android:scaleType="centerInside"
+                                                />
+                                        </com.google.android.material.card.MaterialCardView>
+                                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                                    <View
+                                        android:layout_width="1dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_margin="5dp"
+                                        android:background="@color/grey"
+                                        app:layout_constraintTop_toTopOf="parent"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintStart_toEndOf="@+id/clOtherCharges"
+
+                                        />
+                                    <TextView
+                                        android:id="@+id/tvTaxAmount"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:padding="5dp"
+                                        android:layout_marginEnd="10dp"
+                                        android:layout_marginTop="5dp"
+                                        android:layout_marginBottom="5dp"
+                                        app:layout_goneMarginEnd="5dp"
+                                        android:text="Line Total: "
+                                        android:textStyle="bold"
+                                        android:textColor="@color/black"
+                                        android:textSize="@dimen/tv_text"
+                                        app:layout_constraintEnd_toStartOf="@+id/tvTotalAmount"
+                                        app:layout_constraintTop_toTopOf="parent"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        />
+
+
+                                    <View
+                                        android:layout_width="1dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_margin="5dp"
+                                        android:background="@color/grey"
+                                        app:layout_constraintTop_toTopOf="parent"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        app:layout_constraintStart_toEndOf="@+id/tvTaxAmount"
+
+
+                                        />
+                                    <TextView
+                                        android:id="@+id/tvTotalAmount"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:padding="5dp"
+                                        android:layout_margin="5dp"
+                                        android:textStyle="bold"
+                                        android:textSize="@dimen/tv_text"
+                                        android:textColor="@color/black"
+                                        android:text="Total Amount : "
+                                        app:layout_constraintEnd_toEndOf="parent"
+                                        app:layout_constraintTop_toTopOf="parent"
+                                        app:layout_constraintBottom_toBottomOf="parent"
+                                        />
+
 
                                     <com.google.android.material.card.MaterialCardView
                                         android:id="@+id/mcvImpAllLineItems"
@@ -708,9 +855,8 @@
                                         app:cardBackgroundColor="@color/blue"
                                         app:cardCornerRadius="5dp"
                                         app:layout_constraintBottom_toBottomOf="parent"
-                                        app:layout_constraintEnd_toStartOf="@+id/mcvNewLineItem"
+                                        app:layout_constraintEnd_toEndOf="parent"
                                         app:layout_constraintTop_toTopOf="parent"
-
                                         >
 
                                         <androidx.constraintlayout.widget.ConstraintLayout
@@ -748,7 +894,7 @@
 
                                     </com.google.android.material.card.MaterialCardView>
 
-                                    <com.google.android.material.card.MaterialCardView
+                                  <!--  <com.google.android.material.card.MaterialCardView
                                         android:id="@+id/mcvNewLineItem"
                                         android:layout_width="0dp"
                                         android:layout_height="wrap_content"
@@ -791,7 +937,7 @@
                                         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-                                    </com.google.android.material.card.MaterialCardView>
+                                    </com.google.android.material.card.MaterialCardView>-->
                                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -811,15 +957,50 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/mcvRcLineItem">
 
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/mcvNewLineItem"
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/btn_size"
+                                android:layout_margin="10dp"
+                                android:clickable="true"
+                                android:visibility="gone"
+                                app:cardCornerRadius="10dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/mcvSubmitGRN"
+                                app:layout_constraintTop_toTopOf="parent"
+                                >
+
+                                <TextView
+                                    android:id="@+id/tvNewLineItem"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:paddingStart="20dp"
+                                    android:paddingEnd="20dp"
+                                    android:paddingTop="5dp"
+                                    android:gravity="center"
+                                    android:paddingBottom="5dp"
+                                    android:drawablePadding="10dp"
+                                    android:text="New Line Item"
+                                    android:textSize="@dimen/btn_text"
+                                    android:background="@drawable/round_border_darkblue"
+                                    android:textColor="@color/blue"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toEndOf="@+id/ivAddNewLineItem"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:drawableStartCompat="@drawable/ic_add_blue" />
+
+                            </com.google.android.material.card.MaterialCardView>
+
 
                             <com.google.android.material.card.MaterialCardView
                                 android:id="@+id/mcvSubmitGRN"
                                 android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="15dp"
+                                android:layout_height="@dimen/btn_size"
+                                android:layout_margin="10dp"
                                 android:clickable="true"
                                 app:cardBackgroundColor="@color/add_btn_color"
-                                app:cardCornerRadius="5dp"
+                                app:cardCornerRadius="10dp"
+
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toStartOf="@+id/mcvCancel"
                                 app:layout_constraintTop_toTopOf="parent">
@@ -827,36 +1008,43 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:paddingTop="10dp"
-                                    android:paddingBottom="10dp"
                                     android:paddingStart="20dp"
                                     android:paddingEnd="20dp"
-                                    android:text="    Submit    "
-                                    android:textColor="@color/white" />
+                                    android:paddingTop="5dp"
+                                    android:paddingBottom="5dp"
+                                    android:drawablePadding="10dp"
+                                    android:textSize="@dimen/btn_text"
+                                    android:text="Submit"
+                                    android:textColor="@color/white"
+                                    app:drawableStartCompat="@drawable/ic_submit_all" />
                             </com.google.android.material.card.MaterialCardView>
 
                             <com.google.android.material.card.MaterialCardView
                                 android:id="@+id/mcvCancel"
                                 android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="15dp"
+                                android:layout_height="@dimen/btn_size"
+                                android:layout_margin="10dp"
                                 android:clickable="true"
                                 app:cardBackgroundColor="@color/blue"
-                                app:cardCornerRadius="5dp"
+                                app:cardCornerRadius="10dp"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toStartOf="@+id/mcvSaveToDraft"
                                 app:layout_constraintTop_toTopOf="parent">
 
                                 <TextView
                                     android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_height="30dp"
                                     android:layout_gravity="center"
-                                    android:paddingTop="10dp"
-                                    android:paddingBottom="10dp"
                                     android:paddingStart="20dp"
                                     android:paddingEnd="20dp"
-                                    android:text="    Cancel    "
-                                    android:textColor="@color/white" />
+                                    android:paddingTop="5dp"
+                                    android:paddingBottom="5dp"
+                                    android:drawablePadding="10dp"
+
+                                    android:text="Cancel"
+                                    android:textSize="@dimen/btn_text"
+                                    android:textColor="@color/white"
+                                    app:drawableStartCompat="@drawable/ic_white_close" />
                             </com.google.android.material.card.MaterialCardView>
 
                             <com.google.android.material.card.MaterialCardView
@@ -906,7 +1094,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:visibility="gone"
-                        android:layout_margin="20dp"
+                        android:layout_margin="10dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/clContainer"

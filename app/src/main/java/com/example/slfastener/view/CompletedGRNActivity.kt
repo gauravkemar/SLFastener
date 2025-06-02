@@ -1,6 +1,5 @@
 package com.example.slfastener.view
 
-import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Intent
@@ -26,58 +25,55 @@ import com.example.demorfidapp.helper.Resource
 import com.example.demorfidapp.helper.SessionManager
 import com.example.demorfidapp.repository.SLFastenerRepository
 import com.example.slfastener.R
-import com.example.slfastener.adapter.GRNSelectPoAdapter
 import com.example.slfastener.adapter.completedgrn.CreateBatchesCompletedAdapter
 import com.example.slfastener.adapter.completedgrn.GRNSelectPoCompletedAdapter
 import com.example.slfastener.adapter.completedgrn.GrnMainAddCompletedAdapter
-import com.example.slfastener.adapter.completedgrn.SelectPoLineCompletedAdapter
-import com.example.slfastener.adapter.newadapters.SelectPoLineAdapter
 import com.example.slfastener.databinding.ActivityCompletedGrnactivityBinding
-import com.example.slfastener.databinding.ActivityGrnaddBinding
 import com.example.slfastener.databinding.CompletedBatchesDialogBinding
-import com.example.slfastener.databinding.CreateBatchesDialogBinding
 import com.example.slfastener.databinding.DescriptionInfoDialogBinding
-import com.example.slfastener.databinding.SelectLineItemDialogBinding
-import com.example.slfastener.databinding.SelectSupplierPoLineItemBinding
+import com.example.slfastener.databinding.SelectPoIdsDialogBinding
+
+
 import com.example.slfastener.helper.CustomArrayAdapter
-import com.example.slfastener.helper.CustomKeyboard
+import com.example.slfastener.helper.printer.USBPrinterHelper
 
 import com.example.slfastener.model.GetActiveSuppliersDDLResponse
 import com.example.slfastener.model.GetPOsAndLineItemsOnPOIdsResponse
 import com.example.slfastener.model.GetSuppliersPOsDDLResponse
 import com.example.slfastener.model.getalllocation.GetAllWareHouseLocationResponse
 import com.example.slfastener.model.grndraftdata.GetDraftGrnResponse
-import com.example.slfastener.model.offlinebatchsave.GrnLineItemUnitStore
-import com.example.slfastener.model.offlinebatchsave.PoLineItemSelectionModelNewStore
+import com.example.slfastener.model.offlinebatchsave.CustomGrnLineItemUnit
+import com.example.slfastener.model.offlinebatchsave.CustomPoLineItemSelectionModel
 import com.example.slfastener.viewmodel.GRNTransactionViewModel
 import com.example.slfastener.viewmodel.GRNTransactionViewModelProviderFactory
 import es.dmoral.toasty.Toasty
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class CompletedGRNActivity : AppCompatActivity() {
+class CompletedGRNActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListener   {
     lateinit var binding: ActivityCompletedGrnactivityBinding
     private lateinit var viewModel: GRNTransactionViewModel
     private var grnMainItemAdapter: GrnMainAddCompletedAdapter? = null
     private var createBatchesMainRcAdapter: CreateBatchesCompletedAdapter? = null
     lateinit var getSuppliersPOsDDLResponse: MutableList<GetSuppliersPOsDDLResponse>
     lateinit var getPOsAndLineItemsOnPOIdsResponse: MutableList<GetPOsAndLineItemsOnPOIdsResponse>
-    lateinit var poLineItem: MutableList<PoLineItemSelectionModelNewStore>
-    lateinit var selectedPoLineItem: MutableList<PoLineItemSelectionModelNewStore>
+    lateinit var poLineItem: MutableList<CustomPoLineItemSelectionModel>
+    lateinit var selectedPoLineItem: MutableList<CustomPoLineItemSelectionModel>
     private lateinit var session: SessionManager
     private lateinit var progress: ProgressDialog
-    lateinit var selectPoBinding: SelectSupplierPoLineItemBinding
+    lateinit var selectPoBinding: SelectPoIdsDialogBinding
     lateinit var supplierSpinnerArray: MutableList<String>
     lateinit var selectedPoFilteredList: MutableList<Int>
     val supplierMap = HashMap<String, String>()
     var selectedSupplierCode: String = ""
+
     var token: String = ""
     private var supplierSpinnerAdapter: CustomArrayAdapter? = null
     private var isIntialSelectSupplier = true
     var selectPoDialog: Dialog? = null
     lateinit var createBatchesDialogBinding: CompletedBatchesDialogBinding
     lateinit var createBatchedDialog: AppCompatDialog
-    lateinit var createBatchesList: MutableList<GrnLineItemUnitStore>
+    lateinit var createBatchesList: MutableList<CustomGrnLineItemUnit>
     lateinit var getActiveSuppliersDDLResponse: MutableList<GetActiveSuppliersDDLResponse>
     lateinit var getAllLocation: MutableList<GetAllWareHouseLocationResponse>
     var currentPoLineItemPosition = ""
@@ -103,14 +99,22 @@ class CompletedGRNActivity : AppCompatActivity() {
     private lateinit var itemDescriptionBinding: DescriptionInfoDialogBinding
     var itemDescriptionDialog: Dialog? = null
 
-    lateinit var selectedBatchForPrint:ArrayList<Int>
+    lateinit var selectedBatchForPrint: ArrayList<Int>
 
+    private var serverPrinterTypePrefText: String? = null
+    private var printerPrnforGRN: String? = null
+    var formattedPrnForPrinter=""
+
+    private lateinit var usbPrinterHelper: USBPrinterHelper
+    var bulkUsbPrintFlag=0
+
+    var isPrinterConnected=false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_completed_grnactivity)
 
         session = SessionManager(this)
-        selectPoBinding = SelectSupplierPoLineItemBinding.inflate(getLayoutInflater());
+        selectPoBinding = SelectPoIdsDialogBinding.inflate(getLayoutInflater());
         selectPoDialog = Dialog(this)
         progress = ProgressDialog(this)
         progress.setMessage("Loading...")
@@ -127,12 +131,16 @@ class CompletedGRNActivity : AppCompatActivity() {
         token = userDetails["jwtToken"].toString()
         serverIpSharedPrefText = userDetails!![Constants.KEY_SERVER_IP].toString()
         serverHttpPrefText = userDetails!![Constants.KEY_HTTP].toString()
+
+        serverPrinterTypePrefText = userDetails[Constants.KEY_PRINTER_TYPE].toString()
+        printerPrnforGRN = userDetails[Constants.KEY_GRN_PRN].toString()
+
         baseUrl = "$serverHttpPrefText://$serverIpSharedPrefText/service/api/"
         itemDescriptionBinding = DescriptionInfoDialogBinding.inflate(LayoutInflater.from(this))
         itemDescriptionDialog = Dialog(this)
         selectedBatchForPrint = ArrayList()
 
-
+        usbPrinterHelper = USBPrinterHelper(this, this)
         val receivedIntent = intent
         grnId = receivedIntent.getIntExtra("GRNID", 0)
 
@@ -172,22 +180,27 @@ class CompletedGRNActivity : AppCompatActivity() {
                 if (poline?.grnLineItemUnit != null) {
                     lineItemId = poline.lineItemId
                     for (grnLineUnit in poline.grnLineItemUnit!!) {
-                        createBatchesList.add(
-                            GrnLineItemUnitStore(
-                                grnLineUnit.UOM,
-                                poline.mhType,
-                                grnLineUnit.barcode,
-                                grnLineUnit.expiryDate,
-                                grnLineUnit.isExpirable,
-                                grnLineUnit.internalBatchNo,
-                                grnLineUnit.isChecked,
-                                grnLineUnit.lineItemId,
-                                grnLineUnit.lineItemUnitId,
-                                grnLineUnit.recevedQty,
-                                grnLineUnit.supplierBatchNo,
-                                grnLineUnit.isUpdate,
+                        if(grnLineUnit!=null)
+                        {
+                            createBatchesList.add(
+                                CustomGrnLineItemUnit(
+                                    grnLineUnit.UOM,
+                                    poline.mhType,
+                                    grnLineUnit.barcode,
+                                    grnLineUnit.expiryDate,
+                                    grnLineUnit.isExpirable,
+                                    grnLineUnit.internalBatchNo,
+                                    grnLineUnit.isChecked,
+                                    grnLineUnit.lineItemId,
+                                    grnLineUnit.lineItemUnitId,
+                                    grnLineUnit.recevedQty,
+                                    grnLineUnit.supplierBatchNo,
+                                    grnLineUnit.isUpdate,
+                                    grnLineUnit.totalUnits
+                                )
                             )
-                        )
+                        }
+
                     }
                 } else {
                     lineItemId = 0
@@ -200,13 +213,6 @@ class CompletedGRNActivity : AppCompatActivity() {
                     binding.grnAddHeader.edGDPO.visibility = View.VISIBLE
 
                 }
-                if (poline.GDPONumber != null) {
-                    selectedPoLineItem.forEach {
-                        if (it.poNumber == poline.poNumber && it.GDPONumber == null) {
-                            it.GDPONumber = poline.GDPONumber
-                        }
-                    }
-                }
 
                 //poline.grnLineItemUnit?.let { createBatchesList.addAll(it) }
                 currentPoLineItemPosition = position.toString()
@@ -214,11 +220,9 @@ class CompletedGRNActivity : AppCompatActivity() {
                 createBatchesMainRcAdapter!!.notifyDataSetChanged()
                 //  addNewBatch(position,poline)
             },
-
-            )
+        )
         binding.rcGrnAdd!!.adapter = grnMainItemAdapter
-        binding.rcGrnAdd.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.rcGrnAdd.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         ///get list of suppliers PO
         viewModel.getActiveSuppliersDDLMutable.observe(this) { response ->
             when (response) {
@@ -241,6 +245,8 @@ class CompletedGRNActivity : AppCompatActivity() {
                             }
 
                         } catch (e: Exception) {
+
+
                             Toasty.warning(
                                 this@CompletedGRNActivity,
                                 e.printStackTrace().toString(),
@@ -337,20 +343,22 @@ class CompletedGRNActivity : AppCompatActivity() {
                                         var poID = i.posapLineItemNumber
                                         val convertedGrnLineItemUnits =
                                             i.grnLineItemUnit.map { grnLineItemUnit ->
-                                                GrnLineItemUnitStore(
-                                                    grnLineItemUnit.uom,
-                                                    i.mhType,
-                                                    grnLineItemUnit.barcode,
-                                                    grnLineItemUnit.expiryDate,
-                                                    i.isExpirable,
-                                                    grnLineItemUnit.internalBatchNo,
-                                                    false,
-                                                    grnLineItemUnit.lineItemId,
-                                                    grnLineItemUnit.lineItemUnitId,
-                                                    grnLineItemUnit.qty.toString(),
-                                                    grnLineItemUnit.supplierBatchNo,
-                                                    true
-                                                )
+                                                grnLineItemUnit.uoM?.let {
+                                                    CustomGrnLineItemUnit(
+                                                        it,
+                                                        i.mhType,
+                                                        grnLineItemUnit.barcode,
+                                                        grnLineItemUnit.expiryDate,
+                                                        i.isExpirable,
+                                                        grnLineItemUnit.kBatchNo,
+                                                        false,
+                                                        grnLineItemUnit.lineItemId,
+                                                        grnLineItemUnit.lineItemUnitId,
+                                                        grnLineItemUnit.qty.toString(),
+                                                        grnLineItemUnit.supplierBatchNo,
+                                                        true,i.totalUnit
+                                                    )
+                                                }
                                             }.toMutableList()
                                         Log.e(
                                             "editcaseDefaultList",
@@ -361,11 +369,11 @@ class CompletedGRNActivity : AppCompatActivity() {
                                             selectedPoLineItem.find { it.posapLineItemNumber == poID }
                                         if (existingItem == null) {
                                             selectedPoLineItem.add(
-                                                PoLineItemSelectionModelNewStore(
+                                                CustomPoLineItemSelectionModel(
                                                     i.isQCRequired,
                                                     i.isExpirable,
                                                     i.lineItemId,
-                                                    i.balQTY, d.currency,
+                                                    i.balQty, d.currency,
                                                     convertedGrnLineItemUnits,
                                                     i.itemCode,
                                                     i.itemDescription,
@@ -375,14 +383,14 @@ class CompletedGRNActivity : AppCompatActivity() {
                                                     i.poLineItemId,
                                                     i.poLineNo,
                                                     i.poNumber,
-                                                    i.poqty,
+                                                    i.poQty,
                                                     i.posapLineItemNumber,
-                                                    i.pouom,
+                                                    i.poUoM,
                                                     i.grnQty.toString(),
                                                     true,
-                                                    i.gdpoNumber,
                                                     i.unitPrice,
-                                                    getAllLocation, i.locationId, true
+                                                    getAllLocation, i.locationId, true,null,0,i.totalUnit,i.discountAmount,calculateLineItemTotal(i.grnQty,i.unitPrice,i.discountAmount,i.taxPercent).toString()
+
                                                 )
                                             )
                                         }
@@ -391,18 +399,17 @@ class CompletedGRNActivity : AppCompatActivity() {
                                     for (r in resultResponse) {
                                         for (e in r.poLineItems) {
                                             val additionalValue =
-                                                if (e.pouom != "KGS") "0" else "0.000"
-                                            val unitPrice =
-                                                e.unitPrice ?: "" // Provide a default value here
+                                                if (e.poUoM != "KGS") "0" else "0.000"
+                                            val unitPrice = e.unitPrice
                                             // Check if poNumber from df matches poNumber from resultResponse
                                             val poNumberMatches =
                                                 df.any { it.poNumber == r.poNumber && it.itemCode == e.itemCode }
                                             if (!poNumberMatches) {
-                                                PoLineItemSelectionModelNewStore(
+                                                CustomPoLineItemSelectionModel(
                                                     e.isQCRequired,
                                                     e.isExpirable,
                                                     e.poLineItemId,
-                                                    e.balQTY.toDouble(),
+                                                    e.balQty.toDouble(),
                                                     r.poCurrency,
                                                     null,
                                                     e.itemCode,
@@ -413,13 +420,13 @@ class CompletedGRNActivity : AppCompatActivity() {
                                                     e.poLineItemId,
                                                     e.poLineNo,
                                                     r.poNumber,
-                                                    e.poqty,
+                                                    e.poQty,
                                                     e.posapLineItemNumber,
-                                                    e.pouom,
+                                                    e.poUoM,
                                                     additionalValue,
                                                     false,
-                                                    "",
-                                                    unitPrice, getAllLocation, e.locationId, false
+
+                                                    unitPrice, getAllLocation, e.locationId, false,null,0,0,0.0,"0"
                                                 ).also { poLineItem.add(it) }
                                                 Log.e("selectPolIne", poLineItem.toString())
                                             }
@@ -499,7 +506,6 @@ class CompletedGRNActivity : AppCompatActivity() {
 
                     }
                 }
-
                 is Resource.Error -> {
                     hideProgressBar()
                     response.message?.let { errorMessage ->
@@ -514,7 +520,8 @@ class CompletedGRNActivity : AppCompatActivity() {
                 is Resource.Loading -> {
                     showProgressBar()
                 }
-            } }
+            }
+        }
         viewModel.printLabelForGRNBulkMutableResponse.observe(this) { response ->
             when (response) {
                 is Resource.Success -> {
@@ -523,6 +530,7 @@ class CompletedGRNActivity : AppCompatActivity() {
 
                     }
                 }
+
                 is Resource.Error -> {
                     hideProgressBar()
                     response.message?.let { errorMessage ->
@@ -537,7 +545,37 @@ class CompletedGRNActivity : AppCompatActivity() {
                 is Resource.Loading -> {
                     showProgressBar()
                 }
-            } }
+            }
+        }
+        viewModel.getGRNProductDetailsOnUnitIdItemMutableResponse.observe(this){ response ->
+            when (response) {
+                is Resource.Success -> {
+                    hideProgressBar()
+                    response.data?.let { dataMap ->
+                        // Iterate through the map and handle fields dynamically
+
+                        //Log.e("printer,string",bulkUsbPrintFlag.toString())
+                        dataMap.forEachIndexed { index, item ->
+                            item.forEach { (key, value) ->
+                                formattedPrnForPrinter = printerPrnforGRN!!.replace(key, value.toString())
+                            }
+                            Log.e("printer,string", "${bulkUsbPrintFlag++}----------------===================$formattedPrnForPrinter")
+                        }
+
+                        //Log.e("printer,string",dataMap.toString())
+                    }
+                }
+                is Resource.Error -> {
+                    hideProgressBar()
+                    response.message?.let { errorMessage ->
+                        Toasty.error(this@CompletedGRNActivity, "Error: $errorMessage").show()
+                    }
+                }
+                is Resource.Loading -> {
+                    showProgressBar()
+                }
+            }
+        }
 
         ////batches dialog
         createBatchesDialogBinding =
@@ -557,35 +595,119 @@ class CompletedGRNActivity : AppCompatActivity() {
             createBatchedDialog!!.dismiss()
         }
         createBatchesMainRcAdapter = CreateBatchesCompletedAdapter(
-                this@CompletedGRNActivity,
-                createBatchesList,
-                onSave = { position, updatedItem ->
+            this@CompletedGRNActivity,
+            createBatchesList,
+            onSave = { position, updatedItem ->
+                Log.e("printertype",serverPrinterTypePrefText.toString())
+                if(isPrinterConnected==false)
+                {
+                    Toasty.error(
+                        this,
+                        "Printer Not Connected.!!",
+                        Toasty.LENGTH_LONG
+                    ).show()
+                }
+                else if(serverPrinterTypePrefText!!.contains("USB"))
+                {
+                    printLabelForUSB(updatedItem)
+                }
+                else if(serverPrinterTypePrefText!!.contains("IP"))
+                {
                     printLabelForGRN(updatedItem)
-                },
-                onItemCheckedChange = { item ->
-                    if(item.isChecked)
-                    {
-                        selectedBatchForPrint.add(item.lineItemUnitId)
-                    }
-                    else
-                    {
-                        selectedBatchForPrint.remove(item.lineItemUnitId)
-                    }
-                },
-            )
+                }
+                else{
+                    Toasty.error(
+                        this,
+                        "Printer Not Set.!!",
+                        Toasty.LENGTH_LONG
+                    ).show()
+                }
+
+            },
+            onItemCheckedChange = { item ->
+                if (item.isChecked) {
+                    selectedBatchForPrint.add(item.lineItemUnitId)
+                    Log.e("selectedBatchForPrint",selectedBatchForPrint.toString())
+
+                } else {
+                    selectedBatchForPrint.remove(item.lineItemUnitId)
+                    Log.e("selectedBatchForPrint",selectedBatchForPrint.toString())
+                }
+            },
+        )
         createBatchesDialogBinding.rcBatchs.adapter = createBatchesMainRcAdapter
-        createBatchesDialogBinding.rcBatchs.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        createBatchesDialogBinding.rcBatchs.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         createBatchesDialogBinding.ivPrintAll.setOnClickListener {
-            printLabelForBulk()
+            ///Log.e("PRinter bulk",serverPrinterTypePrefText+"////${selectedBatchForPrint.toString()}")
+            if(isPrinterConnected==false)
+            {
+                Toasty.error(
+                    this,
+                    "Printer Not Connected.!!",
+                    Toasty.LENGTH_LONG
+                ).show()
+            }
+            else if(serverPrinterTypePrefText!!.contains("USB"))
+            {
+
+                printLabelUSBForBulk()
+            }
+            else if(serverPrinterTypePrefText!!.contains("IP"))
+            {
+                printLabelForBulk()
+
+            }
+            else{
+                Toasty.error(
+                    this,
+                    "Printer Not Set.!!",
+                    Toasty.LENGTH_LONG
+                ).show()
+            }
+
+            Log.e("selectedBatchForPrint",selectedBatchForPrint.toString())
+        }
+        createBatchesDialogBinding.ivBatchesSelection.setOnClickListener {
+            createBatchesList.forEachIndexed { index, it ->
+                it.isChecked = true
+                selectedBatchForPrint.add(it.lineItemUnitId)
+                createBatchesMainRcAdapter!!.notifyItemChanged(index)
+
+            }
         }
 
     }
+    private fun calculateLineItemTotal(
+        quantity: Double,
+        rate: Int?,
+        discount: Double?,
+        taxPercent: Double
+    ):Double {
 
-    private fun printLabelForGRN(grnitem: GrnLineItemUnitStore) {
+
+        // Calculate the total amount before discount
+        val totalAmount = quantity * rate!!
+
+        // Calculate the discount amount (percentage of the total amount)
+        val discountAmount = totalAmount * (discount!! / 100)
+
+        // Calculate the amount after discount
+        val amountAfterDiscount = totalAmount - discountAmount
+
+        // Calculate the tax amount on the discounted amount
+        val taxAmount = amountAfterDiscount * (taxPercent / 100)
+
+        // Calculate the final line amount (after applying tax)
+        val lineAmount = amountAfterDiscount + taxAmount
+
+        return lineAmount
+
+
+    }
+    private fun printLabelForGRN(grnitem: CustomGrnLineItemUnit) {
         try {
-            var grnLineUnitList = ArrayList<Int> ()
+            var grnLineUnitList = ArrayList<Int>()
             grnLineUnitList.add(grnitem.lineItemUnitId.toInt())
             viewModel.printLabelForGRN(token, baseUrl, grnLineUnitList)
         } catch (e: Exception) {
@@ -596,6 +718,7 @@ class CompletedGRNActivity : AppCompatActivity() {
             ).show()
         }
     }
+
     private fun printLabelForBulk() {
         try {
             viewModel.printLabelForGRNBulk(token, baseUrl, selectedBatchForPrint)
@@ -605,6 +728,47 @@ class CompletedGRNActivity : AppCompatActivity() {
                 e.message.toString(),
                 Toast.LENGTH_SHORT
             ).show()
+        }
+    }
+    private fun printLabelForUSB(grnitem: CustomGrnLineItemUnit) {
+        try {
+            var grnLineUnitList = ArrayList<Int>()
+            grnLineUnitList.add(grnitem.lineItemUnitId.toInt())
+            viewModel.getGRNProductDetailsOnUnitIdItem(token, baseUrl, grnLineUnitList)
+        } catch (e: Exception) {
+            Toast.makeText(
+                this,
+                e.message.toString(),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+    private fun printLabelUSBForBulk() {
+        try {
+            viewModel.getGRNProductDetailsOnUnitIdItem(token, baseUrl, selectedBatchForPrint)
+        } catch (e: Exception) {
+            Toast.makeText(
+                this,
+                e.message.toString(),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        usbPrinterHelper.unregisterReceiver()
+    }
+    override fun onPrinterStatusChanged(isConnected: Boolean) {
+        runOnUiThread {
+            if (isConnected) {
+                //binding.ivWeightIndicator.visibility= View.VISIBLE
+                Toast.makeText(this, "Printer connected", Toast.LENGTH_SHORT).show()
+                isPrinterConnected=true
+            } else {
+                //binding.ivWeightIndicator.visibility= View.GONE
+                Toast.makeText(this, "Printer disconnected", Toast.LENGTH_SHORT).show()
+                isPrinterConnected=false
+            }
         }
     }
     private fun setItemDescription(itemDesc: String) {
@@ -649,8 +813,7 @@ class CompletedGRNActivity : AppCompatActivity() {
                 binding.tvSpinnerSupplier.setSelection(defaultPosition)
                 binding.tvSpinnerSupplier.isEnabled = false
                 callParentLocationApi(getDraftGrnResponse?.grnTransaction?.bpCode.toString())
-                if (defaultPosition != -1)
-                {
+                if (defaultPosition != -1) {
                     binding.tvSpinnerSupplier.onItemSelectedListener =
                         object : AdapterView.OnItemSelectedListener {
                             override fun onItemSelected(
@@ -807,16 +970,15 @@ class CompletedGRNActivity : AppCompatActivity() {
     }
 
     ////Batches activity
-    private fun setCreateBatchesDialog(poModel: PoLineItemSelectionModelNewStore) {
+    private fun setCreateBatchesDialog(poModel: CustomPoLineItemSelectionModel) {
         setInfoValues(poModel)
 
         createBatchedDialog!!.show()
     }
 
-    private fun setInfoValues(poModel: PoLineItemSelectionModelNewStore) {
+    private fun setInfoValues(poModel: CustomPoLineItemSelectionModel) {
         Log.e("poModelfrombatches", poModel.toString())
         createBatchesDialogBinding.grnAddHeader.tvPoNoValue.setText(poModel.poNumber)
-        createBatchesDialogBinding.grnAddHeader.tvGdPoNoValue.setText(poModel.GDPONumber.toString())
         createBatchesDialogBinding.grnAddHeader.tvLineItemDescValue.setText(poModel.itemCode)
         createBatchesDialogBinding.grnAddHeader.tvItemDescValue.setText(poModel.itemDescription)
         createBatchesDialogBinding.grnAddHeader.tvPuomValue.setText(poModel.pouom)
@@ -825,7 +987,7 @@ class CompletedGRNActivity : AppCompatActivity() {
         createBatchesDialogBinding.grnAddHeader.tvBalanceQuantity.setText(poModel.balQTY.toString())
 
         if (
-            (poModel.pouom.contains("Number", ignoreCase = true) ||
+            (poModel.pouom!!.contains("Number", ignoreCase = true) ||
                     poModel.pouom.contains("PCS", ignoreCase = true))
             && poModel.mhType.contains("Batch", ignoreCase = true)
         ) {
@@ -847,7 +1009,7 @@ class CompletedGRNActivity : AppCompatActivity() {
 
         if (poModel.grnLineItemUnit != null) {
             var total = poModel.grnLineItemUnit!!.sumByDouble {
-                it.recevedQty.toDouble()
+                it!!.recevedQty.toDouble()
             }
             createBatchesDialogBinding.grnAddHeader.tvQtyValue.setText(total.toString())
         } else {

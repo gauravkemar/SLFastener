@@ -56,12 +56,12 @@ class CreateBatchesNewAdapter (
                     R.color.header_bg
                 )
             )
-          /*  holder.mcvGenerateBarcode.setCardBackgroundColor(
-                ContextCompat.getColor(
-                    context!!,
-                    R.color.light_grey
-                )
-            )*/
+            /*  holder.mcvGenerateBarcode.setCardBackgroundColor(
+                  ContextCompat.getColor(
+                      context!!,
+                      R.color.light_grey
+                  )
+              )*/
         } else {
             Log.d("MyTag", "Setting visibility and colors False $batchInfoListModel")
         }
@@ -125,11 +125,11 @@ class CreateBatchesNewAdapter (
                  notifyItemRemoved(position)
              }
          }*/
-         if (holder.edWeight.text.toString().trim() == "0.000") {
-             holder.edWeight.requestFocus()
-             //focusedTextView = holder.edWeight
-             holder.mcvWeight.visibility = View.GONE
-         }
+        if (holder.edWeight.text.toString().trim() == "0.000") {
+            holder.edWeight.requestFocus()
+            //focusedTextView = holder.edWeight
+            holder.mcvWeight.visibility = View.GONE
+        }
 
     }
 
@@ -172,7 +172,7 @@ class CreateBatchesNewAdapter (
         val ivAdd: ImageView = itemView.findViewById(R.id.ivAdd)
         val mcvWeight: MaterialCardView = itemView.findViewById(R.id.mcvWeight)
         val clCardMain: ConstraintLayout = itemView.findViewById(R.id.clCardMain)
-       // val tvPrint: TextView = itemView.findViewById(R.id.tvPrint)
+        // val tvPrint: TextView = itemView.findViewById(R.id.tvPrint)
 
 
     }

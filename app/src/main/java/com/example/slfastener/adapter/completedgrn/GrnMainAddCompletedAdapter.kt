@@ -1,33 +1,22 @@
 package com.example.slfastener.adapter.completedgrn
 
-import android.app.DatePickerDialog
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.DatePicker
 import android.widget.ImageButton
-import android.widget.Spinner
 import android.widget.TextView
-import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.recyclerview.widget.RecyclerView
 import com.example.slfastener.R
 import com.example.slfastener.helper.CustomArrayAdapter
-import com.example.slfastener.model.offlinebatchsave.PoLineItemSelectionModelNewStore
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
+import com.example.slfastener.model.offlinebatchsave.CustomPoLineItemSelectionModel
 
 class GrnMainAddCompletedAdapter (
     private val context: Context,
-    private val poLineItemParent: MutableList<PoLineItemSelectionModelNewStore>,
+    private val poLineItemParent: MutableList<CustomPoLineItemSelectionModel>,
     private val itemDescription:(itemDesc:String)->Unit,
-    private val onItemCheck:(Int,PoLineItemSelectionModelNewStore) -> Unit,
-    ) : RecyclerView.Adapter<GrnMainAddCompletedAdapter.ViewHolder>() {
+    private val onItemCheck:(Int, CustomPoLineItemSelectionModel) -> Unit,
+) : RecyclerView.Adapter<GrnMainAddCompletedAdapter.ViewHolder>() {
 
     lateinit var locationNameList: MutableList<String>
     var allLocationHashMap = HashMap<Int, String>()
@@ -40,11 +29,10 @@ class GrnMainAddCompletedAdapter (
         return ViewHolder(view)
     }
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        var poLineItemModel: PoLineItemSelectionModelNewStore = poLineItemParent.get(position)
+        var poLineItemModel: CustomPoLineItemSelectionModel = poLineItemParent.get(position)
 
         holder.tvSrNo.setText("${position+1}")
         holder.tvPoNo.setText(poLineItemModel.poNumber)
-        holder.edGDPO.setText(poLineItemModel.GDPONumber.toString())
         holder.tvPoLineNo.setText(poLineItemModel.poLineNo.toString())
         holder.tvItemCode.setText(poLineItemModel.itemCode)
         holder.tvItemDesc.setText(poLineItemModel.itemDescription)
@@ -78,7 +66,7 @@ class GrnMainAddCompletedAdapter (
     }
     private fun setWareHouseLocation(
         holder: ViewHolder,
-        allLocation: PoLineItemSelectionModelNewStore
+        allLocation: CustomPoLineItemSelectionModel
     )
     {
         locationNameList = mutableListOf()
@@ -95,7 +83,7 @@ class GrnMainAddCompletedAdapter (
 
     }
 
-    private fun setGDPO(holder: ViewHolder, item: PoLineItemSelectionModelNewStore) {
+    private fun setGDPO(holder: ViewHolder, item: CustomPoLineItemSelectionModel) {
         if (item.currency.equals("INR"))
         {
             holder.edGDPO.visibility= View.GONE

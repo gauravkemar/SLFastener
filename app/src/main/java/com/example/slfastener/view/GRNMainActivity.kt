@@ -74,6 +74,15 @@ class GRNMainActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+
+        binding.mcvGRNDraft.setCardBackgroundColor(resources.getColor(R.color.lighter_blue))
+        binding.tvDraft.setTextColor(resources.getColor(R.color.white))
+        binding.tvCompleted.setTextColor(resources.getColor(R.color.blue))
+        binding.mcvCancel.setOnClickListener {
+            var intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
         binding.mcvGRNDraft.setOnClickListener {
             binding.mcvGRNDraft.setCardBackgroundColor(resources.getColor(R.color.lighter_blue))
             binding.tvDraft.setTextColor(resources.getColor(R.color.white))

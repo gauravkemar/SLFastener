@@ -9,8 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.slfastener.R
 import com.example.slfastener.model.goodsreceipt.GetAllGRResponse
-import com.example.slfastener.model.grnmain.GetFilteredGRNResponse
-import com.example.slfastener.model.offlinebatchsave.GrnLineItemUnitStore
+import com.google.android.material.card.MaterialCardView
 import java.text.SimpleDateFormat
 import java.util.ArrayList
 
@@ -99,7 +98,7 @@ class GRMainAdapter(private val editItem: (Int) -> Unit) :
         val tvBusinessPartner: TextView = itemView.findViewById(R.id.tvBusinessPartner)
         val tvBPCode: TextView = itemView.findViewById(R.id.tvBPCode)
         val ivAdd: ImageButton = itemView.findViewById(R.id.ivAdd)
-        val ivEdit: ImageButton = itemView.findViewById(R.id.ivEdit)
+        val ivEdit: MaterialCardView = itemView.findViewById(R.id.ivEdit)
         val ivDelete: ImageButton = itemView.findViewById(R.id.ivDelete)
         val ivPrint: ImageButton = itemView.findViewById(R.id.ivPrint)
 

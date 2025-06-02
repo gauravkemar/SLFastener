@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="2dp"
     android:layout_margin="5dp"
-    android:background="@color/header_bg">
+   >
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl1"
         android:layout_width="match_parent"
@@ -17,69 +20,28 @@
         <TextView
             android:id="@+id/tvSrNo"
             android:layout_width="0dp"
-            android:text="SR"
+            android:text="1"
             android:textAlignment="center"
-            android:textSize="12sp"
+            android:textSize="@dimen/tv_text"
             android:textColor="@color/black"
-            app:layout_constraintHorizontal_weight="0.04"
+            app:layout_constraintHorizontal_weight="0.02"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tvPoNo"
+            app:layout_constraintEnd_toStartOf="@+id/edGDPO"
             />
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:background="@android:color/darker_gray"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tvPoNo"
-            app:layout_constraintStart_toEndOf="@+id/tvSrNo"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <TextView
-            android:id="@+id/tvPoNo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="2dp"
-            android:layout_marginBottom="5dp"
-            android:background="@android:color/transparent"
-            android:padding="5dp"
-            android:textSize="12sp"
-            android:text="PO No"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/edGDPO"
-            app:layout_constraintHorizontal_weight="0.06"
-            app:layout_constraintStart_toEndOf="@+id/tvSrNo"
-            app:layout_constraintTop_toTopOf="parent">
-
-        </TextView>
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:background="@android:color/darker_gray"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/edGDPO"
-            app:layout_constraintStart_toEndOf="@+id/tvPoNo"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/edGDPO"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
-            android:layout_marginTop="5dp"
+
             android:layout_marginEnd="2dp"
-            android:textSize="12sp"
+            android:textSize="@dimen/tv_text"
             android:visibility="gone"
-            android:layout_marginBottom="5dp"
+
             android:background="@android:color/transparent"
             android:padding="5dp"
             android:hint="GDPO NO"
@@ -88,35 +50,66 @@
 
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tvPoLineNo"
-            app:layout_constraintHorizontal_weight="0.09"
-            app:layout_constraintStart_toEndOf="@+id/tvPoNo"
+            app:layout_constraintEnd_toStartOf="@+id/tvPoNo"
+            app:layout_constraintHorizontal_weight="0.05"
+            app:layout_constraintStart_toEndOf="@+id/tvSrNo"
             app:layout_constraintTop_toTopOf="parent">
 
         </EditText>
+        <TextView
+            android:id="@+id/tvPoNo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="2dp"
+            android:layout_marginStart="2dp"
+            android:background="@android:color/transparent"
+            android:padding="5dp"
+            android:textSize="@dimen/tv_text"
+            android:text="PO202462"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tvPoLineNo"
+            app:layout_constraintHorizontal_weight="0.07"
+            app:layout_constraintStart_toEndOf="@+id/edGDPO"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </TextView>
+
+<!--
+        <View
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tvPoLineNo"
+            app:layout_constraintStart_toEndOf="@+id/tvPoNo"
+            app:layout_constraintTop_toTopOf="parent" />
+
+-->
+
 
         <TextView
             android:id="@+id/tvPoLineNo"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
-            android:layout_marginTop="5dp"
             android:layout_marginEnd="2dp"
-            android:layout_marginBottom="5dp"
             android:background="@android:color/transparent"
             android:padding="5dp"
-            android:text="Po Li NO"
+            android:text="123"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="12sp"
+            android:textSize="@dimen/tv_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvItemCode"
-            app:layout_constraintHorizontal_weight="0.05"
-            app:layout_constraintStart_toEndOf="@+id/edGDPO"
+            app:layout_constraintHorizontal_weight="0.03"
+            app:layout_constraintStart_toEndOf="@+id/tvPoNo"
             app:layout_constraintTop_toTopOf="parent">
 
         </TextView>
 
+<!--
         <View
             android:layout_width="1dp"
             android:layout_height="0dp"
@@ -125,6 +118,7 @@
             app:layout_constraintEnd_toStartOf="@+id/tvItemCode"
             app:layout_constraintStart_toEndOf="@+id/tvPoLineNo"
             app:layout_constraintTop_toTopOf="parent" />
+-->
 
 
         <TextView
@@ -132,40 +126,42 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
-            android:layout_marginTop="5dp"
+
             android:layout_marginEnd="2dp"
-            android:layout_marginBottom="5dp"
+
             android:background="@android:color/transparent"
             android:padding="5dp"
-            android:text="Item Code"
+            android:text="sauD001"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="12sp"
+            android:textSize="@dimen/tv_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvItemDesc"
-            app:layout_constraintHorizontal_weight="0.10"
+            app:layout_constraintHorizontal_weight="0.07"
             app:layout_constraintStart_toEndOf="@+id/tvPoLineNo"
             app:layout_constraintTop_toTopOf="parent">
 
         </TextView>
+<!--
 
         <View
             android:layout_width="1dp"
             android:layout_height="0dp"
+
             android:background="@android:color/darker_gray"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvItemDesc"
             app:layout_constraintStart_toEndOf="@+id/tvItemCode"
             app:layout_constraintTop_toTopOf="parent" />
+-->
 
         <TextView
             android:id="@+id/tvItemDesc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
-            android:layout_marginTop="5dp"
             android:layout_marginEnd="2dp"
-            android:layout_marginBottom="5dp"
+            android:visibility="gone"
             android:background="@android:color/transparent"
             android:padding="5dp"
             android:maxLines="2"
@@ -173,50 +169,54 @@
             android:text="Item Desc"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="12sp"
+            android:textSize="@dimen/tv_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvPuom"
-            app:layout_constraintHorizontal_weight="0.10"
+            app:layout_constraintHorizontal_weight="0.08"
             app:layout_constraintStart_toEndOf="@+id/tvItemCode"
             app:layout_constraintTop_toTopOf="parent">
 
         </TextView>
 
-        <View
+<!--        <View
             android:layout_width="1dp"
             android:layout_height="0dp"
+            android:visibility="gone"
             android:background="@android:color/darker_gray"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvPuom"
             app:layout_constraintStart_toEndOf="@+id/tvItemDesc"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />-->
 
         <TextView
             android:id="@+id/tvPuom"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="2dp"
+            android:layout_marginStart="2dp"
+
+            android:layout_marginEnd="2dp"
+
             android:padding="5dp"
-            android:text="PUOM"
+            android:text="PCS"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="12sp"
+            android:textSize="@dimen/tv_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvMhType"
-            app:layout_constraintHorizontal_weight="0.05"
+            app:layout_constraintHorizontal_weight="0.04"
             app:layout_constraintStart_toEndOf="@+id/tvItemDesc"
             app:layout_constraintTop_toTopOf="parent">
 
         </TextView>
 
-        <View
+<!--        <View
             android:layout_width="1dp"
             android:layout_height="0dp"
             android:background="@android:color/darker_gray"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvMhType"
             app:layout_constraintStart_toEndOf="@+id/tvPuom"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />-->
 
         <TextView
             android:id="@+id/tvMhType"
@@ -224,10 +224,13 @@
             android:layout_height="wrap_content"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:layout_margin="2dp"
+            android:layout_marginStart="2dp"
+
+            android:layout_marginEnd="2dp"
+
             android:padding="5dp"
-            android:textSize="12sp"
-            android:text="MH TYPE"
+            android:textSize="@dimen/tv_text"
+            android:text="Serial"
             app:layout_constraintHorizontal_weight="0.05"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -236,6 +239,7 @@
 
         </TextView>
 
+<!--
         <View
             android:layout_width="1dp"
             android:layout_height="0dp"
@@ -244,25 +248,30 @@
             app:layout_constraintEnd_toStartOf="@+id/tvPoQty"
             app:layout_constraintStart_toEndOf="@+id/tvMhType"
             app:layout_constraintTop_toTopOf="parent" />
+-->
 
         <TextView
             android:id="@+id/tvPoQty"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="2dp"
+            android:layout_marginStart="2dp"
+
+            android:layout_marginEnd="2dp"
+
             android:padding="5dp"
-            android:text="PO Qty"
+            android:text="100"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="12sp"
+            android:textSize="@dimen/tv_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvBalQty"
-            app:layout_constraintHorizontal_weight="0.06"
+            app:layout_constraintHorizontal_weight="0.04"
             app:layout_constraintStart_toEndOf="@+id/tvMhType"
             app:layout_constraintTop_toTopOf="parent">
 
         </TextView>
 
+<!--
         <View
             android:layout_width="1dp"
             android:layout_height="0dp"
@@ -271,46 +280,53 @@
             app:layout_constraintEnd_toStartOf="@+id/tvBalQty"
             app:layout_constraintStart_toEndOf="@+id/tvPoQty"
             app:layout_constraintTop_toTopOf="parent" />
+-->
 
         <TextView
             android:id="@+id/tvBalQty"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="2dp"
+            android:layout_marginStart="2dp"
+
+            android:layout_marginEnd="2dp"
+
             android:padding="5dp"
-            android:text="Bal. Qty"
+            android:text="10"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="12sp"
+            android:textSize="@dimen/tv_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvRate"
-            app:layout_constraintHorizontal_weight="0.05"
+            app:layout_constraintHorizontal_weight="0.04"
             app:layout_constraintStart_toEndOf="@+id/tvPoQty"
             app:layout_constraintTop_toTopOf="parent">
 
         </TextView>
 
-        <View
+ <!--       <View
             android:layout_width="1dp"
             android:layout_height="0dp"
             android:background="@android:color/darker_gray"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvRate"
             app:layout_constraintStart_toEndOf="@+id/tvBalQty"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />-->
         <TextView
             android:id="@+id/tvRate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="2dp"
+            android:layout_marginStart="2dp"
+
+            android:layout_marginEnd="2dp"
+
             android:padding="5dp"
-            android:text="Rate"
+            android:text="10"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="12sp"
+            android:textSize="@dimen/tv_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvGRNQty"
-            app:layout_constraintHorizontal_weight="0.05"
+            app:layout_constraintHorizontal_weight="0.04"
             app:layout_constraintStart_toEndOf="@+id/tvBalQty"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -318,33 +334,34 @@
 
 
 
-        <View
+<!--        <View
             android:layout_width="1dp"
             android:layout_height="0dp"
             android:background="@android:color/darker_gray"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvGRNQty"
             app:layout_constraintStart_toEndOf="@+id/tvRate"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />-->
 
         <TextView
             android:id="@+id/tvGRNQty"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="2dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
             android:padding="5dp"
-            android:text="GRN QTY"
+            android:text="10"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="12sp"
+            android:textSize="@dimen/tv_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvIsQc"
-            app:layout_constraintHorizontal_weight="0.06"
+            app:layout_constraintHorizontal_weight="0.05"
             app:layout_constraintStart_toEndOf="@+id/tvRate"
             app:layout_constraintTop_toTopOf="parent">
 
         </TextView>
-
+<!--
         <View
             android:layout_width="1dp"
             android:layout_height="0dp"
@@ -352,35 +369,38 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvIsQc"
             app:layout_constraintStart_toEndOf="@+id/tvGRNQty"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />-->
 
         <TextView
             android:id="@+id/tvIsQc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="2dp"
+            android:layout_marginStart="2dp"
+
+            android:layout_marginEnd="2dp"
+
             android:padding="5dp"
             android:textStyle="bold"
             android:text=""
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="12sp"
+            android:textSize="@dimen/tv_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/clWareHouse"
-            app:layout_constraintHorizontal_weight="0.04"
+            app:layout_constraintHorizontal_weight="0.02"
             app:layout_constraintStart_toEndOf="@+id/tvGRNQty"
             app:layout_constraintTop_toTopOf="parent">
 
         </TextView>
 
-        <View
+      <!--  <View
             android:layout_width="1dp"
             android:layout_height="0dp"
             android:background="@android:color/darker_gray"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/clWareHouse"
             app:layout_constraintStart_toEndOf="@+id/tvIsQc"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />-->
 
 
        <!-- <TextView
@@ -406,9 +426,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/clAction"
+            app:layout_constraintEnd_toStartOf="@+id/edDiscount"
             app:layout_constraintHorizontal_weight="0.10"
             app:layout_constraintStart_toEndOf="@+id/tvIsQc"
             app:layout_constraintTop_toTopOf="parent"
@@ -432,7 +451,9 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/clWareHouseSpinner"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="2dp"
                 android:background="@drawable/round_border_grey"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -442,7 +463,7 @@
                 <Spinner
                     android:id="@+id/tvWareHouse"
                     android:layout_width="0dp"
-                    android:layout_height="0dp"
+                    android:layout_height="match_parent"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
                     android:background="@android:color/transparent"
@@ -459,7 +480,7 @@
                 <ImageView
                     android:id="@+id/img_spinner_arrow"
                     android:layout_width="20dp"
-                    android:layout_height="40dp"
+                    android:layout_height="match_parent"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_spinner_arrow_blue"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -473,133 +494,345 @@
 
 
 
+<!--
+        <View
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/edDiscount"
+            app:layout_constraintStart_toEndOf="@+id/clWareHouse"
+            app:layout_constraintTop_toTopOf="parent" />-->
 
+        <EditText
+            android:id="@+id/edDiscount"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+
+            android:padding="5dp"
+            android:hint="0"
+            android:textAlignment="center"
+            android:background="@drawable/round_border_grey"
+            android:textColor="@color/black"
+            android:textSize="@dimen/tv_text"
+            android:inputType="number"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/clTax"
+            app:layout_constraintHorizontal_weight="0.07"
+            app:layout_constraintStart_toEndOf="@+id/clWareHouse"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </EditText>
+
+  <!--      <View
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/clTax"
+            app:layout_constraintStart_toEndOf="@+id/edDiscount"
+            app:layout_constraintTop_toTopOf="parent" />-->
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clTax"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            app:layout_constraintHorizontal_weight="0.08"
+            android:background="@drawable/round_border_grey"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/edDiscount"
+            app:layout_constraintEnd_toStartOf="@+id/tvTaxPercent"
+            >
+            <Spinner
+                android:id="@+id/tvTaxSpinner"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:drawableEnd="@drawable/ic_spinner_arrow_blue"
+                android:gravity="center"
+                android:padding="5dp"
+                android:spinnerMode="dropdown"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/imgTaxSpinnerArrow"
+                app:layout_constraintHorizontal_weight="0.90"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imgTaxSpinnerArrow"
+                android:layout_width="20dp"
+                android:layout_height="match_parent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_spinner_arrow_blue"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_weight="0.10"
+                app:layout_constraintStart_toEndOf="@+id/tvTaxSpinner"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+<!--        <View
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tvTaxPercent"
+            app:layout_constraintStart_toEndOf="@+id/clTax"
+            app:layout_constraintTop_toTopOf="parent" />-->
+
+
+        <TextView
+            android:id="@+id/tvTaxPercent"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:padding="5dp"
+            android:hint="0"
+            android:inputType="numberDecimal"
+            android:background="@drawable/round_bg_grey"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="@dimen/tv_text"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tvLineAmount"
+            app:layout_constraintHorizontal_weight="0.05"
+            app:layout_constraintStart_toEndOf="@+id/clTax"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/tvLineAmount"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:padding="5dp"
+            android:hint="0"
+            android:inputType="numberDecimal"
+            android:background="@drawable/round_bg_grey"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="@dimen/tv_text"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/clAction"
+            app:layout_constraintHorizontal_weight="0.05"
+            app:layout_constraintStart_toEndOf="@+id/tvTaxPercent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </TextView>
+<!--
         <View
             android:layout_width="1dp"
             android:layout_height="0dp"
             android:background="@android:color/darker_gray"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/clAction"
-            app:layout_constraintStart_toEndOf="@+id/clWareHouse"
+            app:layout_constraintStart_toEndOf="@+id/tvLineAmount"
             app:layout_constraintTop_toTopOf="parent" />
+-->
+
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clAction"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_weight="0.10"
+            app:layout_constraintHorizontal_weight="0.14"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/clWareHouse"
+            app:layout_constraintStart_toEndOf="@+id/tvLineAmount"
             >
+
             <TextView
                 android:id="@+id/tvBatchCount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
-                android:padding="5dp"
-                android:text="[0]"
+                android:padding="2dp"
+                android:text="1/1"
                 android:textAlignment="center"
                 android:textColor="@color/black"
-                android:textSize="12sp"
+                android:textSize="@dimen/tv_text"
                 android:textStyle="bold"
+                app:layout_constraintHorizontal_weight="0.25"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/tvSaveLineItem"
+                app:layout_constraintEnd_toStartOf="@+id/clActionBody"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
             </TextView>
-
-            <ImageButton
-                android:id="@+id/tvSaveLineItem"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clActionBody"
                 android:layout_width="0dp"
-                android:src="@drawable/ic_add_black"
-                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_height="wrap_content"
+                app:layout_constraintHorizontal_weight="0.75"
                 app:layout_constraintStart_toEndOf="@+id/tvBatchCount"
-                app:layout_constraintEnd_toStartOf="@+id/tvDeleteLineItem"
-                app:layout_constraintTop_toTopOf="parent"
-                />
-            <ImageButton
-                android:id="@+id/tvDeleteLineItem"
-                android:layout_width="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:src="@drawable/ic_delete_black"
-                android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/tvSaveLineItem"
-                />
+
+                >
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcvSaveLineItem"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="3dp"
+                    app:cardCornerRadius="11dp"
+
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/mcvEditLineItem"
+                    app:layout_constraintTop_toTopOf="parent"
+                    >
+                    <ImageView
+                        android:id="@+id/tvSaveLineItem"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/btn_icon"
+                        android:src="@drawable/ic_save_black"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerInside"
+                        android:background="@drawable/round_border_yellow"
+
+                        />
+                </com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcvEditLineItem"
+                    android:layout_width="0dp"
+                    android:layout_margin="3dp"
+                    app:cardCornerRadius="11dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/mcvSaveLineItem"
+                    app:layout_constraintEnd_toStartOf="@+id/mcvDeleteLineItem"
+                    app:layout_constraintTop_toTopOf="parent"
+                    >
+                    <ImageView
+                        android:id="@+id/ivEditLineItem"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/btn_icon"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_add_black"
+                        android:background="@drawable/round_border_darkblue"
+
+                        />
+
+                </com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcvDeleteLineItem"
+                    android:layout_width="0dp"
+                    android:layout_margin="3dp"
+                    app:cardCornerRadius="11dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/mcvEditLineItem"
+                    >
+
+                    <ImageView
+                        android:id="@+id/tvDeleteLineItem"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/btn_icon"
+                        android:src="@drawable/ic_delete_black"
+                        android:scaleType="centerInside"
+                        android:adjustViewBounds="true"
+                        android:background="@drawable/round_border_red"
+
+                        />
+                </com.google.android.material.card.MaterialCardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
-
-      <!--  <com.google.android.material.card.MaterialCardView
-            android:id="@+id/btCreatebatches"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="2dp"
-            android:layout_marginBottom="5dp"
-            app:cardBackgroundColor="@color/blue"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tvSaveLineItem"
-            app:layout_constraintHorizontal_weight="0.06"
-            app:layout_constraintStart_toEndOf="@+id/tvWareHouse"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent"
-                android:padding="5dp"
-                android:text="+ Create"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                android:textStyle="bold"/>
-
-        </com.google.android.material.card.MaterialCardView>-->
-
-
-
-        <!--<ImageView
-            android:id="@+id/tvSaveLineItem"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="2dp"
-            android:padding="5dp"
-            android:src="@drawable/ic_save_black"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tvDeleteLineItem"
-            app:layout_constraintHorizontal_weight="0.04"
-            app:layout_constraintStart_toEndOf="@+id/btCreatebatches"
-            app:layout_constraintTop_toTopOf="parent">
-
-        </ImageView>-->
-
-
-  <!--      <ImageView
-            android:id="@+id/tvDeleteLineItem"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="2dp"
-            android:padding="5dp"
-            android:src="@drawable/ic_delete_black"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_weight="0.05"
-            app:layout_constraintStart_toEndOf="@+id/tvSaveLineItem"
-            app:layout_constraintTop_toTopOf="parent">
-
-        </ImageView>
--->
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+
+
+    <!--  <com.google.android.material.card.MaterialCardView
+          android:id="@+id/btCreatebatches"
+          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="2dp"
+          android:layout_marginTop="5dp"
+          android:layout_marginEnd="2dp"
+          android:layout_marginBottom="5dp"
+          app:cardBackgroundColor="@color/blue"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toStartOf="@+id/tvSaveLineItem"
+          app:layout_constraintHorizontal_weight="0.06"
+          app:layout_constraintStart_toEndOf="@+id/tvWareHouse"
+          app:layout_constraintTop_toTopOf="parent">
+
+          <TextView
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@android:color/transparent"
+              android:padding="5dp"
+              android:text="+ Create"
+              android:textAlignment="center"
+              android:textColor="@color/white"
+              android:textSize="12sp"
+              android:textStyle="bold"/>
+
+      </com.google.android.material.card.MaterialCardView>-->
+
+
+
+    <!--<ImageView
+        android:id="@+id/tvSaveLineItem"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        android:padding="5dp"
+        android:src="@drawable/ic_save_black"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvDeleteLineItem"
+        app:layout_constraintHorizontal_weight="0.04"
+        app:layout_constraintStart_toEndOf="@+id/btCreatebatches"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </ImageView>-->
+
+
+    <!--      <ImageView
+              android:id="@+id/tvDeleteLineItem"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_margin="2dp"
+              android:padding="5dp"
+              android:src="@drawable/ic_delete_black"
+              app:layout_constraintBottom_toBottomOf="parent"
+              app:layout_constraintEnd_toEndOf="parent"
+              app:layout_constraintHorizontal_weight="0.05"
+              app:layout_constraintStart_toEndOf="@+id/tvSaveLineItem"
+              app:layout_constraintTop_toTopOf="parent">
+
+          </ImageView>
+  -->
 
 <!--    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl2"
@@ -720,4 +953,3 @@
             app:layout_constraintEnd_toEndOf="parent"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>-->
-</androidx.constraintlayout.widget.ConstraintLayout>

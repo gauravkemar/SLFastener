@@ -18,7 +18,7 @@ class GRMainAddCompletedAdapter (
     private val poLineItemParent: MutableList<GetAllItemMasterSelection>,
     private val itemDescription:(itemDesc:String)->Unit,
     private val onItemCheck:(Int, GetAllItemMasterSelection) -> Unit,
-    ) : RecyclerView.Adapter<GRMainAddCompletedAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<GRMainAddCompletedAdapter.ViewHolder>() {
 
     lateinit var locationNameList: MutableList<String>
     var allLocationHashMap = HashMap<Int, String>()

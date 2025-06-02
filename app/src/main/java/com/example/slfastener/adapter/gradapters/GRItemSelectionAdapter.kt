@@ -1,15 +1,10 @@
 package com.example.slfastener.adapter.gradapters
 
-import android.text.Editable
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.slfastener.databinding.LineItemSelectionBinding
 import com.example.slfastener.databinding.SelectGrItemBinding
-import com.example.slfastener.model.goodsreceipt.GetAllItemMasterResponse
 import com.example.slfastener.model.goodsreceipt.GetAllItemMasterSelection
-import com.example.slfastener.model.offlinebatchsave.PoLineItemSelectionModelNewStore
 
 class GRItemSelectionAdapter  (
     private val items: MutableList<GetAllItemMasterSelection>,

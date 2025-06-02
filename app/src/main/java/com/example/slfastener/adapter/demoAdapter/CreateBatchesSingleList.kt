@@ -20,7 +20,7 @@ class CreateBatchesSingleList(
     private val onSave: (Int, BatchInfoListModel) -> Unit,
 
 
-) :
+    ) :
     RecyclerView.Adapter<CreateBatchesSingleList.ViewHolder>() {
     private var weightData: String? = null
     private var focusedTextView: TextView? = null
@@ -47,33 +47,33 @@ class CreateBatchesSingleList(
                 focusedTextView = holder.edWeight
             }
         }
-      /*  holder.ivAdd.setOnClickListener {
-            itemClickListener?.onItemClick(
-                itemPosition,
-                BatchInfoListModel(
-                    batchModel.ExpiryDate,
-                    batchModel.GDPONumber,
-                    holder.edWeight.getText().toString(),
-                    0,
-                    holder.tvBarcodeNo.text.toString().trim(),
-                    batchModel.itemCode,
-                    batchModel.itemDescription,
-                    batchModel.itemName,
-                    batchModel.lineNumber,
-                    batchModel.materialType,
-                    batchModel.poId,
-                    batchModel.poLineItemId,
-                    batchModel.poNumber,
-                    batchModel.poQuantity,
-                    batchModel.poUnitPrice,
-                    batchModel.posapLineItemNumber,
-                    batchModel.pouom,
-                    batchModel.batchBarcodeNo,
-                    true
-                )
-            )
-            holder.edWeight.clearFocus()
-        }*/
+        /*  holder.ivAdd.setOnClickListener {
+              itemClickListener?.onItemClick(
+                  itemPosition,
+                  BatchInfoListModel(
+                      batchModel.ExpiryDate,
+                      batchModel.GDPONumber,
+                      holder.edWeight.getText().toString(),
+                      0,
+                      holder.tvBarcodeNo.text.toString().trim(),
+                      batchModel.itemCode,
+                      batchModel.itemDescription,
+                      batchModel.itemName,
+                      batchModel.lineNumber,
+                      batchModel.materialType,
+                      batchModel.poId,
+                      batchModel.poLineItemId,
+                      batchModel.poNumber,
+                      batchModel.poQuantity,
+                      batchModel.poUnitPrice,
+                      batchModel.posapLineItemNumber,
+                      batchModel.pouom,
+                      batchModel.batchBarcodeNo,
+                      true
+                  )
+              )
+              holder.edWeight.clearFocus()
+          }*/
 
         updateView(holder, batchModel)
         holder.ivAdd.setOnClickListener {
@@ -91,13 +91,13 @@ class CreateBatchesSingleList(
 
         }
 
-       /* if (batchModel.isUpdate) {
-            Log.d("MyTag", "Setting visibility and colors")
-            holder.ivAdd.setImageResource(R.drawable.ic_save_black)
-            holder.mcvWeight.visibility = View.VISIBLE
-            holder.clCardMain.setBackgroundColor(Color.RED)
+        /* if (batchModel.isUpdate) {
+             Log.d("MyTag", "Setting visibility and colors")
+             holder.ivAdd.setImageResource(R.drawable.ic_save_black)
+             holder.mcvWeight.visibility = View.VISIBLE
+             holder.clCardMain.setBackgroundColor(Color.RED)
 
-           *//* holder.clCardMain.setBackgroundColor(
+            *//* holder.clCardMain.setBackgroundColor(
                 ContextCompat.getColor(
                     context!!,
                     R.color.header_bg
@@ -153,7 +153,7 @@ class CreateBatchesSingleList(
         val ivAdd: ImageView = itemView.findViewById(R.id.ivAdd)
         val mcvWeight: MaterialCardView = itemView.findViewById(R.id.mcvWeight)
         val clCardMain: ConstraintLayout = itemView.findViewById(R.id.clCardMain)
-       // val tvPrint: TextView = itemView.findViewById(R.id.tvPrint)
+        // val tvPrint: TextView = itemView.findViewById(R.id.tvPrint)
     }
 
 }

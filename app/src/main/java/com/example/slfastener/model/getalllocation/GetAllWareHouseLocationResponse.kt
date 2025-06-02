@@ -5,13 +5,17 @@ data class GetAllWareHouseLocationResponse(
     val createdDate: String,
     val displayName: String,
     val isActive: Boolean,
+    val isStorable: Boolean,
+    val isWarehouse: Boolean,
     val locationCode: String,
     val locationId: Int,
     val locationName: String,
     val locationType: String,
     val modifiedBy: String,
-    val modifiedDate: String,
-    val parentLocationCode: String,
-    val remarks: String,
-    val storageCapacity: Int
+    val modifiedDate: Any,
+    val parentLocationCode: Any,
+    val remarks: Any,
+    val storageCapacity: Any,
+    val warehouseId: Int,
+    val warehouseType: String
 )
