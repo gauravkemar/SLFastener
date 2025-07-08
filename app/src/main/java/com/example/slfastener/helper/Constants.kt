@@ -37,7 +37,8 @@ object Constants {
     const val KEY_GRN_PRN_FILE_NAME = "GRN_Prn_File_Name"
     const val HTTP_HEADER_AUTHORIZATION = "Authorization"
     const val SESSION_EXPIRE = "Session Expired ! Please relogin"
-
+    const val KEY_REFRESH_TOKEN = "refreshToken"
+    const val  getRefreshToken = "UserManagement/refreshtoken";
     //const val BASE_URL = "http://103.240.90.141:80/Service/api/"
     //const val BASE_URL = "http://192.168.1.205:7510/service/api/"
     const val BASE_URL = "http://192.168.1.231:5000/api/"
@@ -84,6 +85,4 @@ object Constants {
 
 
 
-    //printing
-    const val PRINT_LABEL_BARCODE_For_GRN = "PrintProductLabel/printLabelbarcodeForGRNAsync"
 }

@@ -699,7 +699,7 @@ class GRNAddNewActivity : AppCompatActivity() {
 
     private fun getSupplierList() {
         try {
-            viewModel.getActiveSuppliersDDL(token, baseUrl)
+            viewModel.getActiveSuppliersDDL(this,token, baseUrl)
         } catch (e: Exception) {
             Toasty.error(
                 this,
@@ -711,7 +711,7 @@ class GRNAddNewActivity : AppCompatActivity() {
 
     private fun callSelectedPoLineItems(poCode: MutableList<Int>) {
         try {
-            viewModel.getPosLineItemsOnPoIds(token, baseUrl, poCode)
+            viewModel.getPosLineItemsOnPoIds(this,token, baseUrl, poCode)
 
         } catch (e: Exception) {
             Toasty.error(
@@ -724,7 +724,7 @@ class GRNAddNewActivity : AppCompatActivity() {
 
     private fun callParentLocationApi(selectedKey: String) {
         try {
-            viewModel.getSuppliersPosDDLL(token, baseUrl, selectedKey)
+            viewModel.getSuppliersPosDDLL(this,token, baseUrl, selectedKey)
         } catch (e: Exception) {
             Toasty.error(
                 this,

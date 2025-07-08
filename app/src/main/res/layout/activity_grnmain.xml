@@ -159,13 +159,14 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:ignore="RtlSymmetry">
-                        <com.google.android.material.card.MaterialCardView
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/mcvGRNDraft"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:clickable="true"
                             android:layout_marginTop="5dp"
                             android:layout_marginStart="5dp"
+                            android:background="@drawable/new_ui_select_draft_complete_bg"
                             android:layout_marginBottom="5dp"
                             app:cardCornerRadius="20dp"
                             android:elevation="1dp"
@@ -219,18 +220,18 @@
                             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-                        </com.google.android.material.card.MaterialCardView>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        <com.google.android.material.card.MaterialCardView
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/mcvGRNCompleted"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:clickable="true"
                             app:cardCornerRadius="20dp"
-
                             android:elevation="1dp"
                             android:layout_marginTop="5dp"
                             android:layout_marginEnd="5dp"
+                            android:background="@drawable/back_ground_white"
                             android:layout_marginStart="5dp"
                             android:layout_marginBottom="5dp"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -281,7 +282,7 @@
                             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-                        </com.google.android.material.card.MaterialCardView>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <com.google.android.material.card.MaterialCardView
                             android:id="@+id/mcvAddGrn"

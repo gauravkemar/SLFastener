@@ -438,7 +438,7 @@ class GRSubmittedActivity : AppCompatActivity() {
         try {
             var grnLineUnitList = ArrayList<Int>()
             grnLineUnitList.add(grnitem.LineItemUnitId)
-            viewModel.printLabelForGR(token, baseUrl, grnLineUnitList)
+            viewModel.printLabelForGR(this,token, baseUrl, grnLineUnitList)
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -450,7 +450,7 @@ class GRSubmittedActivity : AppCompatActivity() {
 
     private fun printLabelForBulk() {
         try {
-            viewModel.printLabelForGRBulk(token, baseUrl, selectedBatchForPrint)
+            viewModel.printLabelForGRBulk(this,token, baseUrl, selectedBatchForPrint)
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -521,7 +521,7 @@ class GRSubmittedActivity : AppCompatActivity() {
     }
     private fun getDraftGr() {
         try {
-            viewModel.getSingleGRByGRId(token, baseUrl, grId!!.toInt())
+            viewModel.getSingleGRByGRId(this,token, baseUrl, grId!!.toInt())
         } catch (e: Exception) {
             Toasty.error(
                 this@GRSubmittedActivity,
@@ -531,7 +531,7 @@ class GRSubmittedActivity : AppCompatActivity() {
     }
     private fun getAllLocations() {
         try {
-            viewModel.getAllLocations(token, baseUrl)
+            viewModel.getAllLocations(this,token, baseUrl)
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -607,7 +607,7 @@ class GRSubmittedActivity : AppCompatActivity() {
 
     private fun getSupplierList() {
         try {
-            viewModel.getActiveSupplierForGR(token, baseUrl)
+            viewModel.getActiveSupplierForGR(this,token, baseUrl)
         } catch (e: Exception) {
             Toasty.error(
                 this,
@@ -619,7 +619,7 @@ class GRSubmittedActivity : AppCompatActivity() {
     private fun getAllItemMaster() {
         try {
             try {
-                viewModel.getAllItemMaster(token, baseUrl)
+                viewModel.getAllItemMaster(this,token, baseUrl)
             } catch (e: Exception) {
                 Toasty.error(
                     this,

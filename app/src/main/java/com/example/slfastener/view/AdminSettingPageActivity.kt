@@ -476,7 +476,7 @@ class AdminSettingPageActivity : AppCompatActivity() {
 
     private fun getPRNFleDetailGR() {
         try {
-            viewModel.getPRNFleDetailGR(token!!, baseUrl, "PRNFILEFORGR")
+            viewModel.getPRNFleDetailGR(this,token!!, baseUrl, "PRNFILEFORGR")
         } catch (e: Exception) {
             Toasty.error(
                 this@AdminSettingPageActivity,
@@ -487,7 +487,7 @@ class AdminSettingPageActivity : AppCompatActivity() {
 
     private fun updateDefaultPrinterOnDevice() {
         try {
-            viewModel.updateDefaultPrinterOnDevice(
+            viewModel.updateDefaultPrinterOnDevice(this,
                 token!!, baseUrl,
                 PrinterDeviceLocationMappingIdRequest(selectedDeviceLocationMappingId)
             )
@@ -502,7 +502,7 @@ class AdminSettingPageActivity : AppCompatActivity() {
 
     private fun getPRNFleDetailGRN() {
         try {
-            viewModel.getPRNFleDetailGRN(token!!, baseUrl, "PRNFILEFORGRN")
+            viewModel.getPRNFleDetailGRN(this,token!!, baseUrl, "PRNFILEFORGRN")
         } catch (e: Exception) {
             Toasty.error(
                 this@AdminSettingPageActivity,
@@ -513,7 +513,7 @@ class AdminSettingPageActivity : AppCompatActivity() {
 
     private fun getSelfSystemMappingDetail() {
         try {
-            viewModel.getSelfSystemMappingDetail(token!!, baseUrl)
+            viewModel.getSelfSystemMappingDetail(this,token!!, baseUrl)
         } catch (e: Exception) {
             Toasty.error(
                 this@AdminSettingPageActivity,
@@ -524,7 +524,7 @@ class AdminSettingPageActivity : AppCompatActivity() {
 
     private fun getAllActiveDeviceLocationMapping() {
         try {
-            viewModel.getAllActiveDeviceLocationMapping(token!!, baseUrl, "Printer")
+            viewModel.getAllActiveDeviceLocationMapping(this,token!!, baseUrl, "Printer")
         } catch (e: Exception) {
             Toasty.error(
                 this@AdminSettingPageActivity,

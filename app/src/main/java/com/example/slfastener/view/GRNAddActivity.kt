@@ -788,7 +788,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
                                                         getAllLocation,
                                                         e.locationId,
                                                         false,
-                                                        getALlTax, 0, 0,0.0,"0"
+                                                        getALlTax, 0, 0, 0.0, "0"
                                                     ).also {
                                                         poLineItem.add(it)
                                                     }
@@ -833,7 +833,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
                                                         getAllLocation,
                                                         e.locationId,
                                                         false,
-                                                        getALlTax, 0, 0,0.0,"0"
+                                                        getALlTax, 0, 0, 0.0, "0"
                                                     ).also {
                                                         poLineItem.add(it)
                                                     }
@@ -881,7 +881,8 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
                                                         i.isQCRequired,
                                                         i.isExpirable,
                                                         i.lineItemId,
-                                                        i.balQty, d.currency,
+                                                        i.balQty,
+                                                        d.currency,
                                                         convertedGrnLineItemUnits,
                                                         i.itemCode,
                                                         i.itemDescription,
@@ -897,8 +898,19 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
                                                         i.grnQty.toString(),
                                                         true,
                                                         i.unitPrice,
-                                                        getAllLocation, i.locationId, true,
-                                                        getALlTax, i.taxId, i.totalUnit,i.discountAmount,calculateLineItemTotal(i.grnQty,i.unitPrice,i.discountAmount,i.taxPercent).toString()
+                                                        getAllLocation,
+                                                        i.locationId,
+                                                        true,
+                                                        getALlTax,
+                                                        i.taxId,
+                                                        i.totalUnit,
+                                                        i.discountAmount,
+                                                        calculateLineItemTotal(
+                                                            i.grnQty,
+                                                            i.unitPrice,
+                                                            i.discountAmount,
+                                                            i.taxPercent
+                                                        ).toString()
                                                     )
                                                 )
                                             }
@@ -940,7 +952,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
                                                         getAllLocation,
                                                         e.locationId,
                                                         false,
-                                                        getALlTax, 0, 0,0.0,"0"
+                                                        getALlTax, 0, 0, 0.0, "0"
                                                     ).also { poLineItem.add(it) }
                                                     //Log.e("selectPolIne", poLineItem.toString())
                                                 }
@@ -981,7 +993,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
 
                                                     unitPrice,
                                                     getAllLocation, e.locationId, false,
-                                                    getALlTax, 0, 0,0.0,"0"
+                                                    getALlTax, 0, 0, 0.0, "0"
                                                 ).also {
                                                     poLineItem.add(it)
                                                 }
@@ -1028,7 +1040,8 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
         }
 
 
-        grnMainItemAdapter = GrnMainAddAdapter(this@GRNAddActivity,
+        grnMainItemAdapter = GrnMainAddAdapter(
+            this@GRNAddActivity,
             selectedPoLineItem,
             itemDescription = {
                 setItemDescription(it)
@@ -1096,23 +1109,26 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
             onItemSave = { pos, mod ->
                 //addSingleGrnLineUnitItemApiCall(mod(pos).grnLineItemUnit)
             },
-            onDiscountAdded = {pos,mod->
-                Log.d("LineItemData","${pos}$//////LINEAMT${mod.lineAmount .toString()}/////TAXID////${mod.taxId}}")
-              /*  val quantity = mod.quantityReceived.toDouble()
-                val rate = mod.unitPrice
-                val discount = mod.discountAmount // Discount is a percentage
-                val taxPercent = getALlTax.find { it.taxId == mod.taxId }?.percentage ?: 0.0
+            onDiscountAdded = { pos, mod ->
+                Log.d(
+                    "LineItemData",
+                    "${pos}$//////LINEAMT${mod.lineAmount.toString()}/////TAXID////${mod.taxId}}"
+                )
+                /*  val quantity = mod.quantityReceived.toDouble()
+                  val rate = mod.unitPrice
+                  val discount = mod.discountAmount // Discount is a percentage
+                  val taxPercent = getALlTax.find { it.taxId == mod.taxId }?.percentage ?: 0.0
 
-                // Find the index of the item you want to update (e.g., by lineItemId or pos)
-                val itemIndex = selectedPoLineItem.indexOfFirst { it.lineItemId == mod.lineItemId }
+                  // Find the index of the item you want to update (e.g., by lineItemId or pos)
+                  val itemIndex = selectedPoLineItem.indexOfFirst { it.lineItemId == mod.lineItemId }
 
-                // If the item is found, update the lineAmount
-                if (itemIndex != -1) {
-                    selectedPoLineItem[itemIndex].lineAmount = calculateLineItemTotal(quantity,rate,discount,taxPercent).toString()
-                    grnMainItemAdapter?.notifyItemChanged(pos)
+                  // If the item is found, update the lineAmount
+                  if (itemIndex != -1) {
+                      selectedPoLineItem[itemIndex].lineAmount = calculateLineItemTotal(quantity,rate,discount,taxPercent).toString()
+                      grnMainItemAdapter?.notifyItemChanged(pos)
 
-                }
-*/
+                  }
+  */
             },
             customKeyboard = customKeyboard,
         )
@@ -1129,8 +1145,8 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
                         try {
                             if (resultResponse != null) {
                                 try {
-                                  //  getOtherCharges = resultResponse
-                                    Log.e("taxCodes",taxCodes.toString())
+                                    //  getOtherCharges = resultResponse
+                                    Log.e("taxCodes", taxCodes.toString())
                                     resultResponse.forEach {
 
                                         getOtherCharges.add(
@@ -1142,7 +1158,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
                                                 it.poId,
                                                 it.poNumber,
                                                 it.taxCode,
-                                                calculateExpenseAmount(it.expenseAmount,it.taxCode)
+                                                calculateExpenseAmount(it.expenseAmount, it.taxCode)
                                             )
                                         )
                                     }
@@ -1153,12 +1169,12 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
                                     otherChargesDialogBinding.rcOtherCharges.layoutManager =
                                         LinearLayoutManager(this)
 
-                                    Log.e("taxCodes",getOtherCharges.toString())
+                                    Log.e("taxCodes", getOtherCharges.toString())
 
                                     otherChargesDialogBinding.tvTotalAmount.setText("Total Expense Amount: ${getTotalExpenseSummary()}")
                                     binding.tvOtherCharges.setText(getTotalExpenseSummary())
                                 } catch (e: Exception) {
-                                    Log.e("taxCodes",e.toString())
+                                    Log.e("taxCodes", e.toString())
                                     Toasty.warning(
                                         this@GRNAddActivity,
                                         "Something Went Wrong..!",
@@ -1201,6 +1217,8 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
                 is Resource.Success -> {
                     hideProgressBar()
                     createBatchSingleDialog!!.dismiss()
+
+
                     response.data?.let { resultResponse ->
                         try {
                             Log.e("generatedBarcode", resultResponse.responseMessage.toString())
@@ -1839,8 +1857,8 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
         quantity: Double,
         rate: Int?,
         discount: Double?,
-        taxPercent: Double
-    ):Double {
+        taxPercent: Double,
+    ): Double {
 
 
         // Calculate the total amount before discount
@@ -1862,11 +1880,13 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
 
 
     }
+
     private fun calculateExpenseAmount(expenseAmount: Double, taxCode: String): String {
         val taxValue = taxCodes[taxCode] ?: 0.0
         val taxAmount = expenseAmount + (taxValue / expenseAmount * 100)
         return taxAmount.toString()
     }
+
     //default
     private fun showDatePickerDialog() {
         val calendar = Calendar.getInstance()
@@ -2107,7 +2127,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
                 isClickable = false
             }
         } else {
-            createBatchesDialogBinding.mcvRcLineItem.visibility = View.GONE
+            createBatchesDialogBinding.mcvRcLineItem.visibility = View.INVISIBLE
         }
 
         if (
@@ -2149,7 +2169,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
     //Default API Calls
     private fun getAllTax() {
         try {
-            viewModel.getAllTax(token, baseUrl)
+            viewModel.getAllTax(this,token, baseUrl)
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -2161,7 +2181,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
 
     private fun getAllLocations() {
         try {
-            viewModel.getAllLocations(token, baseUrl)
+            viewModel.getAllLocations(this,token, baseUrl)
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -2173,7 +2193,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
 
     private fun getSupplierList() {
         try {
-            viewModel.getActiveSuppliersDDL(token, baseUrl)
+            viewModel.getActiveSuppliersDDL(this,token, baseUrl)
         } catch (e: Exception) {
             Toasty.error(
                 this,
@@ -2239,7 +2259,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
 
     private fun callParentLocationApi(selectedKey: String) {
         try {
-            viewModel.getSuppliersPosDDLL(token, baseUrl, selectedKey)
+            viewModel.getSuppliersPosDDLL(this,token, baseUrl, selectedKey)
         } catch (e: Exception) {
             Toasty.error(
                 this,
@@ -2258,7 +2278,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
                 if (listOfPoIds.isNotEmpty()) {
                     if (selectedCurrency != "" && selectedCurrency.equals("INR")) {
                         viewModel.processGRN(
-                            token, baseUrl, GRNSaveToDraftDefaultRequest(
+                            this,token, baseUrl, GRNSaveToDraftDefaultRequest(
                                 selectedSupplierBpCode,
                                 selectedBpId.toInt(),
                                 selectedBpName,
@@ -2274,7 +2294,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
                         )
                     } else {
                         viewModel.processGRN(
-                            token, baseUrl, GRNSaveToDraftDefaultRequest(
+                            this,token, baseUrl, GRNSaveToDraftDefaultRequest(
                                 selectedSupplierBpCode,
                                 selectedBpId.toInt(),
                                 selectedBpName,
@@ -2365,7 +2385,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
                  } else {
                      binding.grnAddHeader.edGDPO.visibility = View.VISIBLE
                  }*/
-                viewModel.getPosLineItemsOnPoIds(token, baseUrl, selectedPoFilteredList)
+                viewModel.getPosLineItemsOnPoIds(this,token, baseUrl, selectedPoFilteredList)
                 selectPoIdsDialog!!.dismiss()
             } else {
                 Toasty.warning(
@@ -2393,7 +2413,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
     //create multiple batches
     private fun getBarcodeForMultipleBatches() {
         try {
-            viewModel.getBarcodeForMultipleBatches(token, baseUrl, "G")
+            viewModel.getBarcodeForMultipleBatches(this,token, baseUrl, "G")
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -2484,7 +2504,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
 
     private fun generateBarcodeForBatches() {
         try {
-            viewModel.getBarcodeValueWithPrefix(token, baseUrl, "G")
+            viewModel.getBarcodeValueWithPrefix(this,token, baseUrl, "G")
         } catch (e: Exception) {
             Toasty.error(
                 this,
@@ -2497,7 +2517,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
 
     private fun generateBarcodeForBatchesForExisitng() {
         try {
-            viewModel.getBarcodeValueWithPrefixForExisitng(token, baseUrl, "G")
+            viewModel.getBarcodeValueWithPrefixForExisitng(this,token, baseUrl, "G")
         } catch (e: Exception) {
             Toasty.error(
                 this,
@@ -2514,7 +2534,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
         try {
             var grnLineUnitList = ArrayList<Int>()
             grnLineUnitList.add(grnitem.lineItemUnitId.toInt())
-            viewModel.printLabelForGRN(token, baseUrl, grnLineUnitList)
+            viewModel.printLabelForGRN(this,token, baseUrl, grnLineUnitList)
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -2526,7 +2546,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
 
     private fun printLabelForBulk() {
         try {
-            viewModel.printLabelForGRNBulk(token, baseUrl, selectedBatchForPrint)
+            viewModel.printLabelForGRNBulk(this,token, baseUrl, selectedBatchForPrint)
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -2540,7 +2560,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
         try {
             var grnLineUnitList = ArrayList<Int>()
             grnLineUnitList.add(grnitem.lineItemUnitId.toInt())
-            viewModel.getGRNProductDetailsOnUnitIdItem(token, baseUrl, grnLineUnitList)
+            viewModel.getGRNProductDetailsOnUnitIdItem(this,token, baseUrl, grnLineUnitList)
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -2552,7 +2572,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
 
     private fun printLabelUSBForBulk() {
         try {
-            viewModel.getGRNProductDetailsOnUnitIdItem(token, baseUrl, selectedBatchForPrint)
+            viewModel.getGRNProductDetailsOnUnitIdItem(this,token, baseUrl, selectedBatchForPrint)
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -2565,7 +2585,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
     //delete batch
     private fun deleteBatches(grnitem: CustomGrnLineItemUnit) {
         try {
-            viewModel.deleteGRNLineItemsUnit(token, baseUrl, grnitem.lineItemUnitId)
+            viewModel.deleteGRNLineItemsUnit(this,token, baseUrl, grnitem.lineItemUnitId)
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -2578,7 +2598,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
     //delete line item
     private fun deleteLineItem(poLineItem: CustomPoLineItemSelectionModel) {
         try {
-            viewModel.deleteGRNLineUnit(token, baseUrl, poLineItem.lineItemId)
+            viewModel.deleteGRNLineUnit(this,token, baseUrl, poLineItem.lineItemId)
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -2848,7 +2868,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
     private fun getOtherCharges() {
         try {
 
-            viewModel.getOtherCharges(token, baseUrl, createQueryMap(selectedPoFilteredList))
+            viewModel.getOtherCharges(this,token, baseUrl, createQueryMap(selectedPoFilteredList))
 
 
         } catch (e: Exception) {
@@ -2893,7 +2913,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
     private fun addSingleGrnLineUnitItemApiCall(u: CustomGrnLineItemUnit) {
         try {
             viewModel.processSingleGRNGRNItemBatches(
-                token, baseUrl,
+                this,token, baseUrl,
                 //weight not proper
                 GRNUnitLineItemsSaveRequest(
                     selectedPoLineItem[currentPoLineItemPosition.toInt()].balQTY,
@@ -2959,7 +2979,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
     private fun updateLineItem(u: CustomGrnLineItemUnit) {
         try {
             viewModel.processSingleGRNGRNItemBatches(
-                token, baseUrl,
+                this,token, baseUrl,
                 //weight not proper
                 GRNUnitLineItemsSaveRequest(
                     selectedPoLineItem[currentPoLineItemPosition.toInt()].balQTY,
@@ -3025,7 +3045,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
     private fun processSingleGRNGRNItemBatchesForMultiple(u: CustomGrnLineItemUnit) {
         try {
             viewModel.processSingleGRNGRNItemBatchesForMultiple(
-                token, baseUrl,
+                this,token, baseUrl,
                 GRNUnitLineItemsSaveRequest(
                     selectedPoLineItem[currentPoLineItemPosition.toInt()].balQTY,
                     selectedPoLineItem[currentPoLineItemPosition.toInt()].currency ?: "",
@@ -3395,7 +3415,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
 
     private fun getDraftGrn() {
         try {
-            viewModel.getDraftGRN(token, baseUrl, currentGrnID!!.toInt())
+            viewModel.getDraftGRN(this,token, baseUrl, currentGrnID!!.toInt())
         } catch (e: Exception) {
             Toasty.error(
                 this@GRNAddActivity,
@@ -3407,7 +3427,7 @@ class GRNAddActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatusListen
 
     private fun submitGrn() {
         try {
-            viewModel.submitGRN(token!!, baseUrl, SubmitGRNRequest(currentGrnID!!.toInt()))
+            viewModel.submitGRN(this,token!!, baseUrl, SubmitGRNRequest(currentGrnID!!.toInt()))
         } catch (e: Exception) {
             Toasty.error(
                 this@GRNAddActivity,

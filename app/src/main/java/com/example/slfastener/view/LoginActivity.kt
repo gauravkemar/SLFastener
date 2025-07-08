@@ -75,6 +75,7 @@ class  LoginActivity : AppCompatActivity() {
                                 resultResponse.userName,
                                 resultResponse.jwtToken,
                                 resultResponse.roleName,
+                                resultResponse.refreshToken
                             )
                             Utils.setSharedPrefsBoolean(this@LoginActivity, KEY_ISLOGGEDIN, true)
                             startActivity()
@@ -146,7 +147,7 @@ class  LoginActivity : AppCompatActivity() {
                 val validationMessage = validateInput(userId, password)
                 if (validationMessage == null) {
                     val loginRequest = LoginRequest( password, userId )
-                    viewModel.login(baseUrl, loginRequest)
+                    viewModel.login(this,baseUrl, loginRequest)
                 } else {
                     showErrorMessage(validationMessage)
                 }

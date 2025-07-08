@@ -15,5 +15,6 @@ data class LoginResponse(
     val mobileNumber: String,
     val roleName: String,
     val userAccess: List<UserAcces>,
-    val userName: String
+    val userName: String,
+    val refreshToken: String
 )

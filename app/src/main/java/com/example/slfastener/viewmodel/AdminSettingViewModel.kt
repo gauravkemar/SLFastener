@@ -1,5 +1,6 @@
 package com.example.slfastener.viewmodel
 
+import android.app.Activity
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -19,25 +20,31 @@ import org.json.JSONObject
 import retrofit2.Response
 import java.io.IOException
 
-class AdminSettingViewModel  (
+class AdminSettingViewModel(
     application: Application,
-    private val rfidRepository: SLFastenerRepository
+    private val rfidRepository: SLFastenerRepository,
 ) : AndroidViewModel(application) {
 
     //for GR
-    val getPrnForLabelGRMutable: MutableLiveData<Resource<GetPRNFileDetailOnKeyResponse>> = MutableLiveData()
+    val getPrnForLabelGRMutable: MutableLiveData<Resource<GetPRNFileDetailOnKeyResponse>> =
+        MutableLiveData()
 
-    fun getPRNFleDetailGR(token:String,baseUrl: String, labelKey:String) {
+    fun getPRNFleDetailGR(context: Activity, token: String, baseUrl: String, labelKey: String) {
         viewModelScope.launch {
-            safeAPICallGetPRNFleDetailGR(token,baseUrl, labelKey)
+            safeAPICallGetPRNFleDetailGR(context, token, baseUrl, labelKey)
         }
     }
 
-    private suspend fun safeAPICallGetPRNFleDetailGR(token:String,baseUrl: String ,labelKey:String) {
+    private suspend fun safeAPICallGetPRNFleDetailGR(
+        context: Activity,
+        token: String,
+        baseUrl: String,
+        labelKey: String,
+    ) {
         getPrnForLabelGRMutable.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.getPRNFleDetail(token,baseUrl, labelKey)
+                val response = rfidRepository.getPRNFleDetail(context, token, baseUrl, labelKey)
                 getPrnForLabelGRMutable.postValue(handleGetPRNFleDetailGRResponse(response))
             } else {
                 getPrnForLabelGRMutable.postValue(Resource.Error(Constants.NO_INTERNET))
@@ -68,19 +75,25 @@ class AdminSettingViewModel  (
     }
 
     //for GRN
-    val getPrnForLabelGRNMutable: MutableLiveData<Resource<GetPRNFileDetailOnKeyResponse>> = MutableLiveData()
+    val getPrnForLabelGRNMutable: MutableLiveData<Resource<GetPRNFileDetailOnKeyResponse>> =
+        MutableLiveData()
 
-    fun getPRNFleDetailGRN(token:String,baseUrl: String, labelKey:String) {
+    fun getPRNFleDetailGRN(context: Activity, token: String, baseUrl: String, labelKey: String) {
         viewModelScope.launch {
-            safeAPICallGetPRNFleDetailGRN(token,baseUrl, labelKey)
+            safeAPICallGetPRNFleDetailGRN(context, token, baseUrl, labelKey)
         }
     }
 
-    private suspend fun safeAPICallGetPRNFleDetailGRN(token:String,baseUrl: String ,labelKey:String) {
+    private suspend fun safeAPICallGetPRNFleDetailGRN(
+        context: Activity,
+        token: String,
+        baseUrl: String,
+        labelKey: String,
+    ) {
         getPrnForLabelGRNMutable.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.getPRNFleDetail(token,baseUrl, labelKey)
+                val response = rfidRepository.getPRNFleDetail(context, token, baseUrl, labelKey)
                 getPrnForLabelGRNMutable.postValue(handleGetPRNFleDetailGRNResponse(response))
             } else {
                 getPrnForLabelGRNMutable.postValue(Resource.Error(Constants.NO_INTERNET))
@@ -111,26 +124,40 @@ class AdminSettingViewModel  (
     }
 
     //get default printer
-    val getSelfSystemMappingDetailMutable: MutableLiveData<Resource<GetSelfSystemMappingDetailsResponse>> = MutableLiveData()
+    val getSelfSystemMappingDetailMutable: MutableLiveData<Resource<GetSelfSystemMappingDetailsResponse>> =
+        MutableLiveData()
 
-    fun getSelfSystemMappingDetail(token:String,baseUrl: String) {
+    fun getSelfSystemMappingDetail(context: Activity, token: String, baseUrl: String) {
         viewModelScope.launch {
-            safeAPICallGetSelfSystemMappingDetail(token,baseUrl)
+            safeAPICallGetSelfSystemMappingDetail(context, token, baseUrl)
         }
     }
 
-    private suspend fun safeAPICallGetSelfSystemMappingDetail(token:String,baseUrl: String ) {
+    private suspend fun safeAPICallGetSelfSystemMappingDetail(
+        context: Activity,
+        token: String,
+        baseUrl: String,
+    ) {
         getSelfSystemMappingDetailMutable.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.getSelfSystemMappingDetail(token,baseUrl)
-                getSelfSystemMappingDetailMutable.postValue(handleGetSelfSystemMappingDetailResponse(response))
+                val response = rfidRepository.getSelfSystemMappingDetail(context, token, baseUrl)
+                getSelfSystemMappingDetailMutable.postValue(
+                    handleGetSelfSystemMappingDetailResponse(
+                        response
+                    )
+                )
             } else {
                 getSelfSystemMappingDetailMutable.postValue(Resource.Error(Constants.NO_INTERNET))
             }
         } catch (t: Throwable) {
             when (t) {
-                is IOException -> getSelfSystemMappingDetailMutable.postValue(Resource.Error(Constants.CONFIG_ERROR))
+                is IOException -> getSelfSystemMappingDetailMutable.postValue(
+                    Resource.Error(
+                        Constants.CONFIG_ERROR
+                    )
+                )
+
                 else -> getSelfSystemMappingDetailMutable.postValue(Resource.Error("${t.message}"))
             }
         }
@@ -155,26 +182,49 @@ class AdminSettingViewModel  (
 
 
     //get default printe
-    val getAllActiveDeviceLocationMappingMutable: MutableLiveData<Resource<GetAllActiveDeviceLocationDeviceType>> = MutableLiveData()
+    val getAllActiveDeviceLocationMappingMutable: MutableLiveData<Resource<GetAllActiveDeviceLocationDeviceType>> =
+        MutableLiveData()
 
-    fun getAllActiveDeviceLocationMapping(token:String,baseUrl: String, deviceType: String) {
+    fun getAllActiveDeviceLocationMapping(
+        context: Activity,
+        token: String,
+        baseUrl: String,
+        deviceType: String,
+    ) {
         viewModelScope.launch {
-            safeAPICallGetAllActiveDeviceLocationMapping(token,baseUrl,deviceType)
+            safeAPICallGetAllActiveDeviceLocationMapping(context, token, baseUrl, deviceType)
         }
     }
 
-    private suspend fun safeAPICallGetAllActiveDeviceLocationMapping(token:String,baseUrl: String ,deviceType: String) {
+    private suspend fun safeAPICallGetAllActiveDeviceLocationMapping(
+        context: Activity,
+        token: String,
+        baseUrl: String,
+        deviceType: String,
+    ) {
         getAllActiveDeviceLocationMappingMutable.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.getAllActiveDeviceLocationDeviceMapping(token,baseUrl,deviceType)
-                getAllActiveDeviceLocationMappingMutable.postValue(handleGetAllActiveDeviceLocationMappingResponse(response))
+                val response = rfidRepository.getAllActiveDeviceLocationDeviceMapping(
+                    context,
+                    token,
+                    baseUrl,
+                    deviceType
+                )
+                getAllActiveDeviceLocationMappingMutable.postValue(
+                    handleGetAllActiveDeviceLocationMappingResponse(response)
+                )
             } else {
                 getAllActiveDeviceLocationMappingMutable.postValue(Resource.Error(Constants.NO_INTERNET))
             }
         } catch (t: Throwable) {
             when (t) {
-                is IOException -> getAllActiveDeviceLocationMappingMutable.postValue(Resource.Error(Constants.CONFIG_ERROR))
+                is IOException -> getAllActiveDeviceLocationMappingMutable.postValue(
+                    Resource.Error(
+                        Constants.CONFIG_ERROR
+                    )
+                )
+
                 else -> getAllActiveDeviceLocationMappingMutable.postValue(Resource.Error("${t.message}"))
             }
         }
@@ -200,24 +250,54 @@ class AdminSettingViewModel  (
 
 
     //get default printe
-    val updateDefaultPrinterOnDeviceMutable: MutableLiveData<Resource<GeneralResponse>> = MutableLiveData()
-    fun updateDefaultPrinterOnDevice(token:String,baseUrl: String,  printerDeviceLocationMappingIdRequest: PrinterDeviceLocationMappingIdRequest) {
+    val updateDefaultPrinterOnDeviceMutable: MutableLiveData<Resource<GeneralResponse>> =
+        MutableLiveData()
+
+    fun updateDefaultPrinterOnDevice(
+        context: Activity,
+        token: String,
+        baseUrl: String,
+        printerDeviceLocationMappingIdRequest: PrinterDeviceLocationMappingIdRequest,
+    ) {
         viewModelScope.launch {
-            safeAPICallUpdateDefaultPrinterOnDevice(token,baseUrl,printerDeviceLocationMappingIdRequest)
+            safeAPICallUpdateDefaultPrinterOnDevice(
+                context,
+                token,
+                baseUrl,
+                printerDeviceLocationMappingIdRequest
+            )
         }
     }
-    private suspend fun safeAPICallUpdateDefaultPrinterOnDevice(token:String,baseUrl: String , printerDeviceLocationMappingIdRequest: PrinterDeviceLocationMappingIdRequest) {
+
+    private suspend fun safeAPICallUpdateDefaultPrinterOnDevice(
+        context: Activity,
+        token: String,
+        baseUrl: String,
+        printerDeviceLocationMappingIdRequest: PrinterDeviceLocationMappingIdRequest,
+    ) {
         updateDefaultPrinterOnDeviceMutable.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.updateDefaultPrinterOnDevice(token,baseUrl,printerDeviceLocationMappingIdRequest)
-                updateDefaultPrinterOnDeviceMutable.postValue(handleGetUpdateDefaultPrinterOnDeviceResponse(response))
+                val response = rfidRepository.updateDefaultPrinterOnDevice(
+                    context,
+                    token,
+                    baseUrl,
+                    printerDeviceLocationMappingIdRequest
+                )
+                updateDefaultPrinterOnDeviceMutable.postValue(
+                    handleGetUpdateDefaultPrinterOnDeviceResponse(response)
+                )
             } else {
                 updateDefaultPrinterOnDeviceMutable.postValue(Resource.Error(Constants.NO_INTERNET))
             }
         } catch (t: Throwable) {
             when (t) {
-                is IOException -> updateDefaultPrinterOnDeviceMutable.postValue(Resource.Error(Constants.CONFIG_ERROR))
+                is IOException -> updateDefaultPrinterOnDeviceMutable.postValue(
+                    Resource.Error(
+                        Constants.CONFIG_ERROR
+                    )
+                )
+
                 else -> updateDefaultPrinterOnDeviceMutable.postValue(Resource.Error("${t.message}"))
             }
         }

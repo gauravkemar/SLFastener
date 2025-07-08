@@ -1223,7 +1223,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
         try {
             var grnLineUnitList = ArrayList<Int>()
             grnLineUnitList.add(grnitem.LineItemUnitId)
-            viewModel.printLabelForGR(token, baseUrl, grnLineUnitList)
+            viewModel.printLabelForGR(this,token, baseUrl, grnLineUnitList)
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -1235,7 +1235,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
 
     private fun printLabelForBulk() {
         try {
-            viewModel.printLabelForGRBulk(token, baseUrl, selectedBatchForPrint)
+            viewModel.printLabelForGRBulk(this,token, baseUrl, selectedBatchForPrint)
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -1246,7 +1246,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
     }
     private fun deleteLineItem(poLineItem: GetAllItemMasterSelection) {
         try {
-            viewModel.deleteGRLineUnit(token,baseUrl, poLineItem.LineItemId)
+            viewModel.deleteGRLineUnit(this,token,baseUrl, poLineItem.LineItemId)
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -1419,7 +1419,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
     private fun addSingleGrnLineUnitItemApiCall(u: GRLineUnitItemSelection) {
         try {
             viewModel.processSingleGRItemSingleBatches(
-                token, baseUrl,
+                this,token, baseUrl,
                 ProcessGRLineItemRequest(
                     selectedLineItem[currentPoLineItemPosition.toInt()].defaultLocationCode,
                     selectedLineItem[currentPoLineItemPosition.toInt()].grId,
@@ -1615,7 +1615,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
             var edRemark = binding.edRemark.text.toString().trim()
             val bpId = if (selectedBpId != "") selectedBpId.toInt() else 0
             viewModel.processGR(
-                token,
+                this,token,
                 baseUrl,
                 PostProcessGRTransactionRequest(
                     selectedSupplierCode ?: "",
@@ -1638,7 +1638,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
 
     private fun getSupplierList() {
         try {
-            viewModel.getActiveSupplierForGR(token, baseUrl)
+            viewModel.getActiveSupplierForGR(this,token, baseUrl)
         } catch (e: Exception) {
             Toasty.error(
                 this,
@@ -1651,7 +1651,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
     private fun getAllItemMaster() {
         try {
             try {
-                viewModel.getAllItemMaster(token, baseUrl)
+                viewModel.getAllItemMaster(this,token, baseUrl)
             } catch (e: Exception) {
                 Toasty.error(
                     this,
@@ -1667,7 +1667,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
 
     private fun generateBarcodeForBatches() {
         try {
-            viewModel.getBarcodeValueWithPrefix(token, baseUrl, "G")
+            viewModel.getBarcodeValueWithPrefix(this,token, baseUrl, "G")
         } catch (e: Exception) {
             Toasty.error(
                 this,
@@ -1680,7 +1680,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
 
     private fun getAllLocations() {
         try {
-            viewModel.getAllLocations(token, baseUrl)
+            viewModel.getAllLocations(this,token, baseUrl)
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -1730,7 +1730,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
 
     private fun deleteBatches(grnitem: GRLineUnitItemSelection) {
         try {
-            viewModel.deleteGRLineItemsUnit(token, baseUrl, grnitem.LineItemUnitId)
+            viewModel.deleteGRLineItemsUnit(this,token, baseUrl, grnitem.LineItemUnitId)
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -1742,7 +1742,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
 
     private fun getBarcodeForMultipleBatches() {
         try {
-            viewModel.getBarcodeForMultipleBatches(token, baseUrl, "G")
+            viewModel.getBarcodeForMultipleBatches(this,token, baseUrl, "G")
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -1755,7 +1755,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
     private fun processSingleItemBatchesForMultiple(u: GRLineUnitItemSelection) {
         try {
             viewModel.processSingleGRItemMultipleBatches(
-                token, baseUrl,
+                this,token, baseUrl,
                 ProcessGRLineItemRequest(
                     selectedLineItem[currentPoLineItemPosition.toInt()].defaultLocationCode,
                     selectedLineItem[currentPoLineItemPosition.toInt()].grId,
@@ -2076,7 +2076,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
 
     private fun generateBarcodeForBatchesForExisitng() {
         try {
-            viewModel.getBarcodeValueWithPrefixForExisitng(token, baseUrl, "G")
+            viewModel.getBarcodeValueWithPrefixForExisitng(this,token, baseUrl, "G")
         } catch (e: Exception) {
             Toasty.error(
                 this,
@@ -2097,7 +2097,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
 
     private fun getDraftGr() {
         try {
-            viewModel.getSingleGRByGRId(token, baseUrl, grId!!.toInt())
+            viewModel.getSingleGRByGRId(this,token, baseUrl, grId!!.toInt())
         } catch (e: Exception) {
             Toasty.error(
                 this@GoodsReceiptActivity,
@@ -2114,7 +2114,7 @@ class GoodsReceiptActivity : AppCompatActivity() {
 
     private fun submitGrn() {
         try {
-            viewModel.submitGR(token!!, baseUrl, SubmitGRRequest(currentGrID))
+            viewModel.submitGR(this,token!!, baseUrl, SubmitGRRequest(currentGrID))
         } catch (e: Exception) {
             Toasty.error(
                 this@GoodsReceiptActivity,

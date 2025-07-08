@@ -198,7 +198,7 @@ class GRMainActivity : AppCompatActivity() {
     private fun getGrnList(status: String)
     {
         try {
-            viewModel.getAllGRResponse(token, baseUrl, status)
+            viewModel.getAllGRResponse(this,token, baseUrl, status)
         }
         catch (e:Exception)
         {
@@ -212,7 +212,7 @@ class GRMainActivity : AppCompatActivity() {
     private fun getFilteredGRNCompleted(status: String)
     {
         try {
-            viewModel.getAllGRCompleteResponse(token, baseUrl, status)
+            viewModel.getAllGRCompleteResponse(this,token, baseUrl, status)
         }
         catch (e:Exception)
         {

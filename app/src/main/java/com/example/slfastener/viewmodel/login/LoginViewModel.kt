@@ -1,5 +1,6 @@
 package com.example.slfastener.viewmodel.login
 
+import android.app.Activity
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -21,11 +22,12 @@ class LoginViewModel (
     val loginMutableLiveData: MutableLiveData<Resource<LoginResponse>> = MutableLiveData()
 
     fun login(
+        context: Activity,
         baseUrl: String,
         loginRequest: LoginRequest
     ) {
         viewModelScope.launch {
-            safeAPICallDtmsLogin(baseUrl, loginRequest)
+            safeAPICallDtmsLogin(context,baseUrl, loginRequest)
         }
     }
 
@@ -46,11 +48,15 @@ class LoginViewModel (
         return Resource.Error(errorMessage)
     }
 
-    private suspend fun safeAPICallDtmsLogin(baseUrl: String, loginRequest: LoginRequest) {
+    private suspend fun safeAPICallDtmsLogin(
+        context: Activity,
+        baseUrl: String,
+        loginRequest: LoginRequest
+    ) {
         loginMutableLiveData.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.login(baseUrl, loginRequest)
+                val response = rfidRepository.login(context,baseUrl, loginRequest)
                 loginMutableLiveData.postValue(handleDtmsUserLoginResponse(response))
             } else {
                 loginMutableLiveData.postValue(Resource.Error(Constants.NO_INTERNET))

@@ -1,5 +1,6 @@
 package com.example.slfastener.viewmodel
 
+import android.app.Activity
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -35,17 +36,17 @@ class GRViewModel(
     val getAllGRResponseMutableList: MutableLiveData<Resource<ArrayList<GetAllGRResponse>>> =
         MutableLiveData()
 
-    fun getAllGRResponse(token: String, baseUrl: String, status: String) {
+    fun getAllGRResponse(context: Activity, token: String, baseUrl: String, status: String) {
         viewModelScope.launch {
-            safeAPICallGetFilteredGRN(token, baseUrl, status)
+            safeAPICallGetFilteredGRN(context,token, baseUrl, status)
         }
     }
 
-    private suspend fun safeAPICallGetFilteredGRN(token: String, baseUrl: String, status: String) {
+    private suspend fun safeAPICallGetFilteredGRN(        context: Activity,token: String, baseUrl: String, status: String) {
         getAllGRResponseMutableList.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.getAllGRResponse(token, baseUrl, status)
+                val response = rfidRepository.getAllGRResponse(context,token, baseUrl, status)
                 getAllGRResponseMutableList.postValue(handleGetFilteredGR(response))
             } else {
                 getAllGRResponseMutableList.postValue(Resource.Error(Constants.NO_INTERNET))
@@ -80,13 +81,14 @@ class GRViewModel(
     val getAllGRCompleteResponse: MutableLiveData<Resource<ArrayList<GetAllGRResponse>>> =
         MutableLiveData()
 
-    fun getAllGRCompleteResponse(token: String, baseUrl: String, status: String) {
+    fun getAllGRCompleteResponse(        context: Activity,token: String, baseUrl: String, status: String) {
         viewModelScope.launch {
-            safeAPICallGetFilteredGRNCompleted(token, baseUrl, status)
+            safeAPICallGetFilteredGRNCompleted(context,token, baseUrl, status)
         }
     }
 
     private suspend fun safeAPICallGetFilteredGRNCompleted(
+        context: Activity,
         token: String,
         baseUrl: String,
         status: String
@@ -94,7 +96,7 @@ class GRViewModel(
         getAllGRCompleteResponse.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.getAllGRCompleteResponse(token, baseUrl, status)
+                val response = rfidRepository.getAllGRCompleteResponse(context,token, baseUrl, status)
                 getAllGRCompleteResponse.postValue(handleGetFilteredGRCompleted(response))
             } else {
                 getAllGRCompleteResponse.postValue(Resource.Error(Constants.NO_INTERNET))
@@ -129,17 +131,17 @@ class GRViewModel(
     val getAllItemMasterMutable: MutableLiveData<Resource<ArrayList<GetAllItemMasterResponse>>> =
         MutableLiveData()
 
-    fun getAllItemMaster(token: String, baseUrl: String) {
+    fun getAllItemMaster(        context: Activity,token: String, baseUrl: String) {
         viewModelScope.launch {
-            safeAPICallGetAllItemMaster(token, baseUrl)
+            safeAPICallGetAllItemMaster(context,token, baseUrl)
         }
     }
 
-    private suspend fun safeAPICallGetAllItemMaster(token: String, baseUrl: String) {
+    private suspend fun safeAPICallGetAllItemMaster(        context: Activity,token: String, baseUrl: String) {
         getAllItemMasterMutable.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.getAllItemMaster(token, baseUrl)
+                val response = rfidRepository.getAllItemMaster(context,token, baseUrl)
                 getAllItemMasterMutable.postValue(handleGetAllItemMaster(response))
             } else {
                 getAllItemMasterMutable.postValue(Resource.Error(Constants.NO_INTERNET))
@@ -174,17 +176,17 @@ class GRViewModel(
     val getActiveSupplierForGRMutable: MutableLiveData<Resource<ArrayList<GetActiveSuppliersDDLResponse>>> =
         MutableLiveData()
 
-    fun getActiveSupplierForGR(token: String, baseUrl: String) {
+    fun getActiveSupplierForGR(        context: Activity,token: String, baseUrl: String) {
         viewModelScope.launch {
-            safeAPICallGetActiveSupplierForGR(token, baseUrl)
+            safeAPICallGetActiveSupplierForGR(context,token, baseUrl)
         }
     }
 
-    private suspend fun safeAPICallGetActiveSupplierForGR(token: String, baseUrl: String) {
+    private suspend fun safeAPICallGetActiveSupplierForGR(        context: Activity,token: String, baseUrl: String) {
         getActiveSupplierForGRMutable.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.getActiveSupplierForGR(token, baseUrl)
+                val response = rfidRepository.getActiveSupplierForGR(context,token, baseUrl)
                 getActiveSupplierForGRMutable.postValue(handleGetActiveSupplierForGR(response))
             } else {
                 getActiveSupplierForGRMutable.postValue(Resource.Error(Constants.NO_INTERNET))
@@ -220,16 +222,18 @@ class GRViewModel(
         MutableLiveData()
 
     fun processGR(
+        context: Activity,
         token: String,
         baseUrl: String,
         postProcessGRTransactionRequest: PostProcessGRTransactionRequest
     ) {
         viewModelScope.launch {
-            safeAPICallProcessGR(token, baseUrl, postProcessGRTransactionRequest)
+            safeAPICallProcessGR(context,token, baseUrl, postProcessGRTransactionRequest)
         }
     }
 
     private suspend fun safeAPICallProcessGR(
+        context: Activity,
         token: String,
         baseUrl: String,
         postProcessGRTransactionRequest: PostProcessGRTransactionRequest
@@ -238,7 +242,7 @@ class GRViewModel(
         try {
             if (Utils.hasInternetConnection(getApplication())) {
                 val response =
-                    rfidRepository.processGR(token, baseUrl, postProcessGRTransactionRequest)
+                    rfidRepository.processGR(context,token, baseUrl, postProcessGRTransactionRequest)
                 processGRMutable.postValue(handleProcessGR(response))
             } else {
                 processGRMutable.postValue(Resource.Error(Constants.NO_INTERNET))
@@ -291,17 +295,17 @@ class GRViewModel(
     val getAllLocationsMutableResponse: MutableLiveData<Resource<ArrayList<GetAllWareHouseLocationResponse>>> =
         MutableLiveData()
 
-    fun getAllLocations(token: String, baseUrl: String) {
+    fun getAllLocations(        context: Activity,token: String, baseUrl: String) {
         viewModelScope.launch {
-            safeAPICallGetAllLocations(token, baseUrl)
+            safeAPICallGetAllLocations(context,token, baseUrl)
         }
     }
 
-    private suspend fun safeAPICallGetAllLocations(token: String, baseUrl: String) {
+    private suspend fun safeAPICallGetAllLocations(        context: Activity,token: String, baseUrl: String) {
         getAllLocationsMutableResponse.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.getAllLocations(token, baseUrl)
+                val response = rfidRepository.getAllLocations(context,token, baseUrl)
                 getAllLocationsMutableResponse.postValue(handleGetAllLocations(response))
             } else {
                 getAllLocationsMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
@@ -336,16 +340,18 @@ class GRViewModel(
         MutableLiveData()
 
     fun getBarcodeValueWithPrefixForExisitng(
+        context: Activity,
         token: String,
         baseUrl: String,
         transactionPrefix: String
     ) {
         viewModelScope.launch {
-            safeAPICallGetBarcodeValueWithPrefixForExisitng(token, baseUrl, transactionPrefix)
+            safeAPICallGetBarcodeValueWithPrefixForExisitng(context,token, baseUrl, transactionPrefix)
         }
     }
 
     private suspend fun safeAPICallGetBarcodeValueWithPrefixForExisitng(
+        context: Activity,
         token: String,
         baseUrl: String,
         transactionPrefix: String
@@ -354,6 +360,7 @@ class GRViewModel(
         try {
             if (Utils.hasInternetConnection(getApplication())) {
                 val response = rfidRepository.getBarcodeValueWithPrefixForExisitng(
+                    context,
                     token,
                     baseUrl,
                     transactionPrefix
@@ -405,13 +412,14 @@ class GRViewModel(
     val getBarcodeValueWithPrefixMutableResponse: MutableLiveData<Resource<GeneralResponse>> =
         MutableLiveData()
 
-    fun getBarcodeValueWithPrefix(token: String, baseUrl: String, transactionPrefix: String) {
+    fun getBarcodeValueWithPrefix(        context: Activity,token: String, baseUrl: String, transactionPrefix: String) {
         viewModelScope.launch {
-            safeAPICallGetBarcodeValueWithPrefix(token, baseUrl, transactionPrefix)
+            safeAPICallGetBarcodeValueWithPrefix(context,token, baseUrl, transactionPrefix)
         }
     }
 
     private suspend fun safeAPICallGetBarcodeValueWithPrefix(
+        context: Activity,
         token: String,
         baseUrl: String,
         transactionPrefix: String
@@ -420,7 +428,7 @@ class GRViewModel(
         try {
             if (Utils.hasInternetConnection(getApplication())) {
                 val response =
-                    rfidRepository.getBarcodeValueWithPrefix(token, baseUrl, transactionPrefix)
+                    rfidRepository.getBarcodeValueWithPrefix(context,token, baseUrl, transactionPrefix)
                 getBarcodeValueWithPrefixMutableResponse.postValue(
                     handleGetBarcodeValueWithPrefix(
                         response
@@ -464,9 +472,10 @@ class GRViewModel(
     val getBarcodeForMultipleBatchesResponse: MutableLiveData<Resource<GeneralResponse>> =
         MutableLiveData()
 
-    fun getBarcodeForMultipleBatches(token: String, baseUrl: String, transactionPrefix: String) {
+    fun getBarcodeForMultipleBatches(        context: Activity,token: String, baseUrl: String, transactionPrefix: String) {
         viewModelScope.launch {
             safeAPICallGetBarcodeValueWithPrefixForMultipleBatches(
+                context,
                 token,
                 baseUrl,
                 transactionPrefix
@@ -475,6 +484,7 @@ class GRViewModel(
     }
 
     private suspend fun safeAPICallGetBarcodeValueWithPrefixForMultipleBatches(
+        context: Activity,
         token: String,
         baseUrl: String,
         transactionPrefix: String
@@ -483,7 +493,7 @@ class GRViewModel(
         try {
             if (Utils.hasInternetConnection(getApplication())) {
                 val response =
-                    rfidRepository.getBarcodeForMultipleBatches(token, baseUrl, transactionPrefix)
+                    rfidRepository.getBarcodeForMultipleBatches(context,token, baseUrl, transactionPrefix)
                 getBarcodeForMultipleBatchesResponse.postValue(
                     HandleGetBarcodeForMultipleBatches(
                         response
@@ -526,13 +536,14 @@ class GRViewModel(
     val deleteGRLineUnitMutableResponse: MutableLiveData<Resource<GeneralResponse>> =
         MutableLiveData()
 
-    fun deleteGRLineUnit(token: String, baseUrl: String, lineLineUnitId: Int) {
+    fun deleteGRLineUnit(        context: Activity,token: String, baseUrl: String, lineLineUnitId: Int) {
         viewModelScope.launch {
-            safeAPICallDeleteGRNLineUnit(token, baseUrl, lineLineUnitId)
+            safeAPICallDeleteGRNLineUnit(context,token, baseUrl, lineLineUnitId)
         }
     }
 
     private suspend fun safeAPICallDeleteGRNLineUnit(
+        context: Activity,
         token: String,
         baseUrl: String,
         lineLineUnitId: Int
@@ -540,7 +551,7 @@ class GRViewModel(
         deleteGRLineUnitMutableResponse.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.deleteGRLineUnit(token, baseUrl, lineLineUnitId)
+                val response = rfidRepository.deleteGRLineUnit(context,token, baseUrl, lineLineUnitId)
                 deleteGRLineUnitMutableResponse.postValue(handleDeleteGRLineUnit(response))
             } else {
                 deleteGRLineUnitMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
@@ -573,13 +584,14 @@ class GRViewModel(
     val deleteGRLineItemsUnitMutableResponse: MutableLiveData<Resource<GrnBatchDeleteResponse>> =
         MutableLiveData()
 
-    fun deleteGRLineItemsUnit(token: String, baseUrl: String, lineLineUnitId: Int) {
+    fun deleteGRLineItemsUnit(        context: Activity,token: String, baseUrl: String, lineLineUnitId: Int) {
         viewModelScope.launch {
-            safeAPICallDeleteGRNLineItemsUnit(token, baseUrl, lineLineUnitId)
+            safeAPICallDeleteGRNLineItemsUnit(context,token, baseUrl, lineLineUnitId)
         }
     }
 
     private suspend fun safeAPICallDeleteGRNLineItemsUnit(
+        context: Activity,
         token: String,
         baseUrl: String,
         lineLineUnitId: Int
@@ -587,7 +599,7 @@ class GRViewModel(
         deleteGRLineItemsUnitMutableResponse.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.deleteGRLineItemsUnit(token, baseUrl, lineLineUnitId)
+                val response = rfidRepository.deleteGRLineItemsUnit(context,token, baseUrl, lineLineUnitId)
                 deleteGRLineItemsUnitMutableResponse.postValue(handleDeleteGRLineItemsUnit(response))
             } else {
                 deleteGRLineItemsUnitMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
@@ -628,16 +640,18 @@ class GRViewModel(
         MutableLiveData()
 
     fun processSingleGRItemSingleBatches(
+        context: Activity,
         token: String,
         baseUrl: String,
         processGRLineItemRequest: ProcessGRLineItemRequest
     ) {
         viewModelScope.launch {
-            safeAPICallProcessSingleGRItemSingleBatches(token, baseUrl, processGRLineItemRequest)
+            safeAPICallProcessSingleGRItemSingleBatches(context,token, baseUrl, processGRLineItemRequest)
         }
     }
 
     private suspend fun safeAPICallProcessSingleGRItemMultipleBatches(
+        context: Activity,
         token: String,
         baseUrl: String,
         processGRLineItemRequest: ProcessGRLineItemRequest
@@ -646,6 +660,7 @@ class GRViewModel(
         try {
             if (Utils.hasInternetConnection(getApplication())) {
                 val response = rfidRepository.processSingleGRItemForMultiple(
+                    context,
                     token,
                     baseUrl,
                     processGRLineItemRequest
@@ -674,17 +689,19 @@ class GRViewModel(
         MutableLiveData()
 
     fun processSingleGRItemMultipleBatches(
+        context: Activity,
         token: String,
         baseUrl: String,
         processGRLineItemRequest: ProcessGRLineItemRequest
     ) {
         viewModelScope.launch {
-            safeAPICallProcessSingleGRItemMultipleBatches(token, baseUrl, processGRLineItemRequest)
+            safeAPICallProcessSingleGRItemMultipleBatches(context,token, baseUrl, processGRLineItemRequest)
         }
     }
 
 
     private suspend fun safeAPICallProcessSingleGRItemSingleBatches(
+        context: Activity,
         token: String,
         baseUrl: String,
         processGRLineItemRequest: ProcessGRLineItemRequest
@@ -693,7 +710,7 @@ class GRViewModel(
         try {
             if (Utils.hasInternetConnection(getApplication())) {
                 val response =
-                    rfidRepository.processSingleGRItem(token, baseUrl, processGRLineItemRequest)
+                    rfidRepository.processSingleGRItem(context,token, baseUrl, processGRLineItemRequest)
                 processSingleGRItemSingleBatchesMutable.postValue(
                     handleProcessSingleGRItemSingleBatches(response)
                 )
@@ -736,17 +753,17 @@ class GRViewModel(
     val getSingleGRByGRIdMutableResponse: MutableLiveData<Resource<GetSingleGRByGRIdResponse>> =
         MutableLiveData()
 
-    fun getSingleGRByGRId(token: String, baseUrl: String, grId: Int) {
+    fun getSingleGRByGRId(        context: Activity,token: String, baseUrl: String, grId: Int) {
         viewModelScope.launch {
-            safeAPICallGetSingleGRByGRId(token, baseUrl, grId)
+            safeAPICallGetSingleGRByGRId(context,token, baseUrl, grId)
         }
     }
 
-    private suspend fun safeAPICallGetSingleGRByGRId(token: String, baseUrl: String, grId: Int) {
+    private suspend fun safeAPICallGetSingleGRByGRId(        context: Activity,token: String, baseUrl: String, grId: Int) {
         getSingleGRByGRIdMutableResponse.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.getSingleGRByGRId(token, baseUrl, grId)
+                val response = rfidRepository.getSingleGRByGRId(context,token, baseUrl, grId)
                 getSingleGRByGRIdMutableResponse.postValue(handleGetDraftGRN(response))
             } else {
                 getSingleGRByGRIdMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
@@ -785,12 +802,13 @@ class GRViewModel(
     //submitGRN Data
     val submitGRMutableResponse: MutableLiveData<Resource<GeneralResponse>> = MutableLiveData()
 
-    fun submitGR(token: String, baseUrl: String, submitGRRequest: SubmitGRRequest) {
+    fun submitGR(        context: Activity,token: String, baseUrl: String, submitGRRequest: SubmitGRRequest) {
         viewModelScope.launch {
-            safeAPICallSubmitGR(token, baseUrl, submitGRRequest)
+            safeAPICallSubmitGR(context,token, baseUrl, submitGRRequest)
         }
     }
     private suspend fun safeAPICallSubmitGR(
+        context: Activity,
         token: String,
         baseUrl: String,
         submitGRRequest: SubmitGRRequest
@@ -798,7 +816,7 @@ class GRViewModel(
         submitGRMutableResponse.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.submitGR(token, baseUrl, submitGRRequest)
+                val response = rfidRepository.submitGR(context,token, baseUrl, submitGRRequest)
                 submitGRMutableResponse.postValue(handleSubmitGR(response))
             } else {
                 submitGRMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
@@ -832,17 +850,17 @@ class GRViewModel(
     //print
     val printLabelForGRMutableResponse: MutableLiveData<Resource<GeneralResponse>> = MutableLiveData()
 
-    fun printLabelForGR(token: String,baseUrl: String,    grnLineUnitItemId: ArrayList<Int>) {
+    fun printLabelForGR(        context: Activity,token: String,baseUrl: String,    grnLineUnitItemId: ArrayList<Int>) {
         viewModelScope.launch {
-            safeAPICallPrintLabelForGR(token,baseUrl,grnLineUnitItemId)
+            safeAPICallPrintLabelForGR(context,token,baseUrl,grnLineUnitItemId)
         }
     }
 
-    private suspend fun safeAPICallPrintLabelForGR(token: String,baseUrl: String,   grnLineUnitItemId: ArrayList<Int> ) {
+    private suspend fun safeAPICallPrintLabelForGR(        context: Activity,token: String,baseUrl: String,   grnLineUnitItemId: ArrayList<Int> ) {
         printLabelForGRMutableResponse.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.printLabelForGR(token,baseUrl ,grnLineUnitItemId)
+                val response = rfidRepository.printLabelForGR(context,token,baseUrl ,grnLineUnitItemId)
                 printLabelForGRMutableResponse.postValue(handlePrintLabelForGR(response))
             } else {
                 printLabelForGRMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))
@@ -876,17 +894,17 @@ class GRViewModel(
     //print bulk
     val printLabelForGRBulkMutableResponse: MutableLiveData<Resource<GeneralResponse>> = MutableLiveData()
 
-    fun printLabelForGRBulk(token: String,baseUrl: String,    grnLineUnitItemId: ArrayList<Int>) {
+    fun printLabelForGRBulk(        context: Activity,token: String,baseUrl: String,    grnLineUnitItemId: ArrayList<Int>) {
         viewModelScope.launch {
-            safeAPICallPrintLabelForGRBulk(token,baseUrl,grnLineUnitItemId)
+            safeAPICallPrintLabelForGRBulk(context,token,baseUrl,grnLineUnitItemId)
         }
     }
 
-    private suspend fun safeAPICallPrintLabelForGRBulk(token: String,baseUrl: String,   grnLineUnitItemId: ArrayList<Int> ) {
+    private suspend fun safeAPICallPrintLabelForGRBulk(        context: Activity,token: String,baseUrl: String,   grnLineUnitItemId: ArrayList<Int> ) {
         printLabelForGRBulkMutableResponse.postValue(Resource.Loading())
         try {
             if (Utils.hasInternetConnection(getApplication())) {
-                val response = rfidRepository.printLabelForGR(token,baseUrl ,grnLineUnitItemId)
+                val response = rfidRepository.printLabelForGR(context,token,baseUrl ,grnLineUnitItemId)
                 printLabelForGRBulkMutableResponse.postValue(handlePrintLabelForGRNBulk(response))
             } else {
                 printLabelForGRBulkMutableResponse.postValue(Resource.Error(Constants.NO_INTERNET))

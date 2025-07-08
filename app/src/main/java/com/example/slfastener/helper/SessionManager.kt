@@ -11,6 +11,7 @@ import com.example.demorfidapp.helper.Constants.KEY_ISLOGGEDIN
 import com.example.demorfidapp.helper.Constants.KEY_JWT_TOKEN
 import com.example.demorfidapp.helper.Constants.KEY_PORT
 import com.example.demorfidapp.helper.Constants.KEY_PRINTER_TYPE
+import com.example.demorfidapp.helper.Constants.KEY_REFRESH_TOKEN
 import com.example.demorfidapp.helper.Constants.KEY_SERVER_IP
 import com.example.demorfidapp.helper.Constants.KEY_USER_EMAIL
 import com.example.demorfidapp.helper.Constants.KEY_USER_FIRST_NAME
@@ -51,6 +52,7 @@ class SessionManager(context: Context) {
         userName: String?,
         jwtToken: String?,
         roleName: String?,
+        refreshToken: String?,
 
         ) {
 
@@ -62,6 +64,7 @@ class SessionManager(context: Context) {
         editor.putString(KEY_USER_MOBILE_NUMBER, mobileNumber)
         editor.putString(KEY_JWT_TOKEN, jwtToken)
         editor.putString(ROLE_NAME, roleName)
+        editor.putString(KEY_REFRESH_TOKEN, refreshToken)
 
         // commit changes
         editor.commit()

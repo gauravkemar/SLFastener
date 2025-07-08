@@ -709,7 +709,7 @@ class CompletedGRNActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatus
         try {
             var grnLineUnitList = ArrayList<Int>()
             grnLineUnitList.add(grnitem.lineItemUnitId.toInt())
-            viewModel.printLabelForGRN(token, baseUrl, grnLineUnitList)
+            viewModel.printLabelForGRN(this,token, baseUrl, grnLineUnitList)
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -721,7 +721,7 @@ class CompletedGRNActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatus
 
     private fun printLabelForBulk() {
         try {
-            viewModel.printLabelForGRNBulk(token, baseUrl, selectedBatchForPrint)
+            viewModel.printLabelForGRNBulk(this,token, baseUrl, selectedBatchForPrint)
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -734,7 +734,7 @@ class CompletedGRNActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatus
         try {
             var grnLineUnitList = ArrayList<Int>()
             grnLineUnitList.add(grnitem.lineItemUnitId.toInt())
-            viewModel.getGRNProductDetailsOnUnitIdItem(token, baseUrl, grnLineUnitList)
+            viewModel.getGRNProductDetailsOnUnitIdItem(this,token, baseUrl, grnLineUnitList)
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -745,7 +745,7 @@ class CompletedGRNActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatus
     }
     private fun printLabelUSBForBulk() {
         try {
-            viewModel.getGRNProductDetailsOnUnitIdItem(token, baseUrl, selectedBatchForPrint)
+            viewModel.getGRNProductDetailsOnUnitIdItem(this,token, baseUrl, selectedBatchForPrint)
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -852,7 +852,7 @@ class CompletedGRNActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatus
 
     private fun callParentLocationApi(selectedKey: String) {
         try {
-            viewModel.getSuppliersPosDDLL(token, baseUrl, selectedKey)
+            viewModel.getSuppliersPosDDLL(this,token, baseUrl, selectedKey)
         } catch (e: Exception) {
             Toasty.error(
                 this,
@@ -864,7 +864,7 @@ class CompletedGRNActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatus
 
     private fun getAllLocations() {
         try {
-            viewModel.getAllLocations(token, baseUrl)
+            viewModel.getAllLocations(this,token, baseUrl)
         } catch (e: Exception) {
             Toast.makeText(
                 this,
@@ -886,7 +886,7 @@ class CompletedGRNActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatus
             if (selectedPoFilteredList.size > 0) {
                 binding.tvCurrencyType.setText(getCommonCode().toString())
                 selectedCurrency = getCommonCode().toString()
-                viewModel.getPosLineItemsOnPoIds(token, baseUrl, selectedPoFilteredList)
+                viewModel.getPosLineItemsOnPoIds(this,token, baseUrl, selectedPoFilteredList)
                 selectPoDialog!!.dismiss()
             } else {
                 Toasty.warning(
@@ -920,7 +920,7 @@ class CompletedGRNActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatus
 
     private fun getSupplierList() {
         try {
-            viewModel.getActiveSuppliersDDL(token, baseUrl)
+            viewModel.getActiveSuppliersDDL(this,token, baseUrl)
         } catch (e: Exception) {
             Toasty.error(
                 this,
@@ -1095,7 +1095,7 @@ class CompletedGRNActivity : AppCompatActivity(), USBPrinterHelper.PrinterStatus
 
     private fun getDraftGrn() {
         try {
-            viewModel.getDraftGRN(token, baseUrl, grnId!!.toInt())
+            viewModel.getDraftGRN(this,token, baseUrl, grnId!!.toInt())
         } catch (e: Exception) {
             Toasty.error(
                 this@CompletedGRNActivity,

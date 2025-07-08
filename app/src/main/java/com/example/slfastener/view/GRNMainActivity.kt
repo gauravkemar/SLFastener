@@ -67,7 +67,7 @@ class GRNMainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         binding.mcvGRNDraft.setBackgroundResource(R.drawable.new_ui_select_draft_complete_bg)
-        binding.tvDraft.setTextColor(resources.getColor(R.color.white))
+        binding.tvDraft.setTextColor(resources.getColor(R.color.black))
         binding.tvCompleted.setTextColor(resources.getColor(R.color.blue))
         binding.mcvCancel.setOnClickListener {
             var intent = Intent(this, HomeActivity::class.java)
@@ -75,18 +75,23 @@ class GRNMainActivity : AppCompatActivity() {
             finish()
         }
 
-        binding.mcvGRNDraft.setCardBackgroundColor(resources.getColor(R.color.lighter_blue))
+     /*   binding.mcvGRNDraft.setCardBackgroundColor(resources.getColor(R.color.lighter_blue))
         binding.tvDraft.setTextColor(resources.getColor(R.color.white))
         binding.tvCompleted.setTextColor(resources.getColor(R.color.blue))
         binding.mcvCancel.setOnClickListener {
             var intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
             finish()
-        }
+        }*/
         binding.mcvGRNDraft.setOnClickListener {
-            binding.mcvGRNDraft.setCardBackgroundColor(resources.getColor(R.color.lighter_blue))
-            binding.tvDraft.setTextColor(resources.getColor(R.color.white))
-            binding.tvCompleted.setTextColor(resources.getColor(R.color.blue))
+            //binding.clCompleted.setBackgroundResource(R.drawable.new_ui_unselect_draft_complete_bg)
+            //binding.clDraft.setBackgroundResource(R.drawable.new_ui_select_draft_complete_bg)
+
+            binding.mcvGRNDraft.setBackgroundResource(R.drawable.new_ui_select_draft_complete_bg)
+             binding.mcvGRNCompleted.setBackgroundResource(R.drawable.back_ground_white)
+
+            binding.tvDraft.setTextColor(resources.getColor(R.color.blue))
+            binding.tvCompleted.setTextColor(resources.getColor(R.color.black))
 
             //binding.clCompleted.setBackgroundResource(R.drawable.new_ui_unselect_draft_complete_bg)
             //binding.clDraft.setBackgroundResource(R.drawable.new_ui_select_draft_complete_bg)
@@ -96,10 +101,11 @@ class GRNMainActivity : AppCompatActivity() {
             binding.rcGrnMainCompleted.visibility=View.GONE
         }
         binding.mcvGRNCompleted.setOnClickListener {
-            binding.tvCompleted.setTextColor(resources.getColor(R.color.white))
-            binding.tvDraft.setTextColor(resources.getColor(R.color.blue))
-            binding.mcvGRNCompleted.setCardBackgroundColor(resources.getColor(R.color.lighter_blue))
-            binding.mcvGRNDraft.setCardBackgroundColor(resources.getColor(R.color.white))
+            binding.mcvGRNDraft.setBackgroundResource(R.drawable.back_ground_white)
+            binding.mcvGRNCompleted.setBackgroundResource(R.drawable.new_ui_select_draft_complete_bg)
+
+            binding.tvCompleted.setTextColor(resources.getColor(R.color.blue))
+            binding.tvDraft.setTextColor(resources.getColor(R.color.black))
 
             //binding.clDraft.setBackgroundResource(R.drawable.new_ui_unselect_draft_complete_bg)
            // binding.clCompleted.setBackgroundResource(R.drawable.new_ui_select_draft_complete_bg)
@@ -216,7 +222,7 @@ class GRNMainActivity : AppCompatActivity() {
     private fun getGrnList(status: String)
     {
         try {
-            viewModel.getFilteredGRN(token,baseUrl, GetFilteredGRNRequest(status))
+            viewModel.getFilteredGRN(this,token,baseUrl, GetFilteredGRNRequest(status))
         }
         catch (e:Exception)
         {
@@ -230,7 +236,7 @@ class GRNMainActivity : AppCompatActivity() {
     private fun getFilteredGRNCompleted(status: String)
     {
         try {
-            viewModel.getFilteredGRNCompleted(token,baseUrl, GetFilteredGRNRequest(status))
+            viewModel.getFilteredGRNCompleted(this,token,baseUrl, GetFilteredGRNRequest(status))
         }
         catch (e:Exception)
         {
